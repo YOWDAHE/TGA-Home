@@ -6,6 +6,9 @@ interface CarouselProps<T> {
 	renderItem: (item: T, idx: number) => React.ReactNode;
 	initialIndex?: number;
 	className?: string;
+	autoPlay?: boolean;
+	autoPlayInterval?: number; // milliseconds
+	pauseOnHover?: boolean;
 }
 
 export default function Carousel<T>({
@@ -13,12 +16,17 @@ export default function Carousel<T>({
 	renderItem,
 	initialIndex = 0,
 	className = "",
+	autoPlay = true,
+	autoPlayInterval = 3000,
+	pauseOnHover = true,
 }: CarouselProps<T>) {
 	const [activeIndex, setActiveIndex] = useState(initialIndex);
 	const [isDragging, setIsDragging] = useState(false);
 	const [dragStartX, setDragStartX] = useState(0);
 	const [dragOffset, setDragOffset] = useState(0);
+	const [isPaused, setIsPaused] = useState(false);
 	const carouselRef = useRef<HTMLDivElement>(null);
+	const autoPlayRef = useRef<NodeJS.Timeout | null>(null);
 
 	const prevCard = () => {
 		setActiveIndex((prev) => (prev === 0 ? items.length - 1 : prev - 1));
@@ -27,6 +35,28 @@ export default function Carousel<T>({
 	const nextCard = () => {
 		setActiveIndex((prev) => (prev === items.length - 1 ? 0 : prev + 1));
 	};
+
+	// Auto-play functionality
+	useEffect(() => {
+		if (!autoPlay || isPaused || isDragging) {
+			if (autoPlayRef.current) {
+				clearInterval(autoPlayRef.current);
+				autoPlayRef.current = null;
+			}
+			return;
+		}
+
+		autoPlayRef.current = setInterval(() => {
+			nextCard();
+		}, autoPlayInterval);
+
+		return () => {
+			if (autoPlayRef.current) {
+				clearInterval(autoPlayRef.current);
+				autoPlayRef.current = null;
+			}
+		};
+	}, [autoPlay, isPaused, isDragging, autoPlayInterval, items.length]);
 
 	// Handle drag start
 	const handleDragStart = useCallback((clientX: number) => {
@@ -85,6 +115,19 @@ export default function Carousel<T>({
 	const handleTouchEnd = useCallback(() => {
 		handleDragEnd();
 	}, [handleDragEnd]);
+
+	// Pause/resume on hover
+	const handleMouseEnter = useCallback(() => {
+		if (pauseOnHover) {
+			setIsPaused(true);
+		}
+	}, [pauseOnHover]);
+
+	const handleMouseLeave = useCallback(() => {
+		if (pauseOnHover) {
+			setIsPaused(false);
+		}
+	}, [pauseOnHover]);
 
 	// Add/remove global mouse event listeners
 	useEffect(() => {
@@ -191,6 +234,8 @@ export default function Carousel<T>({
 					onTouchStart={handleTouchStart}
 					onTouchMove={handleTouchMove}
 					onTouchEnd={handleTouchEnd}
+					onMouseEnter={handleMouseEnter}
+					onMouseLeave={handleMouseLeave}
 				>
 					{items.map((item, idx) => {
 						const { style, zIndex, pos } = getCardProps(idx);

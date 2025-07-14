@@ -30,11 +30,11 @@ export class Hero extends Component {
 					<Image
 						src="/Images/logo/TGA_LOGO.svg"
 						alt="Hero"
-						width={400}
-						height={400}
+						width={350}
+						height={350}
 						className="object-cover rounded-lg"
 					/>
-					<div className="text-xl md:text-4xl font-bold mb-8 leading-tight">
+					<div className="text-xl md:text-3xl font-bold mb-8 leading-tight">
 						COMMITTED TO A{" "}
 						<span className="bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">
 							ROBUST BUSINESS AND INVESTMENT

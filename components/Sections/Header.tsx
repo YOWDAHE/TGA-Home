@@ -2,8 +2,12 @@ import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 
-export default function Header() {
-	const [isVisible, setIsVisible] = useState(false);
+export default function Header({
+	showHeader = true
+}: {
+	showHeader?: boolean;
+}) {
+	const [isVisible, setIsVisible] = useState(showHeader);
 	const [lastScrollY, setLastScrollY] = useState(0);
 
 	useEffect(() => {
