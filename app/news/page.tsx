@@ -13,6 +13,8 @@ export default async function page() {
     sortBy: 'published_date',
     order: 'desc'
   });
+
+  console.dir(categories, { depth: null });
   
   return (
     <NewsPage news={news} newsQuery={newsQuery} categories={categories} />

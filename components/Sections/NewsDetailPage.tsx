@@ -33,6 +33,11 @@ import Header from "@/components/Sections/Header";
 import { useParams } from "next/navigation";
 import { NewsByIdResponse, NewsQueryResponse } from "@/app/types/news";
 import { convertToApiUrl } from "@/lib/utils";
+import {
+	postNewsComment,
+	getNewsComments,
+	toggleCommentLike,
+} from "@/app/actions/news.actions";
 
 interface NewsArticle {
 	id: number;
@@ -66,8 +71,10 @@ interface Comment {
 	id: number;
 	news_id: number;
 	user_name: string;
-	likes: number;
-	dislikes: number;
+	likes_count: number;
+	dislikes_count: number;
+	liked: boolean;
+	disliked: boolean;
 	visible: boolean;
 	pinned: boolean;
 	edited: boolean;
@@ -83,14 +90,17 @@ interface NewsDetailPageProps {
 	relatedNews: NewsQueryResponse | null;
 }
 
-export default function NewsDetailPage({ news, relatedNews }: NewsDetailPageProps) {
+export default function NewsDetailPage({
+	news,
+	relatedNews,
+}: NewsDetailPageProps) {
 	const params = useParams();
 	const id = params.id as string;
 
-	const [comments, setComments] = useState<Comment[]>([]);
+	const [commentsList, setComments] = useState<Comment[]>([]);
 	const [relatedArticles, setRelatedArticles] = useState<NewsArticle[]>([]);
 	const [newComment, setNewComment] = useState("");
-	const [userName, setUserName] = useState("");
+	const [localUsername, setLocalUsername] = useState<string>("");
 	const [isBookmarked, setIsBookmarked] = useState(false);
 	const [showShareMenu, setShowShareMenu] = useState(false);
 	const [loading, setLoading] = useState(true);
@@ -117,13 +127,17 @@ export default function NewsDetailPage({ news, relatedNews }: NewsDetailPageProp
 	};
 
 	// Transform API news to component format
-    const transformNewsToArticle = (newsItem: any): NewsArticle => {
-		const data = {
+	const transformNewsToArticle = (newsItem: any): NewsArticle => {
+		return {
 			id: newsItem.news.id,
 			title: newsItem.news.title,
 			visual_content: {
-				images: newsItem.news.visual_content ? [getImageUrl(newsItem.news)] : ["/placeholder.svg?height=600&width=1200"],
-				thumbnail: newsItem.news.visual_content ? getImageUrl(newsItem.news) : "/placeholder.svg?height=400&width=600",
+				images: newsItem.news.visual_content
+					? [getImageUrl(newsItem.news)]
+					: ["/placeholder.svg?height=600&width=1200"],
+				thumbnail: newsItem.news.visual_content
+					? getImageUrl(newsItem.news)
+					: "/placeholder.svg?height=400&width=600",
 			},
 			links: {
 				external: [],
@@ -143,114 +157,74 @@ export default function NewsDetailPage({ news, relatedNews }: NewsDetailPageProp
 			created_by: newsItem.news.created_by,
 			createdAt: newsItem.news.createdAt?.toString(),
 			updatedAt: newsItem.news.updatedAt?.toString(),
-        };
-        return data;
+		};
 	};
 
-	// Use real data from props and mock data for comments
+	const refreshComments = async () => {
+		try {
+			const updatedComments = await getNewsComments(id, localUsername);
+			setComments(updatedComments?.data || []);
+		} catch (error) {
+			console.error("Failed to refresh comments", error);
+		}
+	};
+
+	// Initialize username and fetch data
 	useEffect(() => {
-		const mockComments: Comment[] = [
-			{
-				id: 1,
-				news_id: Number.parseInt(id),
-				user_name: "Sarah Johnson",
-				likes: 12,
-				dislikes: 1,
-				visible: true,
-				pinned: true,
-				edited: false,
-				flagged: false,
-				content:
-					"This is excellent news for international investors. The streamlined processes will definitely make Ethiopia more attractive for foreign investment.",
-				createdAt: "2024-01-15T11:00:00Z",
-				updatedAt: "2024-01-15T11:00:00Z",
-			},
-			{
-				id: 2,
-				news_id: Number.parseInt(id),
-				user_name: "Michael Chen",
-				likes: 8,
-				dislikes: 0,
-				visible: true,
-				pinned: false,
-				edited: false,
-				flagged: false,
-				content:
-					"Great analysis! I'm particularly interested in the telecommunications sector opening. This could be a game-changer.",
-				createdAt: "2024-01-15T12:30:00Z",
-				updatedAt: "2024-01-15T12:30:00Z",
-			},
-			{
-				id: 3,
-				news_id: Number.parseInt(id),
-				user_name: "Aisha Mohammed",
-				likes: 15,
-				dislikes: 2,
-				visible: true,
-				pinned: false,
-				edited: true,
-				flagged: false,
-				content:
-					"As someone working in the legal sector in Ethiopia, I can confirm these reforms are much needed. The one-stop service center will be particularly beneficial.",
-				createdAt: "2024-01-15T14:15:00Z",
-				updatedAt: "2024-01-15T14:45:00Z",
-			},
-		];
+		let storedUsername = localStorage.getItem("tga_username");
+		if (!storedUsername) {
+			storedUsername = `user${Math.floor(1000 + Math.random() * 9000)}`;
+			localStorage.setItem("tga_username", storedUsername);
+		}
+		setLocalUsername(storedUsername);
 
-		const transformedRelatedArticles: NewsArticle[] = relatedNews?.data?.news
-			?.filter((item: any) => item.news.id !== news.data.id)
-			?.slice(0, 2)
-            ?.map(transformNewsToArticle) || [];
+		// Transform related news data
+		const transformedRelatedArticles: NewsArticle[] =
+			relatedNews?.data?.news
+				?.filter((item: any) => item.news.id !== news.data.id)
+				?.slice(0, 2)
+				?.map(transformNewsToArticle) || [];
 
-		// Simulate loading
-		setTimeout(() => {
-			setComments(mockComments);
-			setRelatedArticles(transformedRelatedArticles);
-			setLoading(false);
-		}, 1000);
+		setRelatedArticles(transformedRelatedArticles);
+		setLoading(false);
 	}, [id, news, relatedNews]);
 
-	const handleCommentSubmit = () => {
-		if (!newComment.trim() || !userName.trim()) return;
+	// Fetch comments when username is set
+	useEffect(() => {
+		if (localUsername) {
+			refreshComments();
+		}
+	}, [localUsername]);
 
-		const comment: Comment = {
-			id: comments.length + 1,
-			news_id: Number.parseInt(id),
-			user_name: userName,
-			likes: 0,
-			dislikes: 0,
-			visible: true,
-			pinned: false,
-			edited: false,
-			flagged: false,
-			content: newComment,
-			createdAt: new Date().toISOString(),
-			updatedAt: new Date().toISOString(),
-		};
+	const handleCommentSubmit = async () => {
+		if (!newComment.trim()) return;
 
-		setComments([comment, ...comments]);
-		setNewComment("");
-		setUserName("");
+		try {
+			await postNewsComment(id, newComment, localUsername);
+			setNewComment("");
+			// Refresh comments after posting
+			await refreshComments();
+		} catch (error) {
+			console.error("Failed to post comment", error);
+		}
 	};
 
-	const handleLike = (commentId: number) => {
-		setComments(
-			comments.map((comment) =>
-				comment.id === commentId
-					? { ...comment, likes: comment.likes + 1 }
-					: comment
-			)
-		);
+	const handleLike = async (commentId: number) => {
+		try {
+			await toggleCommentLike(commentId.toString(), localUsername, "like");
+			await refreshComments();
+		} catch (error) {
+			console.error("Failed to like comment", error);
+		}
 	};
 
-	const handleDislike = (commentId: number) => {
-		setComments(
-			comments.map((comment) =>
-				comment.id === commentId
-					? { ...comment, dislikes: comment.dislikes + 1 }
-					: comment
-			)
-		);
+	const handleDislike = async (commentId: number) => {
+		try {
+			await toggleCommentLike(commentId.toString(), localUsername, "dislike");
+			await refreshComments();
+		} catch (error) {
+			console.error("Failed to dislike comment", error);
+		}
 	};
 
 	const toggleBookmark = () => {
@@ -263,7 +237,6 @@ export default function NewsDetailPage({ news, relatedNews }: NewsDetailPageProp
 
 	const copyToClipboard = () => {
 		navigator.clipboard.writeText(window.location.href);
-		// You can add a toast notification here
 	};
 
 	if (loading) {
@@ -372,6 +345,9 @@ export default function NewsDetailPage({ news, relatedNews }: NewsDetailPageProp
 				{/* Article Content */}
 				<div className="grid lg:grid-cols-3 gap-8">
 					<div className={`lg:col-span-${relatedArticles.length > 0 ? 2 : 3}`}>
+						<div className="text-xl font-bold text-gray-900 mb-4">
+							{article.title}
+						</div>
 						<div className="prose prose-lg max-w-none mb-8">
 							<div dangerouslySetInnerHTML={{ __html: article.content }} />
 						</div>
@@ -396,25 +372,14 @@ export default function NewsDetailPage({ news, relatedNews }: NewsDetailPageProp
 						{/* Comments Section */}
 						<div className="mb-8">
 							<h3 className="text-2xl font-semibold text-gray-900 mb-6">
-								Comments ({comments.length})
+								Comments ({commentsList.length})
 							</h3>
 
 							{/* Add Comment */}
 							<Card className="mb-6">
 								<CardContent className="p-6">
 									<div className="space-y-4">
-										<div>
-											<label className="block text-sm font-medium text-gray-700 mb-2">
-												Name
-											</label>
-											<input
-												type="text"
-												value={userName}
-												onChange={(e) => setUserName(e.target.value)}
-												className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-												placeholder="Enter your name"
-											/>
-										</div>
+										{/* Name input removed */}
 										<div>
 											<label className="block text-sm font-medium text-gray-700 mb-2">
 												Comment
@@ -439,7 +404,7 @@ export default function NewsDetailPage({ news, relatedNews }: NewsDetailPageProp
 
 							{/* Comments List */}
 							<div className="space-y-4">
-								{comments.map((comment) => (
+								{commentsList.map((comment) => (
 									<Card key={comment.id}>
 										<CardContent className="p-4">
 											<div className="flex items-start space-x-3">
@@ -449,8 +414,7 @@ export default function NewsDetailPage({ news, relatedNews }: NewsDetailPageProp
 													</AvatarFallback>
 												</Avatar>
 												<div className="flex-1">
-													<div className="flex items-center space-x-2 mb-2">
-														<span className="font-semibold text-sm">{comment.user_name}</span>
+													{/* <div className="flex items-center space-x-2 mb-2">
 														{comment.pinned && (
 															<Badge className="bg-yellow-500 text-xs">
 																<Pin className="w-3 h-3 mr-1" />
@@ -463,7 +427,7 @@ export default function NewsDetailPage({ news, relatedNews }: NewsDetailPageProp
 																Edited
 															</Badge>
 														)}
-													</div>
+													</div> */}
 													<p className="text-sm text-gray-700 mb-3">{comment.content}</p>
 													<div className="flex items-center justify-between">
 														<div className="flex items-center space-x-4 text-xs text-gray-500">
@@ -473,25 +437,26 @@ export default function NewsDetailPage({ news, relatedNews }: NewsDetailPageProp
 																	variant="ghost"
 																	size="sm"
 																	onClick={() => handleLike(comment.id)}
-																	className="flex items-center space-x-1 text-xs"
+																	className={`flex items-center space-x-1 text-xs ${
+																		comment.liked ? "text-blue-500" : ""
+																	}`}
 																>
 																	<ThumbsUp className="w-3 h-3" />
-																	<span>{comment.likes}</span>
+																	<span>{comment.likes_count}</span>
 																</Button>
 																<Button
 																	variant="ghost"
 																	size="sm"
 																	onClick={() => handleDislike(comment.id)}
-																	className="flex items-center space-x-1 text-xs"
+																	className={`flex items-center space-x-1 text-xs ${
+																		comment.disliked ? "text-red-500" : ""
+																	}`}
 																>
 																	<ThumbsDown className="w-3 h-3" />
-																	<span>{comment.dislikes}</span>
+																	<span>{comment.dislikes_count}</span>
 																</Button>
 															</div>
 														</div>
-														<Button variant="ghost" size="sm">
-															<Flag className="w-3 h-3" />
-														</Button>
 													</div>
 												</div>
 											</div>

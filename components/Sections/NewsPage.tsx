@@ -21,6 +21,7 @@ import {
 	Search,
 	ChevronLeft,
 	X,
+	Check,
 } from "lucide-react";
 import {
 	NewsResponse,
@@ -31,6 +32,7 @@ import {
 } from "@/app/types/news";
 import { convertToApiUrl } from "@/lib/utils";
 import Header from "./Header";
+import { useToast } from "@/hooks/use-toast";
 
 interface NewsQueryParams {
 	page?: number;
@@ -52,6 +54,8 @@ export default function NewsPage({
 	newsQuery,
 	categories: catData,
 }: NewsPageProps) {
+	console.log(news);
+	const { toast } = useToast();
 	const [selectedCategory, setSelectedCategory] = useState("All");
 	const [searchQuery, setSearchQuery] = useState("");
 	const [currentPage, setCurrentPage] = useState(1);
@@ -62,7 +66,7 @@ export default function NewsPage({
 	const [isSearchMode, setIsSearchMode] = useState(false);
 
 	const { featured, latest, trending, others } = news.data;
-	const categories = catData.data.map((category) => {
+	const categories = catData.data.categories.map((category) => {
 		return {
 			name: category.name,
 			id: category.id,
@@ -187,6 +191,34 @@ export default function NewsPage({
 		return newsQuery.data.pagination;
 	};
 
+	const handleShare = async (news: News) => {
+		try {
+			// Copy the file URL to clipboard
+			await navigator.clipboard.writeText(`${window.location.origin}/news/${news.id}`);
+
+			// Show success toast
+			toast({
+				title: "File URL copied!",
+				description: "The file URL has been copied to your clipboard.",
+				action: (
+					<div className="flex items-center space-x-2">
+						<Check className="w-4 h-4 text-green-500" />
+						<span className="text-sm text-green-600">Copied</span>
+					</div>
+				),
+			});
+		} catch (error) {
+			console.error("Error copying to clipboard:", error);
+
+			// Show error toast
+			toast({
+				title: "Copy failed",
+				description: "Failed to copy file URL to clipboard. Please try again.",
+				variant: "destructive",
+			});
+		}
+	};
+
 	return (
 		<div className="min-h-screen bg-white">
 			{/* Header */}
@@ -195,8 +227,8 @@ export default function NewsPage({
 			<div className="container mx-auto px-4 mt-16 py-8">
 				{/* Page Header */}
 				<div className="mb-8">
-					<h1 className="text-5xl font-bold text-gray-900 mb-4">NEWS</h1>
-					<p className="text-xl text-gray-600">
+					<h1 className="text-3xl font-bold text-gray-900 mb-1">NEWS</h1>
+					<p className="text-lg text-gray-600">
 						Stay updated with the latest legal insights and industry developments
 					</p>
 				</div>
@@ -265,11 +297,8 @@ export default function NewsPage({
 												</Button>
 											</Link>
 											<div className="flex space-x-2">
-												<Button variant="outline" size="icon">
+												<Button variant="outline" size="icon" onClick={() => handleShare(article)}>
 													<Share2 className="w-4 h-4" />
-												</Button>
-												<Button variant="outline" size="icon">
-													<Bookmark className="w-4 h-4" />
 												</Button>
 											</div>
 										</div>

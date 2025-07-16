@@ -44,19 +44,23 @@ export class Hero extends Component {
 						IN ETHIOPIA AND AFRICA
 					</div>
 					<div className="flex flex-col sm:flex-row gap-4 justify-center">
-						<Button
-							size="lg"
-							className="bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 text-white px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
-						>
-							Get Legal Consultation
-						</Button>
-						<Button
-							size="lg"
-							variant="outline"
-							className="border-2 border-white/30 text-white hover:bg-white/10 px-8 py-4 rounded-xl backdrop-blur-sm bg-transparent"
-						>
-							Learn More
-						</Button>
+						<Link href="#contact">
+							<Button
+								size="lg"
+								className="bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 text-white px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+							>
+								Get Legal Consultation
+							</Button>
+						</Link>
+						<Link href="#about">
+							<Button
+								size="lg"
+								variant="outline"
+								className="border-2 border-white/30 text-white hover:bg-white/10 px-8 py-4 rounded-xl backdrop-blur-sm bg-transparent"
+							>
+								Learn More
+							</Button>
+						</Link>
 					</div>
 				</div>
 			</section>

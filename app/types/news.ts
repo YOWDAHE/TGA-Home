@@ -94,5 +94,8 @@ export interface CategoryResponse {
     message: string;
     status: string;
     error: null;
-    data: Category[];
+    data: {
+        categories: Category[];
+        pagination: Pagination;
+    };
 }

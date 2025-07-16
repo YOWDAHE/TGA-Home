@@ -1,5 +1,5 @@
 {
-  "name": "my-v0-project",
+  "name": "tga-project",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -11,6 +11,7 @@
   "dependencies": {
     "@glidejs/glide": "^3.7.1",
     "@hookform/resolvers": "^3.9.1",
+    "@pdf-viewer/react": "^1.7.3",
     "@radix-ui/react-accordion": "1.2.2",
     "@radix-ui/react-alert-dialog": "1.1.4",
     "@radix-ui/react-aspect-ratio": "1.1.1",
@@ -53,6 +54,7 @@
     "react-day-picker": "8.10.1",
     "react-dom": "^19",
     "react-hook-form": "^7.54.1",
+    "react-pdf": "^10.0.1",
     "react-resizable-panels": "^2.1.7",
     "recharts": "2.15.0",
     "sonner": "^1.7.1",

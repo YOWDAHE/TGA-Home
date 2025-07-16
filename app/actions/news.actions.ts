@@ -146,3 +146,56 @@ export const getNewsById = async (id: string) => {
         })
     }
 }
+
+export const getNewsComments = async (newsId: string, username: string) => {
+    try {
+        const response = await axios.get(`/api/news/comments?news_id=${newsId}&username=${username}`);
+        return response.data;
+    } catch (error: any) {
+        console.error('Error fetching news comments:', {
+            message: error.message,
+            status: error.response?.status,
+            statusText: error.response?.statusText,
+            url: error.config?.url,
+        });
+        throw new Error(`Failed to fetch news comments: ${error.message}`);
+    }
+}
+
+export const postNewsComment = async (news_id: string, content: string, user_name: string) => {
+    try {
+        const response = await axios.post(`/api/news/comments`, {
+            news_id,
+            content,
+            user_name,
+        });
+        return response.data;
+    } catch (error: any) {
+        console.error('Error posting news comment:', {
+            message: error.message,
+            status: error.response?.status,
+            statusText: error.response?.statusText,
+            url: error.config?.url,
+        });
+        throw new Error(`Failed to post news comment: ${error.message}`);
+    }
+}
+
+export const toggleCommentLike = async (comment_id: string, username: string, action: 'like' | 'dislike') => {
+    try {
+        const response = await axios.patch(`/api/news/comments`, {
+            comment_id,
+            username,
+            action,
+        });
+        return response.data;
+    } catch (error: any) {
+        console.error('Error toggling comment like/dislike:', {
+            message: error.message,
+            status: error.response?.status,
+            statusText: error.response?.statusText,
+            url: error.config?.url,
+        });
+        throw new Error(`Failed to toggle comment like/dislike: ${error.message}`);
+    }
+}
