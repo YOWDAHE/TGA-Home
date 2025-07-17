@@ -14,6 +14,8 @@ import PracticeAreas from "@/components/Sections/PracticeAreas";
 import ContactUs from "@/components/Sections/ContactUs";
 import Footer from "@/components/Sections/Footer";
 import { Stat, Partner, Practice, ContactUs as ContactUsType, NewsLink, LandingData } from "@/app/types/landing";
+import type { News as NewsType } from "@/app/types/news";
+import type { Resource } from "@/app/actions/resources.actions";
 
 interface LandingPageProps {
   data: {
@@ -24,9 +26,11 @@ interface LandingPageProps {
     contactUs: ContactUsType[];
     newsLinks: NewsLink[];
   };
+  news: NewsType[];
+  resources: Resource[];
 }
 
-export default function LandingPage({ data }: LandingPageProps) {
+export default function LandingPage({ data, news, resources }: LandingPageProps) {
   const [showScrollTop, setShowScrollTop] = useState(false);
 
   useEffect(() => {
@@ -49,7 +53,7 @@ export default function LandingPage({ data }: LandingPageProps) {
       <Statistics stats={data.stats} />
       <Services />
       <PracticeAreas practices={data.practices} />
-      <News />
+      <News news={news} resources={resources} />
       <Partners partners={data.partners} />
       <ContactUs contactUs={data.contactUs} />
       <Footer />

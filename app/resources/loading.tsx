@@ -1,5 +1,9 @@
-import { Loader } from "lucide-react";
+import Loader from "@/components/loader";
 
 export default function Loading() {
-  return <Loader className="w-4 h-4 animate-spin" />;
+  return (
+			<div className="flex items-center justify-center h-screen">
+				<Loader size={200} />
+			</div>
+		);
 }

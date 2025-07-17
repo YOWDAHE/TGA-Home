@@ -252,14 +252,14 @@ export default function ResourcesPage({ resources, topViewedResources, categorie
 										>
 											<Folder className="w-4 h-4 mr-2 flex-shrink-0" />
 											<span className="truncate">{category.name}</span>
-											<Badge
-												variant="secondary"
-												className="ml-auto bg-white/20 text-teal-100 text-xs"
-											>
+												<Badge
+													variant="secondary"
+													className="ml-auto bg-white/20 text-teal-100 text-xs"
+												>
 												{isLoading
 													? "..."
 													: resources.filter((r) => r.category_id === category.id).length}
-											</Badge>
+												</Badge>
 										</button>
 									))}
 								</div>
@@ -273,15 +273,15 @@ export default function ResourcesPage({ resources, topViewedResources, categorie
 						{isLoading ? (
 							<MostVisitedSkeleton />
 						) : (
-							<div className="mb-8">
-								<div className="flex items-center mb-4">
-									<TrendingUp className="w-5 h-5 mr-2 text-teal-500" />
+						<div className="mb-8">
+							<div className="flex items-center mb-4">
+								<TrendingUp className="w-5 h-5 mr-2 text-teal-500" />
 									<h2 className="text-xl font-bold text-gray-900">Most Visited</h2>
-								</div>
-								<div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+							</div>
+							<div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
 									{topViewedResources.slice(0, 6).map((resource) => (
-										<Card
-											key={resource.id}
+									<Card
+										key={resource.id}
 											className="group hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] border-0 shadow-lg bg-white rounded-2xl overflow-hidden flex flex-col h-full"
 										>
 											<CardContent className="p-0 flex flex-col h-full">
@@ -295,53 +295,53 @@ export default function ResourcesPage({ resources, topViewedResources, categorie
 															>
 																PDF
 															</Badge>
-															<Badge
-																variant="outline"
+													<Badge
+														variant="outline"
 																className="text-xs text-gray-600 border-gray-200 bg-gray-50"
-															>
+													>
 																{getCategoryName(resource.category_id)}
-															</Badge>
+													</Badge>
 														</div>
-													</div>
+												</div>
 
 													<Link href={`/resources/${resource.id}`}>
 														<h3 className="font-bold text-gray-900 mb-2 line-clamp-2 leading-tight group-hover:text-emerald-600 transition-colors cursor-pointer">
-															{resource.title}
-														</h3>
+													{resource.title}
+												</h3>
 													</Link>
 
-													<div className="flex items-center text-sm text-gray-500 mb-4">
-														<Eye className="w-4 h-4 mr-1" />
+												<div className="flex items-center text-sm text-gray-500 mb-4">
+													<Eye className="w-4 h-4 mr-1" />
 														<span>{resource.view_count.toLocaleString()} views</span>
-													</div>
+												</div>
 
 													{/* Action Buttons - Always at bottom */}
 													<div className="flex space-x-2 mt-auto">
 														<Link href={`/resources/${resource.id}`} className="flex-1">
-															<Button
-																size="sm"
+													<Button
+														size="sm"
 																className="w-full bg-emerald-500 hover:bg-emerald-600 text-white shadow-md hover:shadow-lg transition-all duration-300"
-															>
+													>
 																<Eye className="w-4 h-4 mr-2" />
-																Open
-															</Button>
+														Open
+													</Button>
 														</Link>
-														<Button
-															size="sm"
-															variant="outline"
-															onClick={() => handlePreview(resource)}
-															className=" border-emerald-200 text-emerald-600 hover:bg-emerald-50 hover:border-emerald-300 transition-all duration-300 flex items-center justify-center"
-															title="Preview in new tab"
-														>
+													<Button
+														size="sm"
+														variant="outline"
+														onClick={() => handlePreview(resource)}
+														className=" border-emerald-200 text-emerald-600 hover:bg-emerald-50 hover:border-emerald-300 transition-all duration-300 flex items-center justify-center"
+														title="Preview in new tab"
+													>
 															<ExternalLink className="w-4 h-4" />
-														</Button>
-													</div>
+													</Button>
 												</div>
-											</CardContent>
-										</Card>
-									))}
-								</div>
+											</div>
+										</CardContent>
+									</Card>
+								))}
 							</div>
+						</div>
 						)}
 
 						{/* Results Section */}
@@ -414,10 +414,10 @@ export default function ResourcesPage({ resources, topViewedResources, categorie
 												<div className="p-6 flex flex-col flex-grow">
 													<div className="flex items-center justify-between mb-3">
 														<div className="flex items-center space-x-2">
-															<Badge
-																variant="outline"
-																className="text-xs text-red-600 border-red-200 bg-red-50"
-															>
+														<Badge
+															variant="outline"
+															className="text-xs text-red-600 border-red-200 bg-red-50"
+														>
 																PDF
 															</Badge>
 															<Badge
@@ -425,7 +425,7 @@ export default function ResourcesPage({ resources, topViewedResources, categorie
 																className="text-xs text-gray-600 border-gray-200 bg-gray-50"
 															>
 																{getCategoryName(resource.category_id)}
-															</Badge>
+														</Badge>
 														</div>
 														<div className="flex items-center text-xs text-gray-500">
 															<Eye className="w-3 h-3 mr-1" />
@@ -435,8 +435,8 @@ export default function ResourcesPage({ resources, topViewedResources, categorie
 
 													<Link href={`/resources/${resource.id}`}>
 														<h3 className="font-bold text-gray-900 mb-3 line-clamp-2 text-lg leading-tight group-hover:text-red-600 transition-colors cursor-pointer">
-															{resource.title}
-														</h3>
+														{resource.title}
+													</h3>
 													</Link>
 
 													<p className="text-sm text-gray-600 mb-4 line-clamp-2 leading-relaxed">
@@ -457,13 +457,13 @@ export default function ResourcesPage({ resources, topViewedResources, categorie
 													{/* Action Buttons - Always at bottom */}
 													<div className="flex space-x-2 mt-auto">
 														<Link href={`/resources/${resource.id}`} className="flex-1">
-                                                            <Button
-																size="sm"
+														<Button
+															size="sm"
 																className="flex-1 bg-red-500 hover:bg-red-600 text-white shadow-md hover:shadow-lg transition-all duration-300 w-full"
-															>
+														>
 																<Eye className="w-4 h-4 mr-2" />
 																Open
-															</Button>
+														</Button>
 														</Link>
 														<Button
 															size="sm"

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { EmbeddedContent } from "@/components/ui/embedded-content";
+import {
+	Carousel,
+	CarouselContent,
+	CarouselItem,
+	CarouselNext,
+	CarouselPrevious,
+} from "@/components/ui/carousel";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
 	Calendar,
 	Clock,
@@ -33,6 +41,8 @@ import {
 import { convertToApiUrl } from "@/lib/utils";
 import Header from "./Header";
 import { useToast } from "@/hooks/use-toast";
+import { useRouter, useSearchParams } from "next/navigation";
+import Loader from "@/components/loader";
 
 interface NewsQueryParams {
 	page?: number;
@@ -56,14 +66,23 @@ export default function NewsPage({
 }: NewsPageProps) {
 	console.log(news);
 	const { toast } = useToast();
+	const router = useRouter();
+	const searchParams = useSearchParams();
 	const [selectedCategory, setSelectedCategory] = useState("All");
-	const [searchQuery, setSearchQuery] = useState("");
+	const [searchInput, setSearchInput] = useState(searchParams.get("q") || "");
 	const [currentPage, setCurrentPage] = useState(1);
 	const [queryResults, setQueryResults] = useState<NewsQueryResponse | null>(
 		null
 	);
 	const [isLoading, setIsLoading] = useState(false);
 	const [isSearchMode, setIsSearchMode] = useState(false);
+	const [carouselApi, setCarouselApi] = useState<any>(null);
+	const [isNavigating, setIsNavigating] = useState(false);
+
+	// Keep input in sync with URL
+	useEffect(() => {
+		setSearchInput(searchParams.get("q") || "");
+	}, [searchParams]);
 
 	const { featured, latest, trending, others } = news.data;
 	const categories = catData.data.categories.map((category) => {
@@ -92,7 +111,7 @@ export default function NewsPage({
 	};
 
 	// Fetch news by query for Browse by Category section
-	const fetchNewsByQuery = async (page: number = 1, categoryName?: string) => {
+	const fetchNewsByQuery = async (page: number = 1, categoryId?: number) => {
 		setIsLoading(true);
 		try {
 			const params: any = {
@@ -102,19 +121,13 @@ export default function NewsPage({
 				order: "desc",
 			};
 
-			if (searchQuery.trim()) {
-				params.q = searchQuery.trim();
+			if (searchInput.trim()) {
+				params.q = searchInput.trim();
 			}
 
-			// Use the passed categoryName or fall back to selectedCategory
-			const categoryToUse = categoryName || selectedCategory;
-
-			if (categoryToUse !== "All") {
-				// Find the category by name and use its id
-				const category = categories.find((cat) => cat.name === categoryToUse);
-				if (category) {
-					params.category = category.id;
-				}
+			// Use the passed categoryId or fall back to selectedCategory
+			if (categoryId) {
+				params.category = categoryId;
 			}
 
 			// Build query string for API route
@@ -137,7 +150,7 @@ export default function NewsPage({
 
 	// Handle search for Browse by Category section
 	const handleSearch = () => {
-		if (searchQuery.trim() || selectedCategory !== "All") {
+		if (searchInput.trim() || selectedCategory !== "All") {
 			setIsSearchMode(true);
 			fetchNewsByQuery(1);
 		} else {
@@ -149,9 +162,10 @@ export default function NewsPage({
 	// Handle category change for Browse by Category section
 	const handleCategoryChange = (categoryName: string) => {
 		setSelectedCategory(categoryName);
-		if (categoryName !== "All" || searchQuery.trim()) {
+		let catId = categories.find((cat) => cat.name === categoryName)?.id;
+		if (categoryName !== "All" || searchInput.trim()) {
 			setIsSearchMode(true);
-			fetchNewsByQuery(1, categoryName); // Pass the category name directly
+			fetchNewsByQuery(1, catId);
 		} else {
 			setIsSearchMode(false);
 			setQueryResults(null);
@@ -165,7 +179,7 @@ export default function NewsPage({
 
 	// Handle search input change
 	const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setSearchQuery(e.target.value);
+		setSearchInput(e.target.value);
 	};
 
 	// Handle search on Enter key
@@ -173,6 +187,13 @@ export default function NewsPage({
 		if (e.key === "Enter") {
 			handleSearch();
 		}
+	};
+
+	// Search handler for 3-section search bar
+	const handleThreeSectionSearchKeyPress = async () => {
+		document
+			.getElementById("browse-news-section")
+			?.scrollIntoView({ behavior: "smooth" });
 	};
 
 	// Get current news items to display in Browse by Category section
@@ -191,10 +212,23 @@ export default function NewsPage({
 		return newsQuery.data.pagination;
 	};
 
+	// Auto-play carousel functionality
+	useEffect(() => {
+		if (!carouselApi) return;
+
+		const interval = setInterval(() => {
+			carouselApi.scrollNext();
+		}, 5000); // Auto-play every 5 seconds
+
+		return () => clearInterval(interval);
+	}, [carouselApi]);
+
 	const handleShare = async (news: News) => {
 		try {
 			// Copy the file URL to clipboard
-			await navigator.clipboard.writeText(`${window.location.origin}/news/${news.id}`);
+			await navigator.clipboard.writeText(
+				`${window.location.origin}/news/${news.id}`
+			);
 
 			// Show success toast
 			toast({
@@ -222,7 +256,7 @@ export default function NewsPage({
 	return (
 		<div className="min-h-screen bg-white">
 			{/* Header */}
-			<Header />
+			<Header currentPage="news" />
 
 			<div className="container mx-auto px-4 mt-16 py-8">
 				{/* Page Header */}
@@ -233,27 +267,217 @@ export default function NewsPage({
 					</p>
 				</div>
 
+				{/* 3-Section Layout */}
+				<section className="mb-16 py-6 bg-gray-100">
+					<div className="grid lg:grid-cols-4">
+						{/* Left Section - Browse News */}
+						<div className="lg:col-span-1">
+							<div className="rounded-lg px-4 h-full">
+								{/* Search */}
+								<Button
+									variant="outline"
+									className=" w-full mb-4 flex justify-between hover:bg-white"
+									onClick={() => {
+										handleThreeSectionSearchKeyPress();
+									}}
+								>
+									Search News
+									<Search className="w-4 h-4" />
+								</Button>
+
+								{/* News List */}
+								<div className="space-y-1 max-h-96 overflow-y-auto">
+									{latest.slice(0, 3).map((article) => (
+										<Card
+											key={article.id}
+											className="overflow-hidden hover:shadow-md transition-shadow rounded-none"
+										>
+											<CardContent className="p-3">
+												<div className="flex space-x-3">
+													<div className="flex-1 min-w-0">
+														<h4 className="font-medium text-sm text-gray-900 mb-1 line-clamp-2">
+															{article.title}
+														</h4>
+														<div className="flex items-center text-xs text-gray-500 space-x-2">
+															<span>{formatDate(article.published_date)}</span>
+															<span className="flex items-center">
+																<Eye className="w-3 h-3 mr-1" />
+																{article.view_count.toLocaleString()}
+															</span>
+														</div>
+													</div>
+												</div>
+											</CardContent>
+										</Card>
+									))}
+								</div>
+							</div>
+						</div>
+
+						{/* Middle Section - Featured News Carousel */}
+						<div className="lg:col-span-2">
+							<div className=" h-full">
+								{featured.length > 0 && (
+									<Carousel
+										opts={{
+											align: "start",
+											loop: true,
+										}}
+										setApi={setCarouselApi}
+										className="w-full h-full"
+									>
+										<CarouselContent>
+											{featured.map((article) => (
+												<CarouselItem key={article.id}>
+													<div className="overflow-hidden">
+														<div className="relative h-[400px] w-full">
+															<Image
+																src={getImageUrl(article)}
+																alt={article.title}
+																fill={true}
+																className="object-cover"
+															/>
+														</div>
+														<CardContent className="p-4 bg-white">
+															<h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">
+																{article.title}
+															</h3>
+															<p className="text-sm text-gray-600 mb-3 line-clamp-2">
+																{article.content}
+															</p>
+															<div className="flex items-center justify-between text-xs text-gray-500">
+																<span>{article.created_by}</span>
+																<span>{formatDate(article.published_date)}</span>
+															</div>
+														</CardContent>
+													</div>
+												</CarouselItem>
+											))}
+										</CarouselContent>
+										{/* <CarouselPrevious />
+										<CarouselNext /> */}
+									</Carousel>
+								)}
+							</div>
+						</div>
+
+						{/* Right Section - Latest & Trending Tabs */}
+						<div className="lg:col-span-1">
+							<div className="rounded-lg px-6 h-full">
+								<Tabs defaultValue="latest" className="w-full">
+									<TabsList className="grid w-full grid-cols-2 mb-4">
+										<TabsTrigger
+											value="latest"
+											className="data-[state=active]:text-white data-[state=active]:bg-[#69b2a4]"
+										>
+											Latest
+										</TabsTrigger>
+										<TabsTrigger
+											value="trending"
+											className="data-[state=active]:text-white data-[state=active]:bg-[#69b2a4]"
+										>
+											Trending
+										</TabsTrigger>
+									</TabsList>
+
+									<TabsContent
+										value="latest"
+										className="space-y-1 max-h-96 overflow-y-auto"
+									>
+										{latest.slice(0, 4).map((article) => (
+											<Card
+												key={article.id}
+												className="overflow-hidden hover:shadow-md transition-shadow rounded-none"
+											>
+												<CardContent className="p-3">
+													<div className="flex space-x-3">
+														<div className="w-12 h-12 flex-shrink-0 relative bg-gray-200 rounded">
+															<Image
+																src={getImageUrl(article)}
+																alt={article.title}
+																fill={true}
+																className="object-cover rounded"
+															/>
+														</div>
+														<div className="flex-1 min-w-0">
+															<h4 className="font-medium text-sm text-gray-900 mb-1 line-clamp-2">
+																{article.title}
+															</h4>
+															<div className="flex items-center text-xs text-gray-500 space-x-2">
+																<span>{formatDate(article.published_date)}</span>
+																<span className="flex items-center">
+																	<Eye className="w-3 h-3 mr-1" />
+																	{article.view_count.toLocaleString()}
+																</span>
+															</div>
+														</div>
+													</div>
+												</CardContent>
+											</Card>
+										))}
+									</TabsContent>
+
+									<TabsContent
+										value="trending"
+										className="space-y-1 max-h-96 overflow-y-auto"
+									>
+										{trending.slice(0, 4).map((article) => (
+											<Card
+												key={article.id}
+												className="overflow-hidden hover:shadow-md transition-shadow rounded-none"
+											>
+												<CardContent className="p-3">
+													<div className="flex space-x-3">
+														<div className="w-12 h-12 flex-shrink-0 relative bg-gray-200 rounded">
+															<Image
+																src={getImageUrl(article)}
+																alt={article.title}
+																fill={true}
+																className="object-cover rounded"
+															/>
+														</div>
+														<div className="flex-1 min-w-0">
+															<h4 className="font-medium text-sm text-gray-900 mb-1 line-clamp-2">
+																{article.title}
+															</h4>
+															<div className="flex items-center text-xs text-gray-500 space-x-2">
+																<span>{formatDate(article.published_date)}</span>
+																<span className="flex items-center">
+																	<Eye className="w-3 h-3 mr-1" />
+																	{article.view_count.toLocaleString()}
+																</span>
+															</div>
+														</div>
+													</div>
+												</CardContent>
+											</Card>
+										))}
+									</TabsContent>
+								</Tabs>
+							</div>
+						</div>
+					</div>
+				</section>
+
 				{/* Featured Articles */}
 				{featured.length > 0 && (
 					<section className="mb-12">
 						<h2 className="text-2xl font-semibold text-gray-900 mb-6">
 							Featured Stories
 						</h2>
-						<div className="grid lg:grid-cols-2 gap-8">
-							{featured.slice(0, 2).map((article, index) => (
+						<div className="grid lg:grid-cols-3 gap-6">
+							{featured.slice(0, 3).map((article) => (
 								<Card
 									key={article.id}
-									className={`overflow-hidden hover:shadow-xl transition-shadow ${
-										index === 0 ? "lg:col-span-1" : ""
-									}`}
+									className="overflow-hidden hover:shadow-xl transition-shadow"
 								>
 									<div className="relative">
 										<Image
 											src={getImageUrl(article)}
 											alt={article.title}
-											width={600}
-											height={400}
-											className="w-full h-64 object-cover"
+											width={400}
+											height={250}
+											className="w-full h-48 object-cover"
 										/>
 										{trending.some((t) => t.id === article.id) && (
 											<Badge className="absolute top-4 right-4 bg-red-500">
@@ -262,43 +486,50 @@ export default function NewsPage({
 											</Badge>
 										)}
 									</div>
-									<CardContent className="p-6">
-										<h3 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2">
+									<CardContent className="p-4">
+										<h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2">
 											{article.title}
 										</h3>
-										<p className="text-gray-600 mb-4 line-clamp-3">{article.content}</p>
-										<div className="flex items-center justify-between text-sm text-gray-500 mb-4">
-											<div className="flex items-center space-x-4">
+										<p className="text-sm text-gray-600 mb-3 line-clamp-2">
+											{article.content}
+										</p>
+										<div className="flex items-center justify-between text-xs text-gray-500 mb-3">
+											<div className="flex items-center space-x-3">
 												<span className="flex items-center">
-													<User className="w-4 h-4 mr-1" />
+													<User className="w-3 h-3 mr-1" />
 													{article.created_by}
 												</span>
 												<span className="flex items-center">
-													<Calendar className="w-4 h-4 mr-1" />
+													<Calendar className="w-3 h-3 mr-1" />
 													{formatDate(article.published_date)}
 												</span>
 											</div>
-											<div className="flex items-center space-x-4">
+											<div className="flex items-center space-x-3">
 												<span className="flex items-center">
-													<Clock className="w-4 h-4 mr-1" />
+													<Clock className="w-3 h-3 mr-1" />
 													{getReadTime(article.read_minutes)}
 												</span>
 												<span className="flex items-center">
-													<Eye className="w-4 h-4 mr-1" />
+													<Eye className="w-3 h-3 mr-1" />
 													{article.view_count.toLocaleString()}
 												</span>
 											</div>
 										</div>
 										<div className="flex items-center justify-between">
 											<Link href={`/news/${article.id}`}>
-												<Button className="bg-teal-500 hover:bg-teal-600">
+												<Button className="bg-teal-500 hover:bg-teal-600 text-sm">
 													Read More
-													<ChevronRight className="w-4 h-4 ml-2" />
+													<ChevronRight className="w-3 h-3 ml-1" />
 												</Button>
 											</Link>
 											<div className="flex space-x-2">
-												<Button variant="outline" size="icon" onClick={() => handleShare(article)}>
-													<Share2 className="w-4 h-4" />
+												<Button
+													variant="outline"
+													size="icon"
+													onClick={() => handleShare(article)}
+													className="w-8 h-8"
+												>
+													<Share2 className="w-3 h-3" />
 												</Button>
 											</div>
 										</div>
@@ -315,12 +546,12 @@ export default function NewsPage({
 					<div className="lg:col-span-2">
 						<div className="flex items-center justify-between mb-6">
 							<h2 className="text-2xl font-semibold text-gray-900">LATEST</h2>
-							<Button
+							{/* <Button
 								variant="outline"
 								className="text-teal-500 border-teal-500 bg-transparent"
 							>
 								View All
-							</Button>
+							</Button> */}
 						</div>
 						<div className="space-y-6">
 							{latest.slice(0, 5).map((article) => (
@@ -434,6 +665,11 @@ export default function NewsPage({
 							<Button
 								variant="outline"
 								className="text-teal-500 border-teal-500 bg-transparent"
+								onClick={() => {
+									document.getElementById("browse-news-section")?.scrollIntoView({
+										behavior: "smooth",
+									});
+								}}
 							>
 								View All Content
 							</Button>
@@ -453,7 +689,7 @@ export default function NewsPage({
 				)}
 
 				{/* Browse by Category Section */}
-				<section className="mt-16">
+				<section id="browse-news-section" className="mt-16">
 					<h2 className="text-2xl font-semibold text-gray-900 mb-6">Browse News</h2>
 
 					{/* Search and Filter Section */}
@@ -463,7 +699,7 @@ export default function NewsPage({
 								<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
 								<Input
 									placeholder="Search news..."
-									value={searchQuery}
+									value={searchInput}
 									onChange={handleSearchInputChange}
 									onKeyPress={handleSearchKeyPress}
 									className="pl-10"
@@ -504,8 +740,7 @@ export default function NewsPage({
 									key="Cancel"
 									variant={selectedCategory === "All" ? "default" : "outline"}
 									onClick={() => {
-										// setSelectedCategory("All");
-										setSearchQuery("");
+										setSearchInput("");
 										setIsSearchMode(false);
 										setQueryResults(null);
 									}}

@@ -18,7 +18,7 @@ export class Hero extends Component {
 					<div className="absolute -bottom-40 -left-40 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
 				</div>
 
-				<div className="flex items-center justify-center gap-10 absolute left-0 w-full top-10">
+				<div className="flex items-center justify-center lg:gap-10 gap-4 absolute left-0 w-full top-10 text-sm lg:text-base">
 					<Link href="/">Home</Link>
 					<Link href="#about">About</Link>
 					<Link href="#services">Services</Link>

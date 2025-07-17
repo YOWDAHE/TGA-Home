@@ -19,12 +19,13 @@ import {
 } from "lucide-react";
 import { Resource } from "@/app/actions/resources.actions";
 import Header from "./Header";
-// import { pdfjs } from "react-pdf";
+// import { pdfjs, Document, Page } from "react-pdf";
 
 // pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 // 	"pdfjs-dist/build/pdf.worker.min.mjs",
 // 	import.meta.url
 // ).toString();
+
 
 interface DocumentDetailPageProps {
 	resource: Resource;
@@ -41,7 +42,7 @@ export default function DocumentDetailPage({
 		link.href = resource.file_url;
 		link.download = resource.filename || "download";
 		document.body.appendChild(link);
-		link.click();
+		window.open(resource.file_url, "_blank");
 		document.body.removeChild(link);
 	};
 
@@ -97,10 +98,10 @@ export default function DocumentDetailPage({
 					</Link>
 				</div>
 
-				<div className="grid lg:grid-cols-3 gap-8">
+				<div className="grid lg:grid-cols-4 gap-6">
 					{/* Main Content - PDF Viewer */}
-					<div className="lg:col-span-2 space-y-4">
-						<Card className="shadow-lg rounded-md overflow-hidden">
+					<div className="lg:col-span-3">
+						<Card className="shadow-lg rounded-lg overflow-hidden">
 							<CardContent className="p-0">
 								{/* PDF Viewer Header */}
 								<div className="bg-gradient-to-r from-teal-500 to-teal-600 p-4 text-white">
@@ -109,37 +110,55 @@ export default function DocumentDetailPage({
 											<div className="bg-white/20 backdrop-blur-sm rounded-lg p-2">
 												<FileText className="w-6 h-6" />
 											</div>
-											<div className="w-[80%]">
+											<div className="flex-1">
 												<h1 className="text-xl font-bold">{resource.title}</h1>
 												<p className="text-teal-100 text-sm">PDF Document</p>
 											</div>
 										</div>
+										<div className="flex items-center space-x-2">
+											<Button
+												onClick={handleDownload}
+												variant="outline"
+												size="sm"
+												className="bg-white/20 hover:bg-white/30 border-white/30 text-white"
+											>
+												<Download className="w-4 h-4 mr-1" />
+												Download
+											</Button>
+											<Button
+												onClick={handleShare}
+												variant="outline"
+												size="sm"
+												className="bg-white/20 hover:bg-white/30 border-white/30 text-white"
+											>
+												<Share2 className="w-4 h-4 mr-1" />
+												Share
+											</Button>
+										</div>
 									</div>
 								</div>
-								<div className="p-4">{resource.description}</div>
-							</CardContent>
-						</Card>
-						<Card className="shadow-lg">
-							<CardContent className="p-6">
-								<h3 className="text-lg font-bold text-gray-900 mb-4">Actions</h3>
 
-								<div className="space-y-3">
-									<Button
-										onClick={() => window.open(resource.file_url, "_blank")}
-										className="w-full bg-teal-500 hover:bg-teal-600 text-white"
-									>
-										<ExternalLink className="w-4 h-4 mr-2" />
-										Open in New Tab
-									</Button>
-
-									<Button
-										variant="outline"
-										onClick={handleShare}
-										className="w-full border-gray-200 text-gray-600 hover:bg-gray-50"
-									>
-										<Share2 className="w-4 h-4 mr-2" />
-										Share Document
-									</Button>
+								{/* PDF Embed */}
+								<div
+									className="relative w-full"
+									style={{ height: "calc(100vh - 200px)" }}
+								>
+									{isLoading && (
+										<div className="absolute inset-0 flex items-center justify-center bg-gray-100 z-10">
+											<div className="text-center">
+												<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-500 mx-auto mb-2"></div>
+												<p className="text-gray-600">Loading PDF...</p>
+											</div>
+										</div>
+									)}
+									<iframe
+										src={`${resource.file_url}#toolbar=1&navpanes=1&scrollbar=1`}
+										className="w-full h-full border-0"
+										onLoad={() => setIsLoading(false)}
+										onError={() => setIsLoading(false)}
+										title={resource.title}
+										sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-downloads"
+									/>
 								</div>
 							</CardContent>
 						</Card>
@@ -147,62 +166,82 @@ export default function DocumentDetailPage({
 
 					{/* Sidebar - Document Info */}
 					<div className="lg:col-span-1">
-						<div className="space-y-6">
+						<div className="space-y-4">
+							{/* Document Description */}
+							<Card className="shadow-lg">
+								<CardContent className="p-4">
+									<h2 className="text-lg font-bold text-gray-900 mb-3">Description</h2>
+									<p className="text-sm text-gray-600 leading-relaxed">
+										{resource.description || "No description available."}
+									</p>
+								</CardContent>
+							</Card>
+
 							{/* Document Details */}
 							<Card className="shadow-lg">
-								<CardContent className="p-6">
-									<h2 className="text-xl font-bold text-gray-900 mb-4">
+								<CardContent className="p-4">
+									<h2 className="text-lg font-bold text-gray-900 mb-3">
 										Document Details
 									</h2>
 
-									<div className="space-y-4">
+									<div className="space-y-3">
 										<div className="flex items-center space-x-3">
-											<User className="w-5 h-5 text-gray-400" />
+											<User className="w-4 h-4 text-gray-400" />
 											<div>
-												<p className="text-sm text-gray-500">Author</p>
-												<p className="font-medium text-gray-900">{resource.author}</p>
+												<p className="text-xs text-gray-500">Author</p>
+												<p className="text-sm font-medium text-gray-900">
+													{resource.author}
+												</p>
 											</div>
 										</div>
 
 										<div className="flex items-center space-x-3">
-											<Calendar className="w-5 h-5 text-gray-400" />
+											<Calendar className="w-4 h-4 text-gray-400" />
 											<div>
-												<p className="text-sm text-gray-500">Uploaded</p>
-												<p className="font-medium text-gray-900">
+												<p className="text-xs text-gray-500">Uploaded</p>
+												<p className="text-sm font-medium text-gray-900">
 													{new Date(resource.createdAt).toLocaleDateString()}
 												</p>
 											</div>
 										</div>
 
 										<div className="flex items-center space-x-3">
-											<Eye className="w-5 h-5 text-gray-400" />
+											<Eye className="w-4 h-4 text-gray-400" />
 											<div>
-												<p className="text-sm text-gray-500">Views</p>
-												<p className="font-medium text-gray-900">
+												<p className="text-xs text-gray-500">Views</p>
+												<p className="text-sm font-medium text-gray-900">
 													{resource.view_count.toLocaleString()}
 												</p>
 											</div>
 										</div>
 
-										{/* <div className="flex items-center space-x-3">
-											<Download className="w-5 h-5 text-gray-400" />
-											<div>
-												<p className="text-sm text-gray-500">Downloads</p>
-												<p className="font-medium text-gray-900">
-													{resource.download_count.toLocaleString()}
-												</p>
-											</div>
-										</div> */}
-
 										<div className="flex items-center space-x-3">
-											<FileText className="w-5 h-5 text-gray-400" />
+											<FileText className="w-4 h-4 text-gray-400" />
 											<div>
-												<p className="text-sm text-gray-500">File Size</p>
-												<p className="font-medium text-gray-900">
+												<p className="text-xs text-gray-500">File Size</p>
+												<p className="text-sm font-medium text-gray-900">
 													{formatFileSize(resource.file_size)}
 												</p>
 											</div>
 										</div>
+									</div>
+								</CardContent>
+							</Card>
+
+							{/* Additional Actions */}
+							<Card className="shadow-lg">
+								<CardContent className="p-4">
+									<h2 className="text-lg font-bold text-gray-900 mb-3">Actions</h2>
+									<div className="space-y-2">
+										<Button
+											onClick={() => window.open(resource.file_url, "_blank")}
+											variant="outline"
+											size="sm"
+											className="w-full"
+										>
+											<ExternalLink className="w-4 h-4 mr-2" />
+											Open in New Tab
+										</Button>
 									</div>
 								</CardContent>
 							</Card>

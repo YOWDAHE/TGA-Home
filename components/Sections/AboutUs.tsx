@@ -7,7 +7,7 @@ export class AboutUs extends Component {
 		return (
 			<section
 				id="about"
-				className="py-20 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden h-screen max-h-[1000px]"
+				className="py-20 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden min-h-screen md:h-screen md:max-h-[1000px]"
             >
                 <Image src="/Images/aboutUs/woman.png" alt="About Us" width={1000} height={1000} className="absolute top-0 left-0 w-full h-full object-cover blur-[5px] opacity-50" />
 				<div className="absolute inset-0 bg-[url('/placeholder.svg?height=100&width=100')] opacity-5"></div>

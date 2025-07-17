@@ -26,7 +26,7 @@ export default function ContactUs({ contactUs }: ContactUsProps) {
         </div>
 
         <div className="grid md:grid-cols-2 gap-12 max-w-6xl mx-auto">
-          <div className="bg-white p-10 rounded-3xl shadow-2xl border border-gray-100">
+          <div className="bg-white md:p-10 p-6 rounded-3xl shadow-2xl border border-gray-100">
             <h3 className="text-2xl font-bold text-gray-900 mb-6">
               Send us a message
             </h3>
