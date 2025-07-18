@@ -63,6 +63,7 @@ export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
         const { news_id, content, user_name } = body;
+        const accessToken = request.cookies.get("tga_home_access_token")?.value;
 
         // Validate required fields
         if (!news_id || !content) {
@@ -77,6 +78,10 @@ export async function POST(request: NextRequest) {
             news_id,
             content,
             user_name,
+        }, {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            }
         });
 
         console.log('Comment posted successfully via API route');
@@ -123,6 +128,7 @@ export async function PATCH(request: NextRequest) {
     try {
         const body = await request.json();
         const { comment_id, username, action } = body;
+        const accessToken = request.cookies.get("tga_home_access_token")?.value;
 
         // Validate required fields
         if (!comment_id || !username || !action) {
@@ -143,6 +149,10 @@ export async function PATCH(request: NextRequest) {
         const response = await axios.patch(`${BACKEND_URL}/api/public/comments/${comment_id}/toggle-like`, {
             username,
             action,
+        }, {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            }
         });
 
         console.log('Comment like/dislike toggled successfully via API route');

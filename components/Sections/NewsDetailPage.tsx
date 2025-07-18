@@ -28,6 +28,7 @@ import {
 	Edit,
 	ChevronRight,
 	TrendingUp,
+	Loader,
 } from "lucide-react";
 import Header from "@/components/Sections/Header";
 import { useParams } from "next/navigation";
@@ -38,6 +39,8 @@ import {
 	getNewsComments,
 	toggleCommentLike,
 } from "@/app/actions/news.actions";
+import { useAuthRequired } from "@/hooks/use-auth-required";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface NewsArticle {
 	id: number;
@@ -100,10 +103,14 @@ export default function NewsDetailPage({
 	const [commentsList, setComments] = useState<Comment[]>([]);
 	const [relatedArticles, setRelatedArticles] = useState<NewsArticle[]>([]);
 	const [newComment, setNewComment] = useState("");
-	const [localUsername, setLocalUsername] = useState<string>("");
 	const [isBookmarked, setIsBookmarked] = useState(false);
 	const [showShareMenu, setShowShareMenu] = useState(false);
 	const [loading, setLoading] = useState(true);
+	const [isPostingComment, setIsPostingComment] = useState(false);
+
+	// Authentication
+	const { user } = useAuth();
+	const { requireAuth, AuthModal } = useAuthRequired();
 
 	// Use the news data from props
 	const article = news.data;
@@ -162,22 +169,16 @@ export default function NewsDetailPage({
 
 	const refreshComments = async () => {
 		try {
-			const updatedComments = await getNewsComments(id, localUsername);
+			const username = user?.username || "anonymous";
+			const updatedComments = await getNewsComments(id, username);
 			setComments(updatedComments?.data || []);
 		} catch (error) {
 			console.error("Failed to refresh comments", error);
 		}
 	};
 
-	// Initialize username and fetch data
+	// Initialize data
 	useEffect(() => {
-		let storedUsername = localStorage.getItem("tga_username");
-		if (!storedUsername) {
-			storedUsername = `user${Math.floor(1000 + Math.random() * 9000)}`;
-			localStorage.setItem("tga_username", storedUsername);
-		}
-		setLocalUsername(storedUsername);
-
 		// Transform related news data
 		const transformedRelatedArticles: NewsArticle[] =
 			relatedNews?.data?.news
@@ -189,29 +190,35 @@ export default function NewsDetailPage({
 		setLoading(false);
 	}, [id, news, relatedNews]);
 
-	// Fetch comments when username is set
+	// Fetch comments when user is available
 	useEffect(() => {
-		if (localUsername) {
-			refreshComments();
-		}
-	}, [localUsername]);
+		refreshComments();
+	}, [user]);
 
 	const handleCommentSubmit = async () => {
-		if (!newComment.trim()) return;
+		if (!newComment.trim() || !user) return;
 
+		setIsPostingComment(true);
 		try {
-			await postNewsComment(id, newComment, localUsername);
+			await postNewsComment(id, newComment, user.username);
 			setNewComment("");
 			// Refresh comments after posting
 			await refreshComments();
 		} catch (error) {
 			console.error("Failed to post comment", error);
+		} finally {
+			setIsPostingComment(false);
 		}
 	};
 
+	const handleCommentSubmitWithAuth = () => {
+		requireAuth("comment", handleCommentSubmit);
+	};
+
 	const handleLike = async (commentId: number) => {
+		if (!user) return;
 		try {
-			await toggleCommentLike(commentId.toString(), localUsername, "like");
+			await toggleCommentLike(commentId.toString(), user.username, "like");
 			await refreshComments();
 		} catch (error) {
 			console.error("Failed to like comment", error);
@@ -219,12 +226,21 @@ export default function NewsDetailPage({
 	};
 
 	const handleDislike = async (commentId: number) => {
+		if (!user) return;
 		try {
-			await toggleCommentLike(commentId.toString(), localUsername, "dislike");
+			await toggleCommentLike(commentId.toString(), user.username, "dislike");
 			await refreshComments();
 		} catch (error) {
 			console.error("Failed to dislike comment", error);
 		}
+	};
+
+	const handleLikeWithAuth = (commentId: number) => {
+		requireAuth("like", () => handleLike(commentId));
+	};
+
+	const handleDislikeWithAuth = (commentId: number) => {
+		requireAuth("dislike", () => handleDislike(commentId));
 	};
 
 	const toggleBookmark = () => {
@@ -379,7 +395,6 @@ export default function NewsDetailPage({
 							<Card className="mb-6">
 								<CardContent className="p-6">
 									<div className="space-y-4">
-										{/* Name input removed */}
 										<div>
 											<label className="block text-sm font-medium text-gray-700 mb-2">
 												Comment
@@ -387,16 +402,26 @@ export default function NewsDetailPage({
 											<Textarea
 												value={newComment}
 												onChange={(e) => setNewComment(e.target.value)}
-												placeholder="Share your thoughts..."
+												placeholder={
+													user
+														? "Share your thoughts..."
+														: "Sign in to leave a comment..."
+												}
 												className="min-h-[100px]"
+												disabled={!user || isPostingComment}
 											/>
 										</div>
 										<Button
-											onClick={handleCommentSubmit}
+											onClick={handleCommentSubmitWithAuth}
+											disabled={!newComment.trim() || isPostingComment}
 											className="bg-teal-500 hover:bg-teal-600"
 										>
-											<MessageCircle className="w-4 h-4 mr-2" />
-											Post Comment
+											{isPostingComment ? (
+												<Loader className="w-4 h-4 mr-2 animate-spin" />
+											) : (
+												<MessageCircle className="w-4 h-4 mr-2" />
+											)}
+											{user ? (isPostingComment ? "Posting..." : "Post Comment") : "Sign in to Comment"}
 										</Button>
 									</div>
 								</CardContent>
@@ -414,20 +439,25 @@ export default function NewsDetailPage({
 													</AvatarFallback>
 												</Avatar>
 												<div className="flex-1">
-													{/* <div className="flex items-center space-x-2 mb-2">
-														{comment.pinned && (
-															<Badge className="bg-yellow-500 text-xs">
-																<Pin className="w-3 h-3 mr-1" />
-																Pinned
-															</Badge>
-														)}
-														{comment.edited && (
-															<Badge variant="outline" className="text-xs">
-																<Edit className="w-3 h-3 mr-1" />
-																Edited
-															</Badge>
-														)}
-													</div> */}
+													<div className="flex items-center space-x-2 mb-2">
+														<span className="text-sm font-medium text-gray-500">
+															{comment.user_name}
+														</span>
+														{/* <div className="flex items-center space-x-2">
+															{comment.pinned && (
+																<Badge className="bg-yellow-500 text-xs">
+																	<Pin className="w-3 h-3 mr-1" />
+																	Pinned
+																</Badge>
+															)}
+															{comment.edited && (
+																<Badge variant="outline" className="text-xs">
+																	<Edit className="w-3 h-3 mr-1" />
+																	Edited
+																</Badge>
+															)}
+														</div> */}
+													</div>
 													<p className="text-sm text-gray-700 mb-3">{comment.content}</p>
 													<div className="flex items-center justify-between">
 														<div className="flex items-center space-x-4 text-xs text-gray-500">
@@ -436,7 +466,7 @@ export default function NewsDetailPage({
 																<Button
 																	variant="ghost"
 																	size="sm"
-																	onClick={() => handleLike(comment.id)}
+																	onClick={() => handleLikeWithAuth(comment.id)}
 																	className={`flex items-center space-x-1 text-xs ${
 																		comment.liked ? "text-blue-500" : ""
 																	}`}
@@ -447,7 +477,7 @@ export default function NewsDetailPage({
 																<Button
 																	variant="ghost"
 																	size="sm"
-																	onClick={() => handleDislike(comment.id)}
+																	onClick={() => handleDislikeWithAuth(comment.id)}
 																	className={`flex items-center space-x-1 text-xs ${
 																		comment.disliked ? "text-red-500" : ""
 																	}`}
@@ -518,6 +548,9 @@ export default function NewsDetailPage({
 					)}
 				</div>
 			</div>
+
+			{/* Auth Modal */}
+			<AuthModal />
 		</div>
 	);
 }

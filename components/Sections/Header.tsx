@@ -1,7 +1,17 @@
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { Menu, X } from "lucide-react";
+import { Menu, X, User, LogOut, ChevronDown } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/button";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function Header({
 	showHeader = true,
@@ -13,6 +23,7 @@ export default function Header({
 	const [isVisible, setIsVisible] = useState(showHeader);
 	const [lastScrollY, setLastScrollY] = useState(0);
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+	const { user, logout } = useAuth();
 
 	useEffect(() => {
 		const handleScroll = () => {
@@ -88,7 +99,7 @@ export default function Header({
 						<Image src="/Images/logo/TGA_LOGO.svg" alt="Logo" width={100} height={100} />
 						
 						{/* Desktop Navigation */}
-						<div className="hidden md:flex space-x-8">
+						<div className="hidden md:flex items-center space-x-8">
 							<Link 
 								href="/" 
 								className={`font-medium hover:text-teal-500 ${
@@ -129,6 +140,56 @@ export default function Header({
 							>
 								News
 							</Link>
+							
+							{/* Auth Section */}
+							<div className="flex items-center space-x-4 ml-4">
+								{user ? (
+									<DropdownMenu>
+										<DropdownMenuTrigger asChild>
+											<Button
+												variant="ghost"
+												className="flex items-center space-x-2 p-2 h-auto"
+											>
+												<Avatar className="h-8 w-8">
+													<AvatarImage src="/placeholder-user.jpg" />
+													<AvatarFallback>
+														{user.username.charAt(0).toUpperCase()}
+													</AvatarFallback>
+												</Avatar>
+												<span className="text-sm font-medium text-gray-700">
+													{user.username}
+												</span>
+												<ChevronDown className="h-4 w-4 text-gray-500" />
+											</Button>
+										</DropdownMenuTrigger>
+										<DropdownMenuContent align="end" className="w-56">
+											<div className="px-3 py-2">
+												<p className="text-sm font-medium">{user.username}</p>
+												<p className="text-xs text-gray-500">{user.email}</p>
+											</div>
+											<DropdownMenuSeparator />
+											<DropdownMenuItem onClick={logout} className="text-red-600">
+												<LogOut className="w-4 h-4 mr-2" />
+												Logout
+											</DropdownMenuItem>
+										</DropdownMenuContent>
+									</DropdownMenu>
+								) : (
+									<div className="flex items-center space-x-2">
+										<Link href="/login">
+											<Button variant="outline" size="sm">
+												<User className="w-4 h-4 mr-1" />
+												Login
+											</Button>
+										</Link>
+										<Link href="/signup">
+											<Button size="sm" className="bg-teal-600 hover:bg-teal-700">
+												Sign Up
+											</Button>
+										</Link>
+									</div>
+								)}
+							</div>
 						</div>
 
 						{/* Mobile Menu Button */}
@@ -235,6 +296,51 @@ export default function Header({
 								>
 									News
 								</Link>
+							</div>
+							
+							{/* Auth Section */}
+							<div className="mt-8 pt-6 border-t">
+								{user ? (
+									<div className="space-y-3">
+										<div className="flex items-center space-x-3 px-4 py-3 bg-gray-50 rounded-lg">
+											<Avatar className="h-10 w-10">
+												<AvatarImage src="/placeholder-user.jpg" />
+												<AvatarFallback>
+													{user.username.charAt(0).toUpperCase()}
+												</AvatarFallback>
+											</Avatar>
+											<div>
+												<p className="text-sm font-medium text-gray-900">{user.username}</p>
+												<p className="text-xs text-gray-500">{user.email}</p>
+											</div>
+										</div>
+										<Button
+											onClick={() => {
+												logout();
+												handleNavClick();
+											}}
+											variant="outline"
+											className="w-full flex items-center justify-center space-x-2 text-red-600 hover:text-red-700"
+										>
+											<LogOut className="w-4 h-4" />
+											<span>Logout</span>
+										</Button>
+									</div>
+								) : (
+									<div className="space-y-3">
+										<Link href="/login" onClick={handleNavClick}>
+											<Button variant="outline" className="w-full flex items-center justify-center space-x-2">
+												<User className="w-4 h-4" />
+												<span>Login</span>
+											</Button>
+										</Link>
+										<Link href="/signup" onClick={handleNavClick}>
+											<Button className="w-full bg-teal-600 hover:bg-teal-700">
+												Sign Up
+											</Button>
+										</Link>
+									</div>
+								)}
 							</div>
 						</nav>
 
