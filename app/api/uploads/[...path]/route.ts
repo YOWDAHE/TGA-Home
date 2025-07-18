@@ -8,7 +8,7 @@ export async function GET(
   { params }: { params: { path: string[] } }
 ) {
   try {
-    const path = params.path.join('/');
+    const path = (await params).path.join('/');
     const backendUrl = `${BACKEND_URL}/uploads/${path}`;
     console.log('backendUrl:>>>', backendUrl);
     

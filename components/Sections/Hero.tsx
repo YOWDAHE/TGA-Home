@@ -70,7 +70,14 @@ export class Hero extends Component {
 						alt="Hero"
 						width={350}
 						height={350}
-						className="object-cover rounded-lg bg-white"
+						className="object-cover rounded-lg bg-white hidden md:block"
+					/>
+					<Image
+						src="/loader/loader-1.svg"
+						alt="Hero"
+						width={150}
+						height={150}
+						className="object-cover rounded-lg bg-white md:hidden"
 					/>
 					<div className="text-xl md:text-3xl font-bold mb-8 leading-tight">
 						COMMITTED TO A{" "}

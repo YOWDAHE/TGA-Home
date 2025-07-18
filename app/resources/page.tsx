@@ -7,6 +7,7 @@ interface PageProps {
   searchParams: Promise<{
     search?: string;
     category?: string;
+    page?: string;
   }>;
 }
 
@@ -25,12 +26,13 @@ function ResourcesLoading() {
 export default async function page({ searchParams }: PageProps) {
   try {
     // Extract search parameters
-   const {search, category} = await searchParams;
+   const {search, category, page} = await searchParams;
     
     // Build query parameters for resources
-    const resourceParams: any = { limit: 50 };
+    const resourceParams: any = { limit: 6 };
     if (search) resourceParams.search = search;
     if (category) resourceParams.category_id = parseInt(category);
+    if (page) resourceParams.page = parseInt(page);
 
     const [resourcesResponse, topViewedResponse, categoriesResponse] = await Promise.all([
       getResources(resourceParams),
@@ -45,6 +47,7 @@ export default async function page({ searchParams }: PageProps) {
           resources={resourcesResponse.data.documents} 
           topViewedResources={topViewedResponse} 
           categories={categoriesResponse.data.categories}
+          pagination={resourcesResponse.data.pagination}
           isLoading={false}
         />
       </Suspense>

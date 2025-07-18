@@ -17,6 +17,8 @@ import {
 	TrendingUp,
 	ExternalLink,
 	Loader2,
+	ChevronLeft,
+	ChevronRight,
 } from "lucide-react";
 import { Resource, incrementDocumentView } from "@/app/actions/resources.actions";
 import { Category } from "@/app/types/news";
@@ -29,6 +31,12 @@ interface ResourcesPageProps {
 	resources: Resource[];
 	topViewedResources: Resource[];
 	categories: Category[];
+	pagination?: {
+		currentPage: number;
+		totalPages: number;
+		totalItems: string;
+		itemsPerPage: number;
+	};
 	isLoading?: boolean;
 }
 
@@ -109,7 +117,7 @@ const MostVisitedSkeleton = () => (
 	</div>
 );
 
-export default function ResourcesPage({ resources, topViewedResources, categories, isLoading = false }: ResourcesPageProps) {
+export default function ResourcesPage({ resources, topViewedResources, categories, pagination, isLoading = false }: ResourcesPageProps) {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const { user } = useAuth();
@@ -120,6 +128,7 @@ export default function ResourcesPage({ resources, topViewedResources, categorie
 	const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || "All");
 	const [showAuthModal, setShowAuthModal] = useState(false);
 	const [isIncrementingView, setIsIncrementingView] = useState(false);
+	const [currentPage, setCurrentPage] = useState(pagination?.currentPage || 1);
 
 	// const filteredResources = useMemo(() => {
 	// 	if (!resources || resources.length === 0) {
@@ -193,13 +202,20 @@ export default function ResourcesPage({ resources, topViewedResources, categorie
 	};
 
 	// Function to update URL with search parameters
-	const updateURL = (search: string, category: string) => {
+	const updateURL = (search: string, category: string, page: number = 1) => {
 		const params = new URLSearchParams();
 		if (search) params.set('search', search);
 		if (category && category !== 'All') params.set('category', category);
+		if (page > 1) params.set('page', page.toString());
 		
 		const newURL = params.toString() ? `?${params.toString()}` : '';
 		router.push(`/resources${newURL}`);
+	};
+
+	// Handle page change
+	const handlePageChange = (page: number) => {
+		setCurrentPage(page);
+		updateURL(searchTerm, selectedCategory, page);
 	};
 
 	// Handle search input change
@@ -210,14 +226,14 @@ export default function ResourcesPage({ resources, topViewedResources, categorie
 	// Handle search on Enter key press
 	const handleSearchKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
 		if (e.key === 'Enter') {
-			updateURL(searchTerm, selectedCategory);
+			updateURL(searchTerm, selectedCategory, 1); // Reset to page 1 when searching
 		}
 	};
 
 	// Handle category selection
 	const handleCategorySelect = (category: string) => {
 		setSelectedCategory(category);
-		updateURL(searchTerm, category);
+		updateURL(searchTerm, category, 1); // Reset to page 1 when changing category
 	};
 
 	return (
@@ -431,130 +447,137 @@ export default function ResourcesPage({ resources, topViewedResources, categorie
 									</p>
 								</div>
 							) : (
-								<div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-									{resources.map((resource) => (
-										<Card
-											key={resource.id}
-											className="group hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] border-0 shadow-lg bg-white rounded-2xl overflow-hidden flex flex-col h-full"
-										>
-											<CardContent className="p-0 flex flex-col h-full">
-												{/* Header with PDF Icon */}
-												<div className="bg-gradient-to-br from-gray-500 to-gray-700 p-6 text-white relative overflow-hidden">
-													<div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -mr-10 -mt-10"></div>
-													<div className="absolute bottom-0 left-0 w-16 h-16 bg-white/10 rounded-full -ml-8 -mb-8"></div>
-													<div className="relative z-10 flex items-center justify-center">
-														<div className="bg-white/20 backdrop-blur-sm rounded-2xl p-4 group-hover:scale-110 transition-transform duration-300 flex flex-col items-center justify-center gap-2">
-															{/* <svg
-																className="w-12 h-12 text-white"
-																fill="currentColor"
-																viewBox="0 0 24 24"
-															>
-																<path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
+								<>
+									<div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+										{resources.map((resource) => (
+											<Card
+												key={resource.id}
+												className="group hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] border-0 shadow-lg bg-white rounded-2xl overflow-hidden flex flex-col h-full"
+											>
+												<CardContent className="p-0 flex flex-col h-full">
+													{/* Header with PDF Icon */}
+													<div className="bg-gradient-to-br from-gray-500 to-gray-700 p-6 text-white relative overflow-hidden">
+														<div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -mr-10 -mt-10"></div>
+														<div className="absolute bottom-0 left-0 w-16 h-16 bg-white/10 rounded-full -ml-8 -mb-8"></div>
+														<div className="relative z-10 flex items-center justify-center">
+															<div className="bg-white/20 backdrop-blur-sm rounded-2xl p-4 group-hover:scale-110 transition-transform duration-300 flex flex-col items-center justify-center gap-2">
+																<FileText className="w-12 h-12 text-white" />
 																<text
 																	x="12"
 																	y="16"
 																	textAnchor="middle"
-																	className="text-xs font-bold fill-current"
+																	className="text-xs font-bold fill-current text-center"
 																>
 																	PDF
 																</text>
-															</svg> */}
-															<FileText className="w-12 h-12 text-white" />
-															<text
-																x="12"
-																y="16"
-																textAnchor="middle"
-																className="text-xs font-bold fill-current text-center"
-															>
-																PDF
-															</text>
-														</div>
-													</div>
-												</div>
-
-												{/* Content */}
-												<div className="p-6 flex flex-col flex-grow">
-													<div className="flex items-center justify-between mb-3">
-														<div className="flex items-center space-x-2">
-															<Badge
-																variant="outline"
-																className="text-xs text-red-600 border-red-200 bg-red-50"
-															>
-																PDF
-															</Badge>
-															<Badge
-																variant="outline"
-																className="text-xs text-gray-600 border-gray-200 bg-gray-50"
-															>
-																{getCategoryName(resource.category_id)}
-															</Badge>
-														</div>
-														<div className="flex items-center text-xs text-gray-500">
-															<Eye className="w-3 h-3 mr-1" />
-															{resource.view_count}
+															</div>
 														</div>
 													</div>
 
-													<Link href={`/resources/${resource.id}`}>
-														<h3 className="font-bold text-gray-900 mb-3 line-clamp-2 text-lg leading-tight group-hover:text-red-600 transition-colors cursor-pointer">
-															{resource.title}
-														</h3>
-													</Link>
-
-													<p className="text-sm text-gray-600 mb-4 line-clamp-2 leading-relaxed">
-														{resource.description}
-													</p>
-
-													<div className="flex items-center justify-between text-xs text-gray-500 mb-6">
-														<div className="flex items-center space-x-3">
-															<span className="flex items-center">
-																<Download className="w-3 h-3 mr-1" />
-																{resource.download_count}
-															</span>
-															<span className="text-gray-300">•</span>
-															<span>{new Date(resource.createdAt).toLocaleDateString()}</span>
+													{/* Content */}
+													<div className="p-6 flex flex-col flex-grow">
+														<div className="flex items-center justify-between mb-3">
+															<div className="flex items-center space-x-2">
+																<Badge
+																	variant="outline"
+																	className="text-xs text-red-600 border-red-200 bg-red-50"
+																>
+																	PDF
+																</Badge>
+																<Badge
+																	variant="outline"
+																	className="text-xs text-gray-600 border-gray-200 bg-gray-50"
+																>
+																	{getCategoryName(resource.category_id)}
+																</Badge>
+															</div>
+															<div className="flex items-center text-xs text-gray-500">
+																<Eye className="w-3 h-3 mr-1" />
+																{resource.view_count}
+															</div>
 														</div>
-													</div>
 
-													{/* Action Buttons - Always at bottom */}
-													<div className="flex space-x-2 mt-auto">
-														<Link href={`/resources/${resource.id}`} className="flex-1">
+														<Link href={`/resources/${resource.id}`}>
+															<h3 className="font-bold text-gray-900 mb-3 line-clamp-2 text-lg leading-tight group-hover:text-red-600 transition-colors cursor-pointer">
+																{resource.title}
+															</h3>
+														</Link>
+
+														<p className="text-sm text-gray-600 mb-4 line-clamp-2 leading-relaxed">
+															{resource.description}
+														</p>
+
+														<div className="flex items-center justify-between text-xs text-gray-500 mb-6">
+															<div className="flex items-center space-x-3">
+																<span className="flex items-center">
+																	<Download className="w-3 h-3 mr-1" />
+																	{resource.download_count}
+																</span>
+																<span className="text-gray-300">•</span>
+																<span>{new Date(resource.createdAt).toLocaleDateString()}</span>
+															</div>
+														</div>
+
+														{/* Action Buttons - Always at bottom */}
+														<div className="flex space-x-2 mt-auto">
+															<Link href={`/resources/${resource.id}`} className="flex-1">
+																<Button
+																	size="sm"
+																	className="flex-1 bg-gray-500 hover:bg-gray-600 text-white shadow-md hover:shadow-lg transition-all duration-300 w-full"
+																>
+																	<Eye className="w-4 h-4 mr-2" />
+																	Open
+																</Button>
+															</Link>
 															<Button
 																size="sm"
-																className="flex-1 bg-gray-500 hover:bg-gray-600 text-white shadow-md hover:shadow-lg transition-all duration-300 w-full"
+																variant="outline"
+																onClick={() => handleOpenResource(resource)}
+																disabled={isIncrementingView}
+																className=" border-emerald-200 text-emerald-600 hover:bg-emerald-50 hover:border-emerald-300 transition-all duration-300 flex items-center justify-center"
 															>
-																<Eye className="w-4 h-4 mr-2" />
-																Open
+																{isIncrementingView ? (
+																	<Loader2 className="w-4 h-4 mr-2 animate-spin" />
+																) : (
+																	<ExternalLink className="w-4 h-4" />
+																)}
 															</Button>
-														</Link>
-														{/* <Button
-															size="sm"
-															variant="outline"
-															onClick={() => handlePreview(resource)}
-															className="px-3 border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 transition-all duration-300"
-															title="Preview in new tab"
-														>
-															<ExternalLink className="w-4 h-4" />
-														</Button> */}
-														<Button
-															size="sm"
-															variant="outline"
-															onClick={() => handleOpenResource(resource)}
-															disabled={isIncrementingView}
-															className=" border-emerald-200 text-emerald-600 hover:bg-emerald-50 hover:border-emerald-300 transition-all duration-300 flex items-center justify-center"
-														>
-															{isIncrementingView ? (
-																<Loader2 className="w-4 h-4 mr-2 animate-spin" />
-															) : (
-																<ExternalLink className="w-4 h-4" />
-															)}
-														</Button>
+														</div>
 													</div>
-												</div>
-											</CardContent>
-										</Card>
-									))}
-								</div>
+												</CardContent>
+											</Card>
+										))}
+									</div>
+
+									{/* Pagination */}
+									{pagination && pagination.totalPages > 1 && (
+										<div className="flex items-center justify-center space-x-2 mt-8">
+											<Button
+												variant="outline"
+												onClick={() => handlePageChange(currentPage - 1)}
+												disabled={currentPage === 1}
+												className="flex items-center"
+											>
+												<ChevronLeft className="w-4 h-4 mr-1" />
+												Previous
+											</Button>
+
+											<span className="text-sm text-gray-600">
+												Page {pagination.currentPage} of {pagination.totalPages}
+											</span>
+
+											<Button
+												variant="outline"
+												onClick={() => handlePageChange(currentPage + 1)}
+												disabled={currentPage === pagination.totalPages}
+												className="flex items-center"
+											>
+												Next
+												<ChevronRight className="w-4 h-4 ml-1" />
+											</Button>
+										</div>
+									)}
+								</>
 							)}
 						</div>
 					</div>

@@ -474,9 +474,9 @@ export default function NewsDetailPage({
 									opts={{
 										align: "start",
 										loop: true,
-										duration: 3000,
+										duration: 20,
 									}}
-									plugins={[Autoplay({ delay: 2000 })]}
+									// plugins={[Autoplay({ delay: 2000 })]}
 									setApi={setCarouselApi}
 									className="w-full"
 								>

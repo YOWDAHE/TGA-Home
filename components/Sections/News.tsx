@@ -75,8 +75,8 @@ export default function News({ news, resources }: NewsProps) {
 													<p className="text-sm text-gray-600 line-clamp-2 leading-relaxed mb-3">
 														{item.content}
 													</p>
-													<div className="flex items-center text-xs text-gray-500 space-x-4">
-														<span className="flex items-center">
+													<div className="flex items-center text-xs text-gray-500 md:space-x-4 space-x-0">
+														<span className="items-center hidden md:flex">
 															<User className="w-3 h-3 mr-1" />
 															TG&A Law Group
 														</span>

@@ -32,6 +32,7 @@ export interface NewsData {
     featured: News[];
     latest:   News[];
     trending: News[];
+    hot:      News[];
     others:   Other[];
 }
 

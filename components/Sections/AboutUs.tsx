@@ -20,14 +20,14 @@ export class AboutUs extends Component {
 				<div className="container mx-auto px-4 relative z-10">
 					<div className="max-w-6xl mx-auto">
 						<div className="text-center mb-16">
-							<h2 className="text-5xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent mb-6">
+							<h2 className="text-2xl md:text-5xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent mb-6">
 								ABOUT US
 							</h2>
 							<div className="w-24 h-1 bg-gradient-to-r from-teal-500 to-emerald-500 mx-auto rounded-full"></div>
 						</div>
 
 						<div className="bg-white/70 backdrop-blur-md rounded-3xl shadow-2xl p-8 md:p-12 border border-gray-100">
-							<p className="text-xl text-gray-700 mb-8 leading-relaxed text-center max-w-4xl mx-auto">
+							<p className="text-base md:text-xl text-gray-700 mb-8 leading-relaxed text-center max-w-4xl mx-auto">
 								TG&A Law Group is a premier legal practice committed to excellence in
 								serving our clients across Ethiopia and Africa. Our experienced team
 								combines deep local knowledge with international expertise to deliver
@@ -40,7 +40,7 @@ export class AboutUs extends Component {
 										<div className="w-12 h-12 bg-gradient-to-r from-teal-500 to-emerald-500 rounded-xl flex items-center justify-center mr-4">
 											<User className="w-6 h-6 text-white" />
 										</div>
-										<h3 className="text-2xl font-bold text-gray-900">
+										<h3 className="text-xl md:text-2xl font-bold text-gray-900">
 											Leadership & Expertise
 										</h3>
 									</div>
@@ -64,7 +64,7 @@ export class AboutUs extends Component {
 										<div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-xl flex items-center justify-center mr-4">
 											<Award className="w-6 h-6 text-white" />
 										</div>
-										<h3 className="text-2xl font-bold text-gray-900">
+										<h3 className="text-xl md:text-2xl font-bold text-gray-900">
 											Professional Affiliations
 										</h3>
 									</div>

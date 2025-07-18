@@ -163,17 +163,17 @@ export default function DocumentDetailPage({
 							<CardContent className="p-0">
 								{/* PDF Viewer Header */}
 								<div className="bg-gradient-to-r from-teal-500 to-teal-600 p-4 text-white">
-									<div className="flex items-center justify-between">
-										<div className="flex items-center space-x-3">
-											<div className="bg-white/20 backdrop-blur-sm rounded-lg p-2">
+									<div className="flex flex-col md:flex-row items-center justify-between">
+										<div className="flex md:items-center items-start space-x-3">
+											<div className="bg-white/20 backdrop-blur-sm rounded-lg p-2 gap-4 md:gap-0 hidden md:flex">
 												<FileText className="w-6 h-6" />
 											</div>
 											<div className="flex-1">
 												<h1 className="text-xl font-bold">{resource.title}</h1>
-												<p className="text-teal-100 text-sm">PDF Document</p>
+												<p className="text-teal-100 text-sm hidden md:block">PDF Document</p>
 											</div>
 										</div>
-										<div className="flex items-center space-x-2">
+										<div className="flex md:items-center items-start space-x-2 mt-4 md:mt-0">
 											<Button
 												onClick={handleDownload}
 												disabled={isDownloading}
@@ -252,7 +252,7 @@ export default function DocumentDetailPage({
 											<div>
 												<p className="text-xs text-gray-500">Author</p>
 												<p className="text-sm font-medium text-gray-900">
-													{resource.author}
+													TGA Law Group
 												</p>
 											</div>
 										</div>

@@ -8,6 +8,7 @@ import {
 	CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Practice } from "@/app/types/landing";
+import Autoplay from "embla-carousel-autoplay";
 
 interface PracticeAreasProps {
 	practices: Practice[];
@@ -29,7 +30,9 @@ export default function PracticeAreas({ practices }: PracticeAreasProps) {
 	return (
 		<section className="py-16 lg:pt-24 bg-[#f6f7f8]">
 			<div className="container mx-auto px-4 text-center">
-				<h2 className="md:text-4xl text-2xl font-bold text-gray-900 md:mb-4 mb-8">PRACTICE AREAS</h2>
+				<h2 className="md:text-4xl text-2xl font-bold text-gray-900 md:mb-4 mb-8">
+					PRACTICE AREAS
+				</h2>
 
 				{/* Mobile UI Carousel */}
 				{isMobile && (
@@ -37,7 +40,9 @@ export default function PracticeAreas({ practices }: PracticeAreasProps) {
 						opts={{
 							align: "start",
 							loop: true,
+							duration: 3000,
 						}}
+						plugins={[Autoplay({ delay: 2000 })]}
 						className="w-full max-w-sm mx-auto"
 					>
 						<CarouselContent>

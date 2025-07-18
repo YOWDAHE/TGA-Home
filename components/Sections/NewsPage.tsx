@@ -85,7 +85,7 @@ export default function NewsPage({
 		setSearchInput(searchParams.get("q") || "");
 	}, [searchParams]);
 
-	const { featured, latest, trending, others } = news.data;
+	const { featured, latest, trending, hot, others } = news.data;
 	const categories = catData.data.categories.map((category) => {
 		return {
 			name: category.name,
@@ -262,22 +262,22 @@ export default function NewsPage({
 			<div className="container mx-auto px-4 mt-16 py-8">
 				{/* Page Header */}
 				<div className="mb-8">
-					<h1 className="text-3xl font-bold text-gray-900 mb-1">NEWS</h1>
-					<p className="text-lg text-gray-600">
+					<h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">NEWS</h1>
+					<p className="text-base md:text-lg text-gray-600">
 						Stay updated with the latest legal insights and industry developments
 					</p>
 				</div>
 
 				{/* 3-Section Layout */}
 				<section className="mb-16 py-6 bg-gray-100">
-					<div className="grid lg:grid-cols-4">
+					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
 						{/* Left Section - Browse News */}
-						<div className="lg:col-span-1">
-							<div className="rounded-lg px-4 h-full">
+						<div className="md:col-span-1 lg:col-span-1 order-1 md:order-1 lg:order-1">
+							<div className="rounded-lg px-2 md:px-4 h-full">
 								{/* Search */}
 								<Button
 									variant="outline"
-									className=" w-full mb-4 flex justify-between hover:bg-white"
+									className="w-full mb-4 flex justify-between hover:bg-white text-sm"
 									onClick={() => {
 										handleThreeSectionSearchKeyPress();
 									}}
@@ -287,37 +287,41 @@ export default function NewsPage({
 								</Button>
 
 								{/* News List */}
-								<div className="space-y-1 max-h-96 overflow-y-auto">
+								<div className="flex flex-col gap-2 max-h-64 md:max-h-96 overflow-y-auto">
 									{latest.slice(0, 3).map((article) => (
-										<Card
-											key={article.id}
-											className="overflow-hidden hover:shadow-md transition-shadow rounded-none"
-										>
-											<CardContent className="p-3">
-												<div className="flex space-x-3">
-													<div className="flex-1 min-w-0">
-														<h4 className="font-medium text-sm text-gray-900 mb-1 line-clamp-2">
-															{article.title}
-														</h4>
-														<div className="flex items-center text-xs text-gray-500 space-x-2">
-															<span>{formatDate(article.published_date)}</span>
-															<span className="flex items-center">
-																<Eye className="w-3 h-3 mr-1" />
-																{article.view_count.toLocaleString()}
-															</span>
+										<Link href={`/news/${article.id}`} key={article.id}>
+											<Card
+												key={article.id}
+												className="overflow-hidden hover:shadow-md transition-shadow rounded-none"
+											>
+												<CardContent className="p-2 md:p-3">
+													<div className="flex space-x-2 md:space-x-3">
+														<div className="flex-1 min-w-0">
+															<h4 className="font-medium text-xs md:text-sm text-gray-900 mb-1 line-clamp-2">
+																{article.title}
+															</h4>
+															<div className="flex items-center text-xs text-gray-500 space-x-1 md:space-x-2">
+																<span className="text-xs">
+																	{formatDate(article.published_date)}
+																</span>
+																<span className="flex items-center">
+																	<Eye className="w-3 h-3 mr-1" />
+																	{article.view_count.toLocaleString()}
+																</span>
+															</div>
 														</div>
 													</div>
-												</div>
-											</CardContent>
-										</Card>
+												</CardContent>
+											</Card>
+										</Link>
 									))}
 								</div>
 							</div>
 						</div>
 
 						{/* Middle Section - Featured News Carousel */}
-						<div className="lg:col-span-2">
-							<div className=" h-full">
+						<div className="md:col-span-2 lg:col-span-2 order-3 md:order-2 lg:order-2">
+							<div className="h-full">
 								{featured.length > 0 && (
 									<Carousel
 										opts={{
@@ -330,28 +334,30 @@ export default function NewsPage({
 										<CarouselContent>
 											{featured.map((article) => (
 												<CarouselItem key={article.id}>
-													<div className="overflow-hidden">
-														<div className="relative h-[400px] w-full">
-															<Image
-																src={getImageUrl(article)}
-																alt={article.title}
-																fill={true}
-																className="object-cover"
-															/>
-														</div>
-														<CardContent className="p-4 bg-white">
-															<h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">
-																{article.title}
-															</h3>
-															<p className="text-sm text-gray-600 mb-3 line-clamp-2">
-																{article.content}
-															</p>
-															<div className="flex items-center justify-between text-xs text-gray-500">
-																<span>TGA Law Group</span>
-																<span>{formatDate(article.published_date)}</span>
+													<Link href={`/news/${article.id}`} key={article.id}>
+														<div className="overflow-hidden">
+															<div className="relative h-[200px] md:h-[300px] lg:h-[400px] w-full">
+																<Image
+																	src={getImageUrl(article)}
+																	alt={article.title}
+																	fill={true}
+																	className="object-cover"
+																/>
 															</div>
-														</CardContent>
-													</div>
+															<CardContent className="p-3 md:p-4 bg-white">
+																<h3 className="font-semibold text-sm md:text-base text-gray-900 mb-2 line-clamp-2">
+																	{article.title}
+																</h3>
+																<p className="text-xs md:text-sm text-gray-600 mb-3 line-clamp-2">
+																	{article.content}
+																</p>
+																<div className="flex items-center justify-between text-xs text-gray-500">
+																	<span>TGA Law Group</span>
+																	<span>{formatDate(article.published_date)}</span>
+																</div>
+															</CardContent>
+														</div>
+													</Link>
 												</CarouselItem>
 											))}
 										</CarouselContent>
@@ -363,19 +369,19 @@ export default function NewsPage({
 						</div>
 
 						{/* Right Section - Latest & Trending Tabs */}
-						<div className="lg:col-span-1">
-							<div className="rounded-lg px-6 h-full">
+						<div className="md:col-span-1 lg:col-span-1 order-2 md:order-3 lg:order-3">
+							<div className="rounded-lg px-2 md:px-6 h-full">
 								<Tabs defaultValue="latest" className="w-full">
 									<TabsList className="grid w-full grid-cols-2 mb-4">
 										<TabsTrigger
 											value="latest"
-											className="data-[state=active]:text-white data-[state=active]:bg-[#69b2a4]"
+											className="data-[state=active]:text-white data-[state=active]:bg-[#69b2a4] text-xs md:text-sm"
 										>
 											Latest
 										</TabsTrigger>
 										<TabsTrigger
 											value="trending"
-											className="data-[state=active]:text-white data-[state=active]:bg-[#69b2a4]"
+											className="data-[state=active]:text-white data-[state=active]:bg-[#69b2a4] text-xs md:text-sm"
 										>
 											Trending
 										</TabsTrigger>
@@ -383,75 +389,83 @@ export default function NewsPage({
 
 									<TabsContent
 										value="latest"
-										className="space-y-1 max-h-96 overflow-y-auto"
+										className="flex flex-col gap-2 max-h-64 md:max-h-96 overflow-y-auto"
 									>
 										{latest.slice(0, 4).map((article) => (
-											<Card
-												key={article.id}
-												className="overflow-hidden hover:shadow-md transition-shadow rounded-none"
-											>
-												<CardContent className="p-3">
-													<div className="flex space-x-3">
-														<div className="w-12 h-12 flex-shrink-0 relative bg-gray-200 rounded">
-															<Image
-																src={getImageUrl(article)}
-																alt={article.title}
-																fill={true}
-																className="object-cover rounded"
-															/>
-														</div>
-														<div className="flex-1 min-w-0">
-															<h4 className="font-medium text-sm text-gray-900 mb-1 line-clamp-2">
-																{article.title}
-															</h4>
-															<div className="flex items-center text-xs text-gray-500 space-x-2">
-																<span>{formatDate(article.published_date)}</span>
-																<span className="flex items-center">
-																	<Eye className="w-3 h-3 mr-1" />
-																	{article.view_count.toLocaleString()}
-																</span>
+											<Link href={`/news/${article.id}`} key={article.id}>
+												<Card
+													key={article.id}
+													className="overflow-hidden hover:shadow-md transition-shadow rounded-none"
+												>
+													<CardContent className="p-2 md:p-3">
+														<div className="flex space-x-2 md:space-x-3">
+															<div className="w-8 h-8 md:w-12 md:h-12 flex-shrink-0 relative bg-gray-200 rounded">
+																<Image
+																	src={getImageUrl(article)}
+																	alt={article.title}
+																	fill={true}
+																	className="object-cover rounded"
+																/>
+															</div>
+															<div className="flex-1 min-w-0">
+																<h4 className="font-medium text-xs md:text-sm text-gray-900 mb-1 line-clamp-2">
+																	{article.title}
+																</h4>
+																<div className="flex items-center text-xs text-gray-500 space-x-1 md:space-x-2">
+																	<span className="text-xs">
+																		{formatDate(article.published_date)}
+																	</span>
+																	<span className="flex items-center">
+																		<Eye className="w-3 h-3 mr-1" />
+																		{article.view_count.toLocaleString()}
+																	</span>
+																</div>
 															</div>
 														</div>
-													</div>
-												</CardContent>
-											</Card>
+													</CardContent>
+												</Card>
+											</Link>
 										))}
 									</TabsContent>
 
 									<TabsContent
 										value="trending"
-										className="space-y-1 max-h-96 overflow-y-auto"
+										className="flex flex-col gap-2 max-h-64 md:max-h-96 overflow-y-auto"
 									>
 										{trending.slice(0, 4).map((article) => (
-											<Card
-												key={article.id}
-												className="overflow-hidden hover:shadow-md transition-shadow rounded-none"
-											>
-												<CardContent className="p-3">
-													<div className="flex space-x-3">
-														<div className="w-12 h-12 flex-shrink-0 relative bg-gray-200 rounded">
-															<Image
-																src={getImageUrl(article)}
-																alt={article.title}
-																fill={true}
-																className="object-cover rounded"
-															/>
-														</div>
-														<div className="flex-1 min-w-0">
-															<h4 className="font-medium text-sm text-gray-900 mb-1 line-clamp-2">
-																{article.title}
-															</h4>
-															<div className="flex items-center text-xs text-gray-500 space-x-2">
-																<span>{formatDate(article.published_date)}</span>
-																<span className="flex items-center">
-																	<Eye className="w-3 h-3 mr-1" />
-																	{article.view_count.toLocaleString()}
-																</span>
+											<Link href={`/news/${article.id}`} key={article.id}>
+												<Card
+													key={article.id}
+													className="overflow-hidden hover:shadow-md transition-shadow rounded-none"
+												>
+													<CardContent className="p-2 md:p-3">
+														<div className="flex space-x-2 md:space-x-3">
+															<div className="w-8 h-8 md:w-12 md:h-12 flex-shrink-0 relative bg-gray-200 rounded">
+																<Image
+																	src={getImageUrl(article)}
+																	alt={article.title}
+																	fill={true}
+																	className="object-cover rounded"
+																/>
+															</div>
+															<div className="flex-1 min-w-0">
+																<h4 className="font-medium text-xs md:text-sm text-gray-900 mb-1 line-clamp-2">
+																	{article.title}
+																</h4>
+																<div className="flex items-center text-xs text-gray-500 space-x-1 md:space-x-2">
+																	<span className="text-xs">
+																		{formatDate(article.published_date)}
+																	</span>
+																	<span className="flex items-center">
+																		<Eye className="w-3 h-3 mr-1" />
+																		{article.view_count.toLocaleString()}
+																	</span>
+																</div>
 															</div>
 														</div>
-													</div>
-												</CardContent>
-											</Card>
+													</CardContent>
+												</Card>
+											</Link>
 										))}
 									</TabsContent>
 								</Tabs>
@@ -463,10 +477,10 @@ export default function NewsPage({
 				{/* Featured Articles */}
 				{featured.length > 0 && (
 					<section className="mb-12">
-						<h2 className="text-2xl font-semibold text-gray-900 mb-6">
+						<h2 className="text-xl md:text-2xl font-semibold text-gray-900 mb-6">
 							Featured Stories
 						</h2>
-						<div className="grid lg:grid-cols-3 gap-6">
+						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
 							{featured.slice(0, 3).map((article) => (
 								<Card
 									key={article.id}
@@ -478,24 +492,24 @@ export default function NewsPage({
 											alt={article.title}
 											width={400}
 											height={250}
-											className="w-full h-48 object-cover"
+											className="w-full h-40 md:h-48 object-cover"
 										/>
 										{trending.some((t) => t.id === article.id) && (
-											<Badge className="absolute top-4 right-4 bg-red-500">
+											<Badge className="absolute top-2 md:top-4 right-2 md:right-4 bg-red-500 text-xs">
 												<TrendingUp className="w-3 h-3 mr-1" />
 												Trending
 											</Badge>
 										)}
 									</div>
-									<CardContent className="p-4">
-										<h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2">
+									<CardContent className="p-3 md:p-4">
+										<h3 className="text-base md:text-lg font-bold text-gray-900 mb-2 line-clamp-2">
 											{article.title}
 										</h3>
-										<p className="text-sm text-gray-600 mb-3 line-clamp-2">
+										<p className="text-xs md:text-sm text-gray-600 mb-3 line-clamp-2">
 											{article.content}
 										</p>
-										<div className="flex items-center justify-between text-xs text-gray-500 mb-3">
-											<div className="flex items-center space-x-3">
+										<div className="flex flex-col md:flex-row md:items-center md:justify-between text-xs text-gray-500 mb-3 space-y-1 md:space-y-0">
+											<div className="flex flex-col md:flex-row md:items-center space-y-1 md:space-y-0 md:space-x-3">
 												<span className="flex items-center">
 													<User className="w-3 h-3 mr-1" />
 													TGA Law Group
@@ -505,7 +519,7 @@ export default function NewsPage({
 													{formatDate(article.published_date)}
 												</span>
 											</div>
-											<div className="flex items-center space-x-3">
+											<div className="flex flex-col md:flex-row md:items-center space-y-1 md:space-y-0 md:space-x-3">
 												<span className="flex items-center">
 													<Clock className="w-3 h-3 mr-1" />
 													{getReadTime(article.read_minutes)}
@@ -516,14 +530,14 @@ export default function NewsPage({
 												</span>
 											</div>
 										</div>
-										<div className="flex items-center justify-between">
+										<div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-2 md:space-y-0">
 											<Link href={`/news/${article.id}`}>
-												<Button className="bg-teal-500 hover:bg-teal-600 text-sm">
+												<Button className="bg-teal-500 hover:bg-teal-600 text-xs md:text-sm w-full md:w-auto">
 													Read More
 													<ChevronRight className="w-3 h-3 ml-1" />
 												</Button>
 											</Link>
-											<div className="flex space-x-2">
+											<div className="flex justify-center md:justify-end space-x-2">
 												<Button
 													variant="outline"
 													size="icon"
@@ -542,11 +556,13 @@ export default function NewsPage({
 				)}
 
 				{/* Main Content Grid */}
-				<div className="grid lg:grid-cols-4 gap-8">
+				<div className="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-8">
 					{/* Latest Articles */}
 					<div className="lg:col-span-2">
 						<div className="flex items-center justify-between mb-6">
-							<h2 className="text-2xl font-semibold text-gray-900">LATEST</h2>
+							<h2 className="text-xl md:text-2xl font-semibold text-gray-900">
+								LATEST
+							</h2>
 							{/* <Button
 								variant="outline"
 								className="text-teal-500 border-teal-500 bg-transparent"
@@ -573,11 +589,11 @@ export default function NewsPage({
 														fill={true}
 													/>
 												</div>
-												<div className="p-4 flex-1">
-													<h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">
+												<div className="p-3 md:p-4 flex-1">
+													<h3 className="font-semibold text-sm md:text-base text-gray-900 mb-2 line-clamp-2">
 														{article.title}
 													</h3>
-													<div className="flex items-center text-xs text-gray-500 space-x-3">
+													<div className="flex flex-col md:flex-row md:items-center text-xs text-gray-500 space-y-1 md:space-y-0 md:space-x-3">
 														<span>TGA Law Group</span>
 														<span>{formatDate(article.published_date)}</span>
 														<span>{getReadTime(article.read_minutes)}</span>
@@ -593,46 +609,43 @@ export default function NewsPage({
 
 					{/* Top Articles Sidebar */}
 					<div className="lg:col-span-1">
-						<h2 className="text-2xl font-bold text-gray-900 mb-6">TOP</h2>
+						<h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-6">HOT</h2>
 						<div className="flex flex-col gap-2">
-							{[...latest]
-								.sort((a, b) => b.view_count - a.view_count)
-								.slice(0, 6)
-								.map((article, index) => (
-									<Link href={`/news/${article.id}`} key={article.id}>
-										<Card
-											key={article.id}
-											className="overflow-hidden hover:shadow-md transition-shadow"
-										>
-											<CardContent className="p-4">
-												<div className="flex items-start space-x-3">
-													<div className="bg-teal-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold flex-shrink-0">
-														{index + 1}
-													</div>
-													<div className="flex-1">
-														<h4 className="font-semibold text-sm text-gray-900 mb-1 line-clamp-2">
-															{article.title}
-														</h4>
-														<div className="flex items-center text-xs text-gray-500 space-x-2">
-															<span className="flex items-center">
-																<Eye className="w-3 h-3 mr-1" />
-																{article.view_count.toLocaleString()}
-															</span>
-															<span>{getReadTime(article.read_minutes)}</span>
-														</div>
+							{hot.slice(0, 5).map((article, index) => (
+								<Link href={`/news/${article.id}`} key={article.id}>
+									<Card
+										key={article.id}
+										className="overflow-hidden hover:shadow-md transition-shadow"
+									>
+										<CardContent className="p-3 md:p-4">
+											<div className="flex items-start space-x-2 md:space-x-3">
+												<div className="bg-teal-500 text-white rounded-full w-5 h-5 md:w-6 md:h-6 flex items-center justify-center text-xs md:text-sm font-bold flex-shrink-0">
+													{index + 1}
+												</div>
+												<div className="flex-1">
+													<h4 className="font-semibold text-xs md:text-sm text-gray-900 mb-1 line-clamp-2">
+														{article.title}
+													</h4>
+													<div className="flex flex-col md:flex-row md:items-center text-xs text-gray-500 space-y-1 md:space-y-0 md:space-x-2">
+														<span className="flex items-center">
+															<Eye className="w-3 h-3 mr-1" />
+															{article.view_count.toLocaleString()}
+														</span>
+														<span>{getReadTime(article.read_minutes)}</span>
 													</div>
 												</div>
-											</CardContent>
-										</Card>
-									</Link>
-								))}
+											</div>
+										</CardContent>
+									</Card>
+								</Link>
+							))}
 						</div>
 					</div>
 
 					{/* Trending Articles */}
 					<div className="lg:col-span-1">
-						<h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
-							<TrendingUp className="w-6 h-6 mr-2 text-red-500" />
+						<h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-6 flex items-center">
+							<TrendingUp className="w-5 h-5 md:w-6 md:h-6 mr-2 text-red-500" />
 							TRENDING
 						</h2>
 						<div className="flex flex-col gap-2">
@@ -642,14 +655,14 @@ export default function NewsPage({
 										key={article.id}
 										className="overflow-hidden hover:shadow-md transition-shadow"
 									>
-										<CardContent className="p-4">
-											<h4 className="font-semibold text-sm text-gray-900 mb-2 line-clamp-2">
+										<CardContent className="p-3 md:p-4">
+											<h4 className="font-semibold text-xs md:text-sm text-gray-900 mb-2 line-clamp-2">
 												{article.title}
 											</h4>
 											<p className="text-xs text-gray-600 mb-2 line-clamp-2">
 												{article.content}
 											</p>
-											<div className="flex items-center text-xs text-gray-500 space-x-2">
+											<div className="flex flex-col md:flex-row md:items-center text-xs text-gray-500 space-y-1 md:space-y-0 md:space-x-2">
 												<span>{formatDate(article.published_date)}</span>
 												<span className="flex items-center">
 													<Eye className="w-3 h-3 mr-1" />
@@ -666,21 +679,21 @@ export default function NewsPage({
 
 				{/* Other News (Videos & External Links) Section */}
 				{others.length > 0 && (
-					<section className="mt-20">
-						<div className="mx-auto px-4">
+					<section className="mt-16 md:mt-20">
+						<div className="mx-auto px-0 md:px-4">
 							{/* Section Header */}
-							<div className="mb-12">
-								<h2 className="text-3xl font-bold text-gray-900 mb-4">
+							<div className="mb-8 md:mb-12">
+								<h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
 									External Content & Videos
 								</h2>
-								<p className="text-lg text-gray-600 max-w-2xl">
+								<p className="text-base md:text-lg text-gray-600 max-w-2xl">
 									Discover curated videos, external articles, and multimedia content from
 									trusted sources
 								</p>
 							</div>
 
 							{/* Content Grid */}
-							<div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+							<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
 								{others.map((other, index) => (
 									<div
 										key={other.id}
@@ -722,7 +735,9 @@ export default function NewsPage({
 
 				{/* Browse by Category Section */}
 				<section id="browse-news-section" className="mt-16">
-					<h2 className="text-2xl font-semibold text-gray-900 mb-6">Browse News</h2>
+					<h2 className="text-xl md:text-2xl font-semibold text-gray-900 mb-6">
+						Browse News
+					</h2>
 
 					{/* Search and Filter Section */}
 					<div className="mb-8">
@@ -737,7 +752,10 @@ export default function NewsPage({
 									className="pl-10"
 								/>
 							</div>
-							<Button onClick={handleSearch} className="bg-teal-500 hover:bg-teal-600">
+							<Button
+								onClick={handleSearch}
+								className="bg-teal-500 hover:bg-teal-600 w-full md:w-auto"
+							>
 								Search
 							</Button>
 						</div>
@@ -747,9 +765,9 @@ export default function NewsPage({
 								key="All"
 								variant={selectedCategory === "All" ? "default" : "outline"}
 								onClick={() => handleCategoryChange("All")}
-								className={
+								className={`text-xs md:text-sm ${
 									selectedCategory === "All" ? "bg-teal-500 hover:bg-teal-600" : ""
-								}
+								}`}
 							>
 								All
 							</Button>
@@ -758,11 +776,11 @@ export default function NewsPage({
 									key={category.id}
 									variant={selectedCategory === category.name ? "default" : "outline"}
 									onClick={() => handleCategoryChange(category.name)}
-									className={
+									className={`text-xs md:text-sm ${
 										selectedCategory === category.name
 											? "bg-teal-500 hover:bg-teal-600"
 											: ""
-									}
+									}`}
 								>
 									{category.name}
 								</Button>
@@ -776,9 +794,9 @@ export default function NewsPage({
 										setIsSearchMode(false);
 										setQueryResults(null);
 									}}
-									className={
+									className={`text-xs md:text-sm ${
 										selectedCategory === "All" ? "bg-red-500 hover:bg-red-600" : ""
-									}
+									}`}
 								>
 									<X className="w-4 h-4 mr-1" />
 									Cancel Search
@@ -794,7 +812,7 @@ export default function NewsPage({
 							<span className="ml-2 text-gray-600">Loading...</span>
 						</div>
 					) : (
-						<div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
 							{getCurrentNewsItems().map((article) => (
 								<Link href={`/news/${article.id}`} key={article.id}>
 									<Card
@@ -807,17 +825,17 @@ export default function NewsPage({
 												alt={article.title}
 												width={400}
 												height={250}
-												className="w-full h-48 object-cover"
+												className="w-full h-40 md:h-48 object-cover"
 											/>
 										</div>
-										<CardContent className="p-4">
-											<h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">
+										<CardContent className="p-3 md:p-4">
+											<h3 className="font-semibold text-sm md:text-base text-gray-900 mb-2 line-clamp-2">
 												{article.title}
 											</h3>
-											<p className="text-sm text-gray-600 mb-3 line-clamp-2">
+											<p className="text-xs md:text-sm text-gray-600 mb-3 line-clamp-2">
 												{article.content}
 											</p>
-											<div className="flex items-center justify-between text-xs text-gray-500">
+											<div className="flex flex-col md:flex-row md:items-center md:justify-between text-xs text-gray-500 space-y-1 md:space-y-0">
 												<span>TGA Law Group</span>
 												<span>{formatDate(article.published_date)}</span>
 											</div>
@@ -835,13 +853,13 @@ export default function NewsPage({
 								variant="outline"
 								onClick={() => handlePageChange(currentPage - 1)}
 								disabled={currentPage === 1}
-								className="flex items-center"
+								className="flex items-center text-xs md:text-sm"
 							>
 								<ChevronLeft className="w-4 h-4 mr-1" />
 								Previous
 							</Button>
 
-							<span className="text-sm text-gray-600">
+							<span className="text-xs md:text-sm text-gray-600">
 								Page {getPaginationInfo()?.currentPage} of{" "}
 								{getPaginationInfo()?.totalPages}
 							</span>
@@ -850,7 +868,7 @@ export default function NewsPage({
 								variant="outline"
 								onClick={() => handlePageChange(currentPage + 1)}
 								disabled={currentPage === getPaginationInfo()?.totalPages}
-								className="flex items-center"
+								className="flex items-center text-xs md:text-sm"
 							>
 								Next
 								<ChevronRight className="w-4 h-4 ml-1" />
