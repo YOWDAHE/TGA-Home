@@ -199,3 +199,36 @@ export const toggleCommentLike = async (comment_id: string, username: string, ac
         throw new Error(`Failed to toggle comment like/dislike: ${error.message}`);
     }
 }
+
+export const deleteNewsComment = async (comment_id: string) => {
+    try {
+        const response = await axios.delete(`/api/news/comments?comment_id=${comment_id}`);
+        return response.data;
+    } catch (error: any) {
+        console.error('Error deleting news comment:', {
+            message: error.message,
+            status: error.response?.status,
+            statusText: error.response?.statusText,
+            url: error.config?.url,
+        });
+        throw new Error(`Failed to delete news comment: ${error.message}`);
+    }
+}
+
+export const editNewsComment = async (comment_id: string, content: string) => {
+    try {
+        const response = await axios.put(`/api/news/comments`, {
+            comment_id,
+            content,
+        });
+        return response.data;
+    } catch (error: any) {
+        console.error('Error editing news comment:', {
+            message: error.message,
+            status: error.response?.status,
+            statusText: error.response?.statusText,
+            url: error.config?.url,
+        });
+        throw new Error(`Failed to edit news comment: ${error.message}`);
+    }
+}

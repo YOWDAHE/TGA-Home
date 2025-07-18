@@ -4,10 +4,10 @@ import { getResources, getTopViewedResources } from '../actions/resources.action
 import { getCategories } from '../actions/news.actions';
 
 interface PageProps {
-  searchParams: {
+  searchParams: Promise<{
     search?: string;
     category?: string;
-  };
+  }>;
 }
 
 // Loading component for the resources page
@@ -25,8 +25,7 @@ function ResourcesLoading() {
 export default async function page({ searchParams }: PageProps) {
   try {
     // Extract search parameters
-    const search = searchParams.search || '';
-    const category = searchParams.category || '';
+   const {search, category} = await searchParams;
     
     // Build query parameters for resources
     const resourceParams: any = { limit: 50 };

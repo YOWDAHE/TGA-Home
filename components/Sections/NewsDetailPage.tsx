@@ -9,26 +9,32 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+	ArrowLeft,
 	Calendar,
 	Clock,
 	Eye,
-	Share2,
-	Bookmark,
+	MessageCircle,
 	ThumbsUp,
 	ThumbsDown,
-	MessageCircle,
 	User,
-	ArrowLeft,
-	Facebook,
-	Twitter,
-	Linkedin,
-	Copy,
-	Flag,
-	Pin,
-	Edit,
+	Share2,
+	Bookmark,
+	BookmarkCheck,
 	ChevronRight,
 	TrendingUp,
 	Loader,
+	MoreVertical,
+	Trash2,
+	AlertTriangle,
+	Edit,
+	Check,
+	X,
 } from "lucide-react";
 import Header from "@/components/Sections/Header";
 import { useParams } from "next/navigation";
@@ -38,9 +44,21 @@ import {
 	postNewsComment,
 	getNewsComments,
 	toggleCommentLike,
+	deleteNewsComment,
+	editNewsComment,
 } from "@/app/actions/news.actions";
 import { useAuthRequired } from "@/hooks/use-auth-required";
 import { useAuth } from "@/contexts/AuthContext";
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface NewsArticle {
 	id: number;
@@ -107,6 +125,12 @@ export default function NewsDetailPage({
 	const [showShareMenu, setShowShareMenu] = useState(false);
 	const [loading, setLoading] = useState(true);
 	const [isPostingComment, setIsPostingComment] = useState(false);
+	const [deletingCommentId, setDeletingCommentId] = useState<number | null>(null);
+	const [showDeleteModal, setShowDeleteModal] = useState(false);
+	const [commentToDelete, setCommentToDelete] = useState<number | null>(null);
+	const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
+	const [editingContent, setEditingContent] = useState("");
+	const [isEditingComment, setIsEditingComment] = useState(false);
 
 	// Authentication
 	const { user } = useAuth();
@@ -241,6 +265,74 @@ export default function NewsDetailPage({
 
 	const handleDislikeWithAuth = (commentId: number) => {
 		requireAuth("dislike", () => handleDislike(commentId));
+	};
+
+	const handleDeleteComment = async (commentId: number) => {
+		if (!user) return;
+		
+		setDeletingCommentId(commentId);
+		try {
+			await deleteNewsComment(commentId.toString());
+			// Refresh comments after deletion
+			await refreshComments();
+			setShowDeleteModal(false);
+			setCommentToDelete(null);
+		} catch (error) {
+			console.error("Failed to delete comment", error);
+		} finally {
+			setDeletingCommentId(null);
+		}
+	};
+
+	const handleDeleteCommentWithAuth = (commentId: number) => {
+		requireAuth("delete", () => {
+			setCommentToDelete(commentId);
+			setShowDeleteModal(true);
+		});
+	};
+
+	const confirmDelete = () => {
+		if (commentToDelete) {
+			handleDeleteComment(commentToDelete);
+		}
+	};
+
+	const cancelDelete = () => {
+		setShowDeleteModal(false);
+		setCommentToDelete(null);
+	};
+
+	const handleEditComment = async (commentId: number) => {
+		if (!user || !editingContent.trim()) return;
+		
+		setIsEditingComment(true);
+		try {
+			await editNewsComment(commentId.toString(), editingContent.trim());
+			// Refresh comments after editing
+			await refreshComments();
+			setEditingCommentId(null);
+			setEditingContent("");
+		} catch (error) {
+			console.error("Failed to edit comment", error);
+		} finally {
+			setIsEditingComment(false);
+		}
+	};
+
+	const handleEditCommentWithAuth = (commentId: number) => {
+		requireAuth("edit", () => {
+			setEditingCommentId(commentId);
+			// Set the current comment content for editing
+			const comment = commentsList.find(c => c.id === commentId);
+			if (comment) {
+				setEditingContent(comment.content);
+			}
+		});
+	};
+
+	const cancelEdit = () => {
+		setEditingCommentId(null);
+		setEditingContent("");
 	};
 
 	const toggleBookmark = () => {
@@ -429,70 +521,160 @@ export default function NewsDetailPage({
 
 							{/* Comments List */}
 							<div className="space-y-4">
-								{commentsList.map((comment) => (
-									<Card key={comment.id}>
-										<CardContent className="p-4">
-											<div className="flex items-start space-x-3">
-												<Avatar className="w-8 h-8">
-													<AvatarFallback>
-														{comment.user_name.charAt(0).toUpperCase()}
-													</AvatarFallback>
-												</Avatar>
-												<div className="flex-1">
-													<div className="flex items-center space-x-2 mb-2">
-														<span className="text-sm font-medium text-gray-500">
-															{comment.user_name}
-														</span>
-														{/* <div className="flex items-center space-x-2">
-															{comment.pinned && (
-																<Badge className="bg-yellow-500 text-xs">
-																	<Pin className="w-3 h-3 mr-1" />
-																	Pinned
+								{commentsList.map((comment) => {
+									// Check if comment should be visible
+									const isFlagged = comment.flagged;
+									const isCommentOwner = user?.username === comment.user_name;
+									const shouldShowComment = !isFlagged || isCommentOwner;
+
+									// Don't render if comment is flagged and user is not the owner
+									if (!shouldShowComment) {
+										return null;
+									}
+
+									return (
+										<Card key={comment.id} className={isFlagged ? "border-orange-200 bg-orange-50" : ""}>
+											<CardContent className="p-4">
+												{/* Warning message for flagged comments */}
+												{isFlagged && (
+													<div className="mb-3 p-3 bg-orange-100 border border-orange-300 rounded-lg">
+														<div className="flex items-center space-x-2">
+															<AlertTriangle className="w-4 h-4 text-orange-600" />
+															<span className="text-sm font-medium text-orange-800">
+																⚠️ Warning: Sharing links is forbidden
+															</span>
+														</div>
+														<p className="text-xs text-orange-700 mt-1">
+															This comment has been flagged and is hidden from other users. 
+															{comment.flagged_reason && ` Reason: ${comment.flagged_reason}`}
+														</p>
+													</div>
+												)}
+												
+												<div className="flex items-start space-x-3">
+													<Avatar className="w-8 h-8">
+														<AvatarFallback>
+															{comment.user_name.charAt(0).toUpperCase()}
+														</AvatarFallback>
+													</Avatar>
+													<div className="flex-1">
+														<div className="flex items-center space-x-2 mb-2">
+															<span className="text-sm font-medium text-gray-500">
+																{comment.user_name}
+															</span>
+															{isFlagged && (
+																<Badge variant="outline" className="text-xs border-orange-300 text-orange-600 bg-orange-50">
+																	Hidden
 																</Badge>
 															)}
 															{comment.edited && (
-																<Badge variant="outline" className="text-xs">
-																	<Edit className="w-3 h-3 mr-1" />
+																<Badge variant="outline" className="text-xs border-gray-300 text-gray-600 bg-gray-50">
 																	Edited
 																</Badge>
 															)}
-														</div> */}
-													</div>
-													<p className="text-sm text-gray-700 mb-3">{comment.content}</p>
-													<div className="flex items-center justify-between">
-														<div className="flex items-center space-x-4 text-xs text-gray-500">
-															<span>{formatDate(comment.createdAt)}</span>
-															<div className="flex items-center space-x-2">
-																<Button
-																	variant="ghost"
-																	size="sm"
-																	onClick={() => handleLikeWithAuth(comment.id)}
-																	className={`flex items-center space-x-1 text-xs ${
-																		comment.liked ? "text-blue-500" : ""
-																	}`}
-																>
-																	<ThumbsUp className="w-3 h-3" />
-																	<span>{comment.likes_count}</span>
-																</Button>
-																<Button
-																	variant="ghost"
-																	size="sm"
-																	onClick={() => handleDislikeWithAuth(comment.id)}
-																	className={`flex items-center space-x-1 text-xs ${
-																		comment.disliked ? "text-red-500" : ""
-																	}`}
-																>
-																	<ThumbsDown className="w-3 h-3" />
-																	<span>{comment.dislikes_count}</span>
-																</Button>
+														</div>
+														
+														{/* Comment content - show textarea when editing */}
+														{editingCommentId === comment.id ? (
+															<div className="mb-3">
+																<Textarea
+																	value={editingContent}
+																	onChange={(e) => setEditingContent(e.target.value)}
+																	className="min-h-[80px] text-sm"
+																	placeholder="Edit your comment..."
+																/>
+																<div className="flex items-center space-x-2 mt-2">
+																	<Button
+																		size="sm"
+																		onClick={() => handleEditComment(comment.id)}
+																		disabled={!editingContent.trim() || isEditingComment}
+																		className="bg-teal-500 hover:bg-teal-600 text-white"
+																	>
+																		{isEditingComment ? (
+																			<Loader className="w-3 h-3 mr-1 animate-spin" />
+																		) : (
+																			<Check className="w-3 h-3 mr-1" />
+																		)}
+																		{isEditingComment ? "Saving..." : "Save"}
+																	</Button>
+																	<Button
+																		size="sm"
+																		variant="outline"
+																		onClick={cancelEdit}
+																		disabled={isEditingComment}
+																	>
+																		<X className="w-3 h-3 mr-1" />
+																		Cancel
+																	</Button>
+																</div>
+															</div>
+														) : (
+															<p className="text-sm text-gray-700 mb-3">{comment.content}</p>
+														)}
+														<div className="flex items-center justify-between">
+															<div className="flex items-center space-x-4 text-xs text-gray-500">
+																<span>{formatDate(comment.createdAt)}</span>
+																<div className="flex items-center space-x-2">
+																	<Button
+																		variant="ghost"
+																		size="sm"
+																		onClick={() => handleLikeWithAuth(comment.id)}
+																		className={`flex items-center space-x-1 text-xs ${
+																			comment.liked ? "text-blue-500" : ""
+																		}`}
+																	>
+																		<ThumbsUp className="w-3 h-3" />
+																		<span>{comment.likes_count}</span>
+																	</Button>
+																	<Button
+																		variant="ghost"
+																		size="sm"
+																		onClick={() => handleDislikeWithAuth(comment.id)}
+																		className={`flex items-center space-x-1 text-xs ${
+																			comment.disliked ? "text-red-500" : ""
+																		}`}
+																	>
+																		<ThumbsDown className="w-3 h-3" />
+																		<span>{comment.dislikes_count}</span>
+																	</Button>
+																	{isCommentOwner && (
+																		<DropdownMenu>
+																			<DropdownMenuTrigger asChild>
+																				<Button
+																					variant="ghost"
+																					size="sm"
+																					className="text-gray-500 hover:text-gray-700"
+																				>
+																					<MoreVertical className="w-3 h-3" />
+																				</Button>
+																			</DropdownMenuTrigger>
+																			<DropdownMenuContent align="end">
+																				<DropdownMenuItem
+																					onClick={() => handleEditCommentWithAuth(comment.id)}
+																					className="text-blue-600 focus:text-blue-600"
+																				>
+																					<Edit className="w-3 h-3 mr-2" />
+																					Edit Comment
+																				</DropdownMenuItem>
+																				<DropdownMenuItem
+																					onClick={() => handleDeleteCommentWithAuth(comment.id)}
+																					className="text-red-600 focus:text-red-600"
+																				>
+																					<Trash2 className="w-3 h-3 mr-2" />
+																					Delete Comment
+																				</DropdownMenuItem>
+																			</DropdownMenuContent>
+																		</DropdownMenu>
+																	)}
+																</div>
 															</div>
 														</div>
 													</div>
 												</div>
-											</div>
-										</CardContent>
-									</Card>
-								))}
+											</CardContent>
+										</Card>
+									);
+								})}
 							</div>
 						</div>
 					</div>
@@ -551,6 +733,37 @@ export default function NewsDetailPage({
 
 			{/* Auth Modal */}
 			<AuthModal />
+
+			{/* Delete Confirmation Modal */}
+			<AlertDialog open={showDeleteModal} onOpenChange={setShowDeleteModal}>
+				<AlertDialogContent>
+					<AlertDialogHeader>
+						<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+						<AlertDialogDescription>
+							This action cannot be undone. This will permanently delete your comment.
+						</AlertDialogDescription>
+					</AlertDialogHeader>
+					<AlertDialogFooter>
+						<AlertDialogCancel onClick={cancelDelete} disabled={deletingCommentId !== null}>
+							Cancel
+						</AlertDialogCancel>
+						<AlertDialogAction 
+							onClick={confirmDelete} 
+							disabled={deletingCommentId !== null}
+							className="bg-red-600 hover:bg-red-700 focus:ring-red-600"
+						>
+							{deletingCommentId !== null ? (
+								<>
+									<Loader className="w-4 h-4 mr-2 animate-spin" />
+									Deleting...
+								</>
+							) : (
+								'Delete'
+							)}
+						</AlertDialogAction>
+					</AlertDialogFooter>
+				</AlertDialogContent>
+			</AlertDialog>
 		</div>
 	);
 }

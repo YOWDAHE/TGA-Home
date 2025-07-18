@@ -194,3 +194,143 @@ export async function PATCH(request: NextRequest) {
         );
     }
 }
+
+export async function PUT(request: NextRequest) {
+    try {
+        const body = await request.json();
+        const { comment_id, content } = body;
+        const accessToken = request.cookies.get("tga_home_access_token")?.value;
+
+        // Validate required fields
+        if (!comment_id || !content) {
+            return NextResponse.json(
+                { error: 'comment_id and content are required' },
+                { status: 400 }
+            );
+        }
+
+        if (!content.trim()) {
+            return NextResponse.json(
+                { error: 'content cannot be empty' },
+                { status: 400 }
+            );
+        }
+
+        // Make request to backend
+        const response = await axios.put(`${BACKEND_URL}/api/public/comments/${comment_id}`, {
+            content: content.trim(),
+        }, {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            }
+        });
+
+        console.log('Comment edited successfully via API route');
+        return NextResponse.json(response.data);
+    } catch (error: any) {
+        console.error('Error editing comment via API route:', {
+            message: error.message,
+            status: error.response?.status,
+            statusText: error.response?.statusText,
+            url: error.config?.url,
+        });
+
+        // Handle specific error cases
+        if (error.response?.status === 401) {
+            return NextResponse.json(
+                { error: 'Authentication failed. Please check your API credentials.' },
+                { status: 401 }
+            );
+        } else if (error.response?.status === 404) {
+            return NextResponse.json(
+                { error: 'Comment not found.' },
+                { status: 404 }
+            );
+        } else if (error.response?.status === 403) {
+            return NextResponse.json(
+                { error: 'You are not authorized to edit this comment.' },
+                { status: 403 }
+            );
+        } else if (error.response?.status === 503) {
+            return NextResponse.json(
+                { error: 'Backend server is not available. Please try again later.' },
+                { status: 503 }
+            );
+        } else if (error.code === 'ECONNREFUSED') {
+            return NextResponse.json(
+                { error: 'Cannot connect to server. Please check if the server is running.' },
+                { status: 503 }
+            );
+        }
+
+        return NextResponse.json(
+            { error: `Failed to edit comment: ${error.message}` },
+            { status: 500 }
+        );
+    }
+}
+
+export async function DELETE(request: NextRequest) {
+    try {
+        const { searchParams } = new URL(request.url);
+        const comment_id = searchParams.get('comment_id');
+        const accessToken = request.cookies.get("tga_home_access_token")?.value;
+
+        if (!comment_id) {
+            return NextResponse.json(
+                { error: 'comment_id is required' },
+                { status: 400 }
+            );
+        }
+
+        // Make request to backend
+        const response = await axios.delete(`${BACKEND_URL}/api/public/comments/${comment_id}`, {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            }
+        });
+
+        console.log('Comment deleted successfully via API route');
+        return NextResponse.json(response.data);
+    } catch (error: any) {
+        console.error('Error deleting comment via API route:', {
+            message: error.message,
+            status: error.response?.status,
+            statusText: error.response?.statusText,
+            url: error.config?.url,
+        });
+
+        // Handle specific error cases
+        if (error.response?.status === 401) {
+            return NextResponse.json(
+                { error: 'Authentication failed. Please check your API credentials.' },
+                { status: 401 }
+            );
+        } else if (error.response?.status === 404) {
+            return NextResponse.json(
+                { error: 'Comment not found.' },
+                { status: 404 }
+            );
+        } else if (error.response?.status === 403) {
+            return NextResponse.json(
+                { error: 'You are not authorized to delete this comment.' },
+                { status: 403 }
+            );
+        } else if (error.response?.status === 503) {
+            return NextResponse.json(
+                { error: 'Backend server is not available. Please try again later.' },
+                { status: 503 }
+            );
+        } else if (error.code === 'ECONNREFUSED') {
+            return NextResponse.json(
+                { error: 'Cannot connect to server. Please check if the server is running.' },
+                { status: 503 }
+            );
+        }
+
+        return NextResponse.json(
+            { error: `Failed to delete comment: ${error.message}` },
+            { status: 500 }
+        );
+    }
+}

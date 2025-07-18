@@ -66,7 +66,7 @@ export async function GET(request: NextRequest) {
 						httpOnly: true,
 						secure: process.env.NODE_ENV === "production",
 						sameSite: "strict",
-						maxAge: 15 * 60, // 15 minutes
+						maxAge: 24 * 60 * 60, // 1 day
 					});
 
 					return nextResponse;
