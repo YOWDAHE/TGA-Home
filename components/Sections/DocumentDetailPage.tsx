@@ -16,16 +16,19 @@ import {
 	ExternalLink,
 	Share2,
 	Check,
+	Loader2,
 } from "lucide-react";
-import { Resource } from "@/app/actions/resources.actions";
+import { documentDownload, Resource } from "@/app/actions/resources.actions";
+import { useAuth } from "@/contexts/AuthContext";
+import AuthRequiredModal from "@/components/auth/AuthRequiredModal";
 import Header from "./Header";
-// import { pdfjs, Document, Page } from "react-pdf";
+import { convertToApiUrl } from "@/lib/utils";
+import { Document, Page, pdfjs } from "react-pdf";
+// import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
+// import 'react-pdf/dist/esm/Page/TextLayer.css';
 
-// pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-// 	"pdfjs-dist/build/pdf.worker.min.mjs",
-// 	import.meta.url
-// ).toString();
-
+// Set up PDF.js worker
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
 interface DocumentDetailPageProps {
 	resource: Resource;
@@ -35,22 +38,77 @@ export default function DocumentDetailPage({
 	resource,
 }: DocumentDetailPageProps) {
 	const [isLoading, setIsLoading] = useState(true);
+	const [showAuthModal, setShowAuthModal] = useState(false);
+	const [isDownloading, setIsDownloading] = useState(false);
+	const { user } = useAuth();
 	const { toast } = useToast();
 
-	const handleDownload = () => {
-		const link = document.createElement("a");
-		link.href = resource.file_url;
-		link.download = resource.filename || "download";
-		document.body.appendChild(link);
-		window.open(resource.file_url, "_blank");
-		document.body.removeChild(link);
+	const handleDownload = async () => {
+		// Check if user is authenticated
+		if (!user) {
+			setShowAuthModal(true);
+			return;
+		}
+
+		try {
+			setIsDownloading(true);
+
+			// Download document
+			await documentDownload(resource.id.toString());
+
+			toast({
+				title: "Success",
+				description: "Document downloaded successfully!",
+			});
+		} catch (error) {
+			console.error("Error downloading document:", error);
+			toast({
+				title: "Error",
+				description: "Failed to download document. Please try again.",
+				variant: "destructive",
+			});
+		} finally {
+			setIsDownloading(false);
+		}
+	};
+
+	const handleOpenResource = async (resource: Resource) => {
+		// Check if user is authenticated
+		if (!user) {
+			setShowAuthModal(true);
+			return;
+		}
+
+		try {
+			setIsDownloading(true);
+
+			// Increment view count
+			await documentDownload(resource.id.toString());
+
+			// Open resource in new tab
+			window.open(resource.file_url, "_blank", "noopener,noreferrer");
+
+			toast({
+				title: "Success",
+				description: "Resource opened successfully!",
+			});
+		} catch (error) {
+			console.error("Error opening resource:", error);
+			toast({
+				title: "Error",
+				description: "Failed to open resource. Please try again.",
+				variant: "destructive",
+			});
+		} finally {
+			setIsDownloading(false);
+		}
 	};
 
 	const handleShare = async () => {
 		try {
 			// Copy the file URL to clipboard
 			await navigator.clipboard.writeText(resource.file_url);
-			
+
 			// Show success toast
 			toast({
 				title: "File URL copied!",
@@ -64,7 +122,7 @@ export default function DocumentDetailPage({
 			});
 		} catch (error) {
 			console.error("Error copying to clipboard:", error);
-			
+
 			// Show error toast
 			toast({
 				title: "Copy failed",
@@ -118,12 +176,17 @@ export default function DocumentDetailPage({
 										<div className="flex items-center space-x-2">
 											<Button
 												onClick={handleDownload}
+												disabled={isDownloading}
 												variant="outline"
 												size="sm"
 												className="bg-white/20 hover:bg-white/30 border-white/30 text-white"
 											>
-												<Download className="w-4 h-4 mr-1" />
-												Download
+												{isDownloading ? (
+													<Loader2 className="w-4 h-4 mr-2 animate-spin" />
+												) : (
+													<Download className="w-4 h-4 mr-1" />
+												)}
+												{isDownloading ? "Downloading..." : "Download"}
 											</Button>
 											<Button
 												onClick={handleShare}
@@ -151,14 +214,13 @@ export default function DocumentDetailPage({
 											</div>
 										</div>
 									)}
-									<iframe
-										src={`${resource.file_url}#toolbar=1&navpanes=1&scrollbar=1`}
-										className="w-full h-full border-0"
-										onLoad={() => setIsLoading(false)}
-										onError={() => setIsLoading(false)}
-										title={resource.title}
-										sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-downloads"
-									/>
+									<Document
+										file={convertToApiUrl(resource.file_url)}
+										onLoadSuccess={() => setIsLoading(false)}
+										onLoadError={() => setIsLoading(false)}
+									>
+										<Page pageNumber={1} />
+									</Document>
 								</div>
 							</CardContent>
 						</Card>
@@ -249,6 +311,11 @@ export default function DocumentDetailPage({
 					</div>
 				</div>
 			</div>
+			<AuthRequiredModal
+				isOpen={showAuthModal}
+				onClose={() => setShowAuthModal(false)}
+				action="download resources"
+			/>
 		</div>
 	);
 }

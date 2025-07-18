@@ -19,7 +19,7 @@ export class Services extends Component {
 						<div className="w-24 h-1 bg-white/50 mx-auto rounded-full"></div>
 					</div>
 
-					<div className="grid md:grid-cols-2 gap-12">
+					<div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
 						{[
 							{
 								title: "RETENTION AND ONGOING LEGAL SUPPORT",
@@ -45,10 +45,20 @@ export class Services extends Component {
 									"As a trusted advisor our office has been consulting and representing plentiful number of corporations and business entities in their contractual matters with 3rd Parties with a view to enable them have a robust contract management scheme.",
 								icon: "📋",
 							},
+							{
+								title: "ADR AND ARBITRATION",
+								content:
+									"The Law Group through its Managing Partner and Senior Associates frequently represents in International Commercial Arbitration under the auspices of various regional and ad hoc centers. We also offer a full scheme ADR mechanisms.",
+								icon: "🤝",
+							},
 						].map((service, index) => (
 							<div
 								key={index}
-								className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20 hover:bg-white/20 transition-all duration-300 transform hover:scale-105"
+								className={`bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20 hover:bg-white/20 transition-all duration-300 transform hover:scale-105 ${
+									index === 3 ? "lg:col-span-2" : ""
+								} ${
+									index === 4 ? "lg:col-start-3" : ""
+								}`}
 							>
 								<div className="text-4xl mb-4">{service.icon}</div>
 								<h3 className="text-2xl font-bold mb-6">{service.title}</h3>

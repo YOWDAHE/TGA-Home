@@ -38,7 +38,7 @@ export interface NewsData {
 export interface News {
     id:                  number;
     title:               string;
-    visual_content:      VisualContent[] | null;
+    visual_content:      string[] | null;
     links:               null;
     content:             string;
     hashtags:            null | string;

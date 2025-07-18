@@ -1,18 +1,47 @@
 import Link from "next/link";
 import React from "react";
+import Image from "next/image";
+import { ContactUs as ContactUsType } from "@/app/types/landing";
 
-export default function Footer() {
+interface FooterProps {
+	contactUs: ContactUsType[];
+}
+
+export default function Footer({ contactUs }: FooterProps) {
+	// Extract contact information from contactUs data
+	const getContactInfo = (type: string) => {
+		const contact = contactUs.find(c => 
+			c.medium.toLowerCase().includes(type.toLowerCase())
+		);
+		return contact?.email || contact?.phone_number || "-";
+	};
+
+	// Services data (matching the Services component)
+	const services = [
+		{
+			title: "Retention and Ongoing Legal Support",
+			href: "#services",
+		},
+		{
+			title: "Representation",
+			href: "#services",
+		},
+		{
+			title: "Consulting and Advisory",
+			href: "#services",
+		},
+		{
+			title: "Contract Management and Arbitration",
+			href: "#services",
+		},
+	];
+
 	return (
 		<footer className="bg-slate-800 text-white py-12">
 			<div className="container mx-auto px-4">
 				<div className="grid md:grid-cols-4 gap-8">
 					<div>
-						<div className="flex items-center space-x-2 mb-4">
-							<div className="bg-teal-500 text-white px-3 py-2 rounded font-bold text-xl">
-								TG&A
-							</div>
-							<span className="font-medium">LAW GROUP</span>
-						</div>
+						<Image src="/loader/loader-1.svg" alt="Logo" width={100} height={100} className=" bg-white rounded-md mb-4" />
 						<p className="text-gray-400">
 							Committed to excellence in legal services across Ethiopia and Africa.
 						</p>
@@ -21,26 +50,13 @@ export default function Footer() {
 					<div>
 						<h3 className="font-semibold mb-4">Services</h3>
 						<ul className="space-y-2 text-gray-400">
-							<li>
-								<Link href="#" className="hover:text-white">
-									Legal Consulting
-								</Link>
-							</li>
-							<li>
-								<Link href="#" className="hover:text-white">
-									Contract Management
-								</Link>
-							</li>
-							<li>
-								<Link href="#" className="hover:text-white">
-									Arbitration
-								</Link>
-							</li>
-							<li>
-								<Link href="#" className="hover:text-white">
-									Construction Law
-								</Link>
-							</li>
+							{services.map((service, index) => (
+								<li key={index}>
+									<Link href={service.href} className="hover:text-white">
+										{service.title}
+									</Link>
+								</li>
+							))}
 						</ul>
 					</div>
 
@@ -48,7 +64,7 @@ export default function Footer() {
 						<h3 className="font-semibold mb-4">Company</h3>
 						<ul className="space-y-2 text-gray-400">
 							<li>
-								<Link href="#" className="hover:text-white">
+								<Link href="#about" className="hover:text-white">
 									About Us
 								</Link>
 							</li>
@@ -58,13 +74,13 @@ export default function Footer() {
 								</Link>
 							</li>
 							<li>
-								<Link href="#" className="hover:text-white">
-									Careers
+								<Link href="/news" className="hover:text-white">
+									News
 								</Link>
 							</li>
 							<li>
-								<Link href="#" className="hover:text-white">
-									Contact
+								<Link href="/resources" className="hover:text-white">
+									Resources
 								</Link>
 							</li>
 						</ul>
@@ -74,8 +90,8 @@ export default function Footer() {
 						<h3 className="font-semibold mb-4">Contact</h3>
 						<div className="space-y-2 text-gray-400">
 							<p>Addis Ababa, Ethiopia</p>
-							<p>info@tgalawgroup.com</p>
-							<p>+251 11 XXX XXXX</p>
+							<p>{getContactInfo("email")}</p>
+							<p>{getContactInfo("phone")}</p>
 						</div>
 					</div>
 				</div>

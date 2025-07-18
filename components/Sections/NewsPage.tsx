@@ -30,6 +30,7 @@ import {
 	ChevronLeft,
 	X,
 	Check,
+	ExternalLink,
 } from "lucide-react";
 import {
 	NewsResponse,
@@ -95,7 +96,7 @@ export default function NewsPage({
 	// Helper function to get image URL
 	const getImageUrl = (newsItem: News) => {
 		if (newsItem.visual_content && newsItem.visual_content.length > 0) {
-			return convertToApiUrl(newsItem.visual_content[0].secure_url);
+			return convertToApiUrl(newsItem.visual_content[0]);
 		}
 		return "/placeholder.svg";
 	};
@@ -346,7 +347,7 @@ export default function NewsPage({
 																{article.content}
 															</p>
 															<div className="flex items-center justify-between text-xs text-gray-500">
-																<span>{article.created_by}</span>
+																<span>TGA Law Group</span>
 																<span>{formatDate(article.published_date)}</span>
 															</div>
 														</CardContent>
@@ -497,7 +498,7 @@ export default function NewsPage({
 											<div className="flex items-center space-x-3">
 												<span className="flex items-center">
 													<User className="w-3 h-3 mr-1" />
-													{article.created_by}
+													TGA Law Group
 												</span>
 												<span className="flex items-center">
 													<Calendar className="w-3 h-3 mr-1" />
@@ -553,37 +554,39 @@ export default function NewsPage({
 								View All
 							</Button> */}
 						</div>
-						<div className="space-y-6">
+						<div className="flex flex-col gap-2">
 							{latest.slice(0, 5).map((article) => (
-								<Card
-									key={article.id}
-									className="overflow-hidden hover:shadow-lg transition-shadow"
-								>
-									<CardContent className="p-0">
-										<div className="flex">
-											<div className="w-32 h-26 flex-shrink-0 relative bg-red-500">
-												<Image
-													src={getImageUrl(article)}
-													alt={article.title}
-													// width={128}
-													// height={96}
-													className="w-full h-full object-cover"
-													fill={true}
-												/>
-											</div>
-											<div className="p-4 flex-1">
-												<h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">
-													{article.title}
-												</h3>
-												<div className="flex items-center text-xs text-gray-500 space-x-3">
-													<span>{article.created_by}</span>
-													<span>{formatDate(article.published_date)}</span>
-													<span>{getReadTime(article.read_minutes)}</span>
+								<Link href={`/news/${article.id}`} key={article.id}>
+									<Card
+										key={article.id}
+										className="overflow-hidden hover:shadow-lg transition-shadow"
+									>
+										<CardContent className="p-0">
+											<div className="flex">
+												<div className="w-32 h-26 flex-shrink-0 relative bg-red-500">
+													<Image
+														src={getImageUrl(article)}
+														alt={article.title}
+														// width={128}
+														// height={96}
+														className="w-full h-full object-cover"
+														fill={true}
+													/>
+												</div>
+												<div className="p-4 flex-1">
+													<h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">
+														{article.title}
+													</h3>
+													<div className="flex items-center text-xs text-gray-500 space-x-3">
+														<span>TGA Law Group</span>
+														<span>{formatDate(article.published_date)}</span>
+														<span>{getReadTime(article.read_minutes)}</span>
+													</div>
 												</div>
 											</div>
-										</div>
-									</CardContent>
-								</Card>
+										</CardContent>
+									</Card>
+								</Link>
 							))}
 						</div>
 					</div>
@@ -591,35 +594,37 @@ export default function NewsPage({
 					{/* Top Articles Sidebar */}
 					<div className="lg:col-span-1">
 						<h2 className="text-2xl font-bold text-gray-900 mb-6">TOP</h2>
-						<div className="space-y-4">
+						<div className="flex flex-col gap-2">
 							{[...latest]
 								.sort((a, b) => b.view_count - a.view_count)
 								.slice(0, 6)
 								.map((article, index) => (
-									<Card
-										key={article.id}
-										className="overflow-hidden hover:shadow-md transition-shadow"
-									>
-										<CardContent className="p-4">
-											<div className="flex items-start space-x-3">
-												<div className="bg-teal-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold flex-shrink-0">
-													{index + 1}
-												</div>
-												<div className="flex-1">
-													<h4 className="font-semibold text-sm text-gray-900 mb-1 line-clamp-2">
-														{article.title}
-													</h4>
-													<div className="flex items-center text-xs text-gray-500 space-x-2">
-														<span className="flex items-center">
-															<Eye className="w-3 h-3 mr-1" />
-															{article.view_count.toLocaleString()}
-														</span>
-														<span>{getReadTime(article.read_minutes)}</span>
+									<Link href={`/news/${article.id}`} key={article.id}>
+										<Card
+											key={article.id}
+											className="overflow-hidden hover:shadow-md transition-shadow"
+										>
+											<CardContent className="p-4">
+												<div className="flex items-start space-x-3">
+													<div className="bg-teal-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold flex-shrink-0">
+														{index + 1}
+													</div>
+													<div className="flex-1">
+														<h4 className="font-semibold text-sm text-gray-900 mb-1 line-clamp-2">
+															{article.title}
+														</h4>
+														<div className="flex items-center text-xs text-gray-500 space-x-2">
+															<span className="flex items-center">
+																<Eye className="w-3 h-3 mr-1" />
+																{article.view_count.toLocaleString()}
+															</span>
+															<span>{getReadTime(article.read_minutes)}</span>
+														</div>
 													</div>
 												</div>
-											</div>
-										</CardContent>
-									</Card>
+											</CardContent>
+										</Card>
+									</Link>
 								))}
 						</div>
 					</div>
@@ -630,28 +635,30 @@ export default function NewsPage({
 							<TrendingUp className="w-6 h-6 mr-2 text-red-500" />
 							TRENDING
 						</h2>
-						<div className="space-y-4">
+						<div className="flex flex-col gap-2">
 							{trending.map((article) => (
-								<Card
-									key={article.id}
-									className="overflow-hidden hover:shadow-md transition-shadow"
-								>
-									<CardContent className="p-4">
-										<h4 className="font-semibold text-sm text-gray-900 mb-2 line-clamp-2">
-											{article.title}
-										</h4>
-										<p className="text-xs text-gray-600 mb-2 line-clamp-2">
-											{article.content}
-										</p>
-										<div className="flex items-center text-xs text-gray-500 space-x-2">
-											<span>{formatDate(article.published_date)}</span>
-											<span className="flex items-center">
-												<Eye className="w-3 h-3 mr-1" />
-												{article.view_count.toLocaleString()}
-											</span>
-										</div>
-									</CardContent>
-								</Card>
+								<Link href={`/news/${article.id}`} key={article.id}>
+									<Card
+										key={article.id}
+										className="overflow-hidden hover:shadow-md transition-shadow"
+									>
+										<CardContent className="p-4">
+											<h4 className="font-semibold text-sm text-gray-900 mb-2 line-clamp-2">
+												{article.title}
+											</h4>
+											<p className="text-xs text-gray-600 mb-2 line-clamp-2">
+												{article.content}
+											</p>
+											<div className="flex items-center text-xs text-gray-500 space-x-2">
+												<span>{formatDate(article.published_date)}</span>
+												<span className="flex items-center">
+													<Eye className="w-3 h-3 mr-1" />
+													{article.view_count.toLocaleString()}
+												</span>
+											</div>
+										</CardContent>
+									</Card>
+								</Link>
 							))}
 						</div>
 					</div>
@@ -659,31 +666,56 @@ export default function NewsPage({
 
 				{/* Other News (Videos & External Links) Section */}
 				{others.length > 0 && (
-					<section className="mt-16">
-						<div className="flex items-center justify-between mb-8">
-							<h2 className="text-2xl font-semibold text-gray-900">OTHER NEWS</h2>
-							<Button
-								variant="outline"
-								className="text-teal-500 border-teal-500 bg-transparent"
-								onClick={() => {
-									document.getElementById("browse-news-section")?.scrollIntoView({
-										behavior: "smooth",
-									});
-								}}
-							>
-								View All Content
-							</Button>
-						</div>
-						<div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-							{others.map((other) => (
-								<EmbeddedContent
-									key={other.id}
-									title={other.title}
-									description={other.description}
-									link={other.link}
-									createdAt={other.createdAt}
-								/>
-							))}
+					<section className="mt-20">
+						<div className="mx-auto px-4">
+							{/* Section Header */}
+							<div className="mb-12">
+								<h2 className="text-3xl font-bold text-gray-900 mb-4">
+									External Content & Videos
+								</h2>
+								<p className="text-lg text-gray-600 max-w-2xl">
+									Discover curated videos, external articles, and multimedia content from
+									trusted sources
+								</p>
+							</div>
+
+							{/* Content Grid */}
+							<div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+								{others.map((other, index) => (
+									<div
+										key={other.id}
+										className="group relative"
+										style={{
+											animationDelay: `${index * 100}ms`,
+										}}
+									>
+										<EmbeddedContent
+											title={other.title}
+											description={other.description}
+											link={other.link}
+											createdAt={other.createdAt}
+											className="h-full transform transition-all duration-300 group-hover:scale-100 group-hover:shadow-2xl rounded-md"
+										/>
+									</div>
+								))}
+							</div>
+
+							{/* Call to Action */}
+							{/* <div className="text-center mt-12">
+								<Button
+									variant="outline"
+									size="lg"
+									className="text-teal-600 border-teal-600 hover:bg-teal-50 hover:border-teal-700 px-8 py-3 text-lg font-semibold rounded-xl transition-all duration-300 hover:shadow-lg"
+									onClick={() => {
+										document.getElementById("browse-news-section")?.scrollIntoView({
+											behavior: "smooth",
+										});
+									}}
+								>
+									<ChevronRight className="w-5 h-5 mr-2" />
+									Explore More Content
+								</Button>
+							</div> */}
 						</div>
 					</section>
 				)}
@@ -764,32 +796,34 @@ export default function NewsPage({
 					) : (
 						<div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
 							{getCurrentNewsItems().map((article) => (
-								<Card
-									key={article.id}
-									className="overflow-hidden hover:shadow-lg transition-shadow"
-								>
-									<div className="relative">
-										<Image
-											src={getImageUrl(article)}
-											alt={article.title}
-											width={400}
-											height={250}
-											className="w-full h-48 object-cover"
-										/>
-									</div>
-									<CardContent className="p-4">
-										<h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">
-											{article.title}
-										</h3>
-										<p className="text-sm text-gray-600 mb-3 line-clamp-2">
-											{article.content}
-										</p>
-										<div className="flex items-center justify-between text-xs text-gray-500">
-											<span>{article.created_by}</span>
-											<span>{formatDate(article.published_date)}</span>
+								<Link href={`/news/${article.id}`} key={article.id}>
+									<Card
+										key={article.id}
+										className="overflow-hidden hover:shadow-lg transition-shadow"
+									>
+										<div className="relative">
+											<Image
+												src={getImageUrl(article)}
+												alt={article.title}
+												width={400}
+												height={250}
+												className="w-full h-48 object-cover"
+											/>
 										</div>
-									</CardContent>
-								</Card>
+										<CardContent className="p-4">
+											<h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">
+												{article.title}
+											</h3>
+											<p className="text-sm text-gray-600 mb-3 line-clamp-2">
+												{article.content}
+											</p>
+											<div className="flex items-center justify-between text-xs text-gray-500">
+												<span>TGA Law Group</span>
+												<span>{formatDate(article.published_date)}</span>
+											</div>
+										</CardContent>
+									</Card>
+								</Link>
 							))}
 						</div>
 					)}

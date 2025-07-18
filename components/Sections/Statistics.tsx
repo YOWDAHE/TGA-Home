@@ -16,7 +16,7 @@ export default function Statistics({ stats }: StatisticsProps) {
 								key={stat.id}
 								className="text-center p-8 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 hover:bg-white/20 transition-all duration-300 transform hover:scale-105 group"
 							>
-								<div className="text-4xl md:text-5xl font-bold mb-3 bg-gradient-to-r text-teal-300 bg-clip-text text-transparent">
+								<div className="text-4xl md:text-5xl font-bold mb-3 text-teal-300">
 									{stat.stat}
 								</div>
 								<div className="text-base text-gray-200 font-medium">

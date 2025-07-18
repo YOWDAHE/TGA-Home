@@ -15,6 +15,13 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
+	Carousel,
+	CarouselContent,
+	CarouselItem,
+	CarouselNext,
+	CarouselPrevious,
+} from "@/components/ui/carousel";
+import {
 	ArrowLeft,
 	Calendar,
 	Clock,
@@ -59,6 +66,7 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import Autoplay from "embla-carousel-autoplay";
 
 interface NewsArticle {
 	id: number;
@@ -125,12 +133,15 @@ export default function NewsDetailPage({
 	const [showShareMenu, setShowShareMenu] = useState(false);
 	const [loading, setLoading] = useState(true);
 	const [isPostingComment, setIsPostingComment] = useState(false);
-	const [deletingCommentId, setDeletingCommentId] = useState<number | null>(null);
+	const [deletingCommentId, setDeletingCommentId] = useState<number | null>(
+		null
+	);
 	const [showDeleteModal, setShowDeleteModal] = useState(false);
 	const [commentToDelete, setCommentToDelete] = useState<number | null>(null);
 	const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
 	const [editingContent, setEditingContent] = useState("");
 	const [isEditingComment, setIsEditingComment] = useState(false);
+	const [carouselApi, setCarouselApi] = useState<any>(null);
 
 	// Authentication
 	const { user } = useAuth();
@@ -138,13 +149,22 @@ export default function NewsDetailPage({
 
 	// Use the news data from props
 	const article = news.data;
+	console.log("article:", article);
 
 	// Helper function to get image URL
 	const getImageUrl = (newsItem: any) => {
 		if (newsItem.visual_content && newsItem.visual_content.length > 0) {
-			return convertToApiUrl(newsItem.visual_content[0].secure_url);
+			return convertToApiUrl(newsItem.visual_content[0]);
 		}
 		return "/placeholder.svg";
+	};
+
+	// Helper function to get all visual content URLs
+	const getAllVisualContentUrls = (newsItem: any) => {
+		if (newsItem.visual_content && newsItem.visual_content.length > 0) {
+			return newsItem.visual_content.map((item: any) => convertToApiUrl(item));
+		}
+		return ["/placeholder.svg"];
 	};
 
 	// Helper function to format date
@@ -269,7 +289,7 @@ export default function NewsDetailPage({
 
 	const handleDeleteComment = async (commentId: number) => {
 		if (!user) return;
-		
+
 		setDeletingCommentId(commentId);
 		try {
 			await deleteNewsComment(commentId.toString());
@@ -304,7 +324,7 @@ export default function NewsDetailPage({
 
 	const handleEditComment = async (commentId: number) => {
 		if (!user || !editingContent.trim()) return;
-		
+
 		setIsEditingComment(true);
 		try {
 			await editNewsComment(commentId.toString(), editingContent.trim());
@@ -323,7 +343,7 @@ export default function NewsDetailPage({
 		requireAuth("edit", () => {
 			setEditingCommentId(commentId);
 			// Set the current comment content for editing
-			const comment = commentsList.find(c => c.id === commentId);
+			const comment = commentsList.find((c) => c.id === commentId);
 			if (comment) {
 				setEditingContent(comment.content);
 			}
@@ -419,10 +439,6 @@ export default function NewsDetailPage({
 					<h1 className="text-4xl font-bold text-gray-900 mb-4">{article.title}</h1>
 					<div className="flex items-center space-x-6 text-sm text-gray-500 mb-6">
 						<span className="flex items-center">
-							<User className="w-4 h-4 mr-1" />
-							{article.created_by}
-						</span>
-						<span className="flex items-center">
 							<Calendar className="w-4 h-4 mr-1" />
 							{formatDate(article.published_date)}
 						</span>
@@ -437,16 +453,72 @@ export default function NewsDetailPage({
 					</div>
 				</div>
 
-				{/* Article Image */}
+				{/* Article Images Carousel */}
 				{article.visual_content && article.visual_content.length > 0 && (
 					<div className="mb-8">
-						<Image
-							src={getImageUrl(article)}
-							alt={article.title}
-							width={1200}
-							height={600}
-							className="w-full h-96 object-cover rounded-lg"
-						/>
+						{article.visual_content.length === 1 ? (
+							// Single image display
+							<div className="flex justify-center">
+								<Image
+									src={getImageUrl(article)}
+									alt={article.title}
+									width={1200}
+									height={600}
+									className="lg:w-[80%] lg:h-[500px] w-full h-[300px] object-cover rounded-lg shadow-lg"
+								/>
+							</div>
+						) : (
+							// Carousel for multiple images
+							<div className="lg:w-[80%]">
+								<Carousel
+									opts={{
+										align: "start",
+										loop: true,
+										duration: 3000,
+									}}
+									plugins={[Autoplay({ delay: 2000 })]}
+									setApi={setCarouselApi}
+									className="w-full"
+								>
+									<CarouselContent>
+										{getAllVisualContentUrls(article).map(
+											(imageUrl: string, index: number) => (
+												<CarouselItem key={index}>
+													<div className="relative">
+														<Image
+															src={imageUrl}
+															alt={`${article.title} - Image ${index + 1}`}
+															width={1200}
+															height={600}
+															className="w-full lg:h-[500px] h-[300px] object-cover rounded-lg shadow-lg"
+														/>
+														{/* Image counter */}
+														<div className="absolute bottom-4 right-4 bg-black/60 text-white px-3 py-1 rounded-full text-sm font-medium backdrop-blur-sm">
+															{index + 1} / {article.visual_content?.length || 0}
+														</div>
+													</div>
+												</CarouselItem>
+											)
+										)}
+									</CarouselContent>
+									{/* <CarouselPrevious className="left-4 bg-white/80 hover:bg-white text-gray-800 border-0 shadow-lg" />
+									<CarouselNext className="right-4 bg-white/80 hover:bg-white text-gray-800 border-0 shadow-lg" /> */}
+								</Carousel>
+
+								{/* Carousel indicators */}
+								{article.visual_content.length > 1 && (
+									<div className="flex justify-center mt-4 space-x-2">
+										{article.visual_content.map((_, index) => (
+											<button
+												key={index}
+												onClick={() => carouselApi?.scrollTo(index)}
+												className="w-3 h-3 rounded-full bg-gray-300 hover:bg-gray-400 transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500"
+											/>
+										))}
+									</div>
+								)}
+							</div>
+						)}
 					</div>
 				)}
 
@@ -495,9 +567,7 @@ export default function NewsDetailPage({
 												value={newComment}
 												onChange={(e) => setNewComment(e.target.value)}
 												placeholder={
-													user
-														? "Share your thoughts..."
-														: "Sign in to leave a comment..."
+													user ? "Share your thoughts..." : "Sign in to leave a comment..."
 												}
 												className="min-h-[100px]"
 												disabled={!user || isPostingComment}
@@ -513,7 +583,11 @@ export default function NewsDetailPage({
 											) : (
 												<MessageCircle className="w-4 h-4 mr-2" />
 											)}
-											{user ? (isPostingComment ? "Posting..." : "Post Comment") : "Sign in to Comment"}
+											{user
+												? isPostingComment
+													? "Posting..."
+													: "Post Comment"
+												: "Sign in to Comment"}
 										</Button>
 									</div>
 								</CardContent>
@@ -533,7 +607,10 @@ export default function NewsDetailPage({
 									}
 
 									return (
-										<Card key={comment.id} className={isFlagged ? "border-orange-200 bg-orange-50" : ""}>
+										<Card
+											key={comment.id}
+											className={isFlagged ? "border-orange-200 bg-orange-50" : ""}
+										>
 											<CardContent className="p-4">
 												{/* Warning message for flagged comments */}
 												{isFlagged && (
@@ -545,12 +622,12 @@ export default function NewsDetailPage({
 															</span>
 														</div>
 														<p className="text-xs text-orange-700 mt-1">
-															This comment has been flagged and is hidden from other users. 
+															This comment has been flagged and is hidden from other users.
 															{comment.flagged_reason && ` Reason: ${comment.flagged_reason}`}
 														</p>
 													</div>
 												)}
-												
+
 												<div className="flex items-start space-x-3">
 													<Avatar className="w-8 h-8">
 														<AvatarFallback>
@@ -563,17 +640,23 @@ export default function NewsDetailPage({
 																{comment.user_name}
 															</span>
 															{isFlagged && (
-																<Badge variant="outline" className="text-xs border-orange-300 text-orange-600 bg-orange-50">
+																<Badge
+																	variant="outline"
+																	className="text-xs border-orange-300 text-orange-600 bg-orange-50"
+																>
 																	Hidden
 																</Badge>
 															)}
 															{comment.edited && (
-																<Badge variant="outline" className="text-xs border-gray-300 text-gray-600 bg-gray-50">
+																<Badge
+																	variant="outline"
+																	className="text-xs border-gray-300 text-gray-600 bg-gray-50"
+																>
 																	Edited
 																</Badge>
 															)}
 														</div>
-														
+
 														{/* Comment content - show textarea when editing */}
 														{editingCommentId === comment.id ? (
 															<div className="mb-3">
@@ -688,42 +771,50 @@ export default function NewsDetailPage({
 									Related Articles
 								</h3>
 								<div className="space-y-4">
-									{relatedArticles.map((relatedArticle) => (
-										<Card
-											key={relatedArticle.id}
-											className="overflow-hidden hover:shadow-md transition-shadow"
-										>
-											<CardContent className="p-4">
-												<div className="flex space-x-3">
-													<div className="w-16 h-12 flex-shrink-0">
-														<Image
-															src={getImageUrl(relatedArticle) || "/placeholder.svg"}
-															alt={relatedArticle.title || "No title"}
-															width={64}
-															height={48}
-															className="w-full h-full object-cover rounded"
-														/>
-													</div>
-													<div className="flex-1">
-														<h4 className="font-semibold text-sm text-gray-900 mb-1 line-clamp-2">
-															{relatedArticle.title || "-"}
-														</h4>
-														<div className="flex items-center text-xs text-gray-500 space-x-2">
-															<span>
-																{isNaN(Date.parse(relatedArticle.published_date))
-																	? "-"
-																	: formatDate(relatedArticle.published_date)}
-															</span>
-															<span className="flex items-center">
-																<Eye className="w-3 h-3 mr-1" />
-																{(relatedArticle.view_count || 0).toLocaleString()}
-															</span>
+									{relatedArticles.map((relatedArticle) => {
+										console.log(
+											"relatedArticle.visual_content.thumbnail:",
+											relatedArticle.visual_content.thumbnail
+										);
+										return (
+											<Card
+												key={relatedArticle.id}
+												className="overflow-hidden hover:shadow-md transition-shadow"
+											>
+												<CardContent className="p-4">
+													<div className="flex space-x-3">
+														<div className="w-16 h-12 flex-shrink-0">
+															<Image
+																src={
+																	relatedArticle.visual_content.thumbnail || "/placeholder.svg"
+																}
+																alt={relatedArticle.title || "No title"}
+																width={64}
+																height={48}
+																className="w-full h-full object-cover rounded"
+															/>
+														</div>
+														<div className="flex-1">
+															<h4 className="font-semibold text-sm text-gray-900 mb-1 line-clamp-2">
+																{relatedArticle.title || "-"}
+															</h4>
+															<div className="flex items-center text-xs text-gray-500 space-x-2">
+																<span>
+																	{isNaN(Date.parse(relatedArticle.published_date))
+																		? "-"
+																		: formatDate(relatedArticle.published_date)}
+																</span>
+																<span className="flex items-center">
+																	<Eye className="w-3 h-3 mr-1" />
+																	{(relatedArticle.view_count || 0).toLocaleString()}
+																</span>
+															</div>
 														</div>
 													</div>
-												</div>
-											</CardContent>
-										</Card>
-									))}
+												</CardContent>
+											</Card>
+										);
+									})}
 								</div>
 							</div>
 						</div>
@@ -744,11 +835,14 @@ export default function NewsDetailPage({
 						</AlertDialogDescription>
 					</AlertDialogHeader>
 					<AlertDialogFooter>
-						<AlertDialogCancel onClick={cancelDelete} disabled={deletingCommentId !== null}>
+						<AlertDialogCancel
+							onClick={cancelDelete}
+							disabled={deletingCommentId !== null}
+						>
 							Cancel
 						</AlertDialogCancel>
-						<AlertDialogAction 
-							onClick={confirmDelete} 
+						<AlertDialogAction
+							onClick={confirmDelete}
 							disabled={deletingCommentId !== null}
 							className="bg-red-600 hover:bg-red-700 focus:ring-red-600"
 						>
@@ -758,7 +852,7 @@ export default function NewsDetailPage({
 									Deleting...
 								</>
 							) : (
-								'Delete'
+								"Delete"
 							)}
 						</AlertDialogAction>
 					</AlertDialogFooter>

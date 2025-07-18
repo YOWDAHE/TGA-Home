@@ -56,7 +56,7 @@ export default function LandingPage({ data, news, resources }: LandingPageProps)
       <News news={news} resources={resources} />
       <Partners partners={data.partners} />
       <ContactUs contactUs={data.contactUs} />
-      <Footer />
+      <Footer contactUs={data.contactUs} />
 
       {/* Scroll to Top Button */}
       {showScrollTop && (

@@ -85,10 +85,10 @@ export function EmbeddedContent({
   };
 
   return (
-    <Card className={`rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 border overflow-hidden border-gray-100 md:w-[300px] ${className}`}>
+    <Card className={`rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border-0 overflow-hidden bg-white ${className}`}>
       <div className="flex flex-col h-full">
         {/* Preview Area */}
-        <div className="relative bg-gray-50 overflow-hidden flex items-center justify-center min-h-[220px] h-56">
+        <div className="relative bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden flex items-center justify-center min-h-[220px] h-56">
           {showIframe && embedUrl ? (
             <>
               <iframe
@@ -126,36 +126,39 @@ export function EmbeddedContent({
                 <Play className="w-8 h-8" />
               </Button>
               {/* Badge */}
-              <span className={`absolute top-4 right-4 px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wide shadow ${getLinkTypeColor(type)}`}>
+              <span className={`absolute top-4 right-4 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide shadow-lg backdrop-blur-sm ${getLinkTypeColor(type)}`}>
                 {getLinkTypeLabel(type)}
               </span>
             </>
           ) : (
             <div className="flex flex-col items-center justify-center w-full h-full py-8">
-              <LinkIcon className="w-14 h-14 text-gray-400 mb-2" />
-              <span className={`px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wide mb-2 ${getLinkTypeColor(type)}`}>{getLinkTypeLabel(type)}</span>
+              <div className="w-16 h-16 bg-gradient-to-br from-gray-200 to-gray-300 rounded-2xl flex items-center justify-center mb-4 shadow-inner">
+                <LinkIcon className="w-8 h-8 text-gray-500" />
+              </div>
+              <span className={`px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wide shadow-lg ${getLinkTypeColor(type)}`}>{getLinkTypeLabel(type)}</span>
             </div>
           )}
         </div>
         {/* Content Area */}
         <CardContent className="flex-1 flex flex-col gap-4 p-6">
           <div>
-            <h3 className="text-lg font-bold mb-1 text-gray-900">{title}</h3>
-            <p className="text-gray-500 text-base mb-2">{description}</p>
+            <h3 className="text-xl font-bold mb-3 text-gray-900 line-clamp-2 leading-tight">{title}</h3>
+            <p className="text-gray-600 text-sm leading-relaxed line-clamp-3">{description}</p>
           </div>
-          <div className="flex items-center gap-2 mt-auto">
+          <div className="flex items-center justify-between mt-auto pt-4 border-t border-gray-100">
+            <div className="text-xs text-gray-500 font-medium">
+              {formatDate(createdAt)}
+            </div>
             <Button
               variant="outline"
               size="sm"
-              className="text-teal-600 border-teal-600 hover:bg-teal-50 text-sm"
+              className="text-teal-600 border-teal-600 hover:bg-teal-50 hover:border-teal-700 text-sm font-semibold rounded-lg transition-all duration-200"
               onClick={() => window.open(link, '_blank', 'noopener,noreferrer')}
             >
-              <ExternalLink className="w-4 h-4 mr-2 text-sm" />
-              Open in New Tab
+              <ExternalLink className="w-4 h-4 mr-2" />
+              Open Link
             </Button>
-            {/* Add more action buttons here if needed */}
           </div>
-          <div className="text-xs text-gray-400 mt-2">{formatDate(createdAt)}</div>
         </CardContent>
       </div>
     </Card>

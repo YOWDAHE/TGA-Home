@@ -16,10 +16,14 @@ import {
 	Eye,
 	TrendingUp,
 	ExternalLink,
+	Loader2,
 } from "lucide-react";
-import { Resource } from "@/app/actions/resources.actions";
+import { Resource, incrementDocumentView } from "@/app/actions/resources.actions";
 import { Category } from "@/app/types/news";
+import { useAuth } from "@/contexts/AuthContext";
+import AuthRequiredModal from "@/components/auth/AuthRequiredModal";
 import Header from "./Header";
+import { useToast } from "@/hooks/use-toast";
 
 interface ResourcesPageProps {
 	resources: Resource[];
@@ -108,10 +112,14 @@ const MostVisitedSkeleton = () => (
 export default function ResourcesPage({ resources, topViewedResources, categories, isLoading = false }: ResourcesPageProps) {
 	const router = useRouter();
 	const searchParams = useSearchParams();
+	const { user } = useAuth();
+	const { toast } = useToast();
 	
 	// Get search term from URL or default to empty
 	const [searchTerm, setSearchTerm] = useState(searchParams.get('search') || "");
 	const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || "All");
+	const [showAuthModal, setShowAuthModal] = useState(false);
+	const [isIncrementingView, setIsIncrementingView] = useState(false);
 
 	// const filteredResources = useMemo(() => {
 	// 	if (!resources || resources.length === 0) {
@@ -144,6 +152,38 @@ export default function ResourcesPage({ resources, topViewedResources, categorie
 
 	const handlePreview = (resource: Resource) => {
 		window.open(resource.file_url, "_blank", "noopener,noreferrer");
+	};
+
+	const handleOpenResource = async (resource: Resource) => {
+		// Check if user is authenticated
+		if (!user) {
+			setShowAuthModal(true);
+			return;
+		}
+
+		try {
+			setIsIncrementingView(true);
+
+			// Increment view count
+			await incrementDocumentView(resource.id.toString());
+			
+			// Open resource in new tab
+			window.open(resource.file_url, "_blank", "noopener,noreferrer");
+			
+			toast({
+				title: "Success",
+				description: "Resource opened successfully!",
+			});
+		} catch (error) {
+			console.error('Error opening resource:', error);
+			toast({
+				title: "Error",
+				description: "Failed to open resource. Please try again.",
+				variant: "destructive",
+			});
+		} finally {
+			setIsIncrementingView(false);
+		}
 	};
 
 	// Helper function to get category name by ID
@@ -326,7 +366,7 @@ export default function ResourcesPage({ resources, topViewedResources, categorie
 																Open
 															</Button>
 														</Link>
-														<Button
+														{/* <Button
 															size="sm"
 															variant="outline"
 															onClick={() => handlePreview(resource)}
@@ -334,6 +374,19 @@ export default function ResourcesPage({ resources, topViewedResources, categorie
 															title="Preview in new tab"
 														>
 															<ExternalLink className="w-4 h-4" />
+														</Button> */}
+														<Button
+															size="sm"
+															variant="outline"
+															onClick={() => handleOpenResource(resource)}
+															disabled={isIncrementingView}
+															className=" border-emerald-200 text-emerald-600 hover:bg-emerald-50 hover:border-emerald-300 transition-all duration-300 flex items-center justify-center"
+														>
+															{isIncrementingView ? (
+																<Loader2 className="w-4 h-4 mr-2 animate-spin" />
+															) : (
+																<ExternalLink className="w-4 h-4" />
+															)}
 														</Button>
 													</div>
 												</div>
@@ -474,7 +527,7 @@ export default function ResourcesPage({ resources, topViewedResources, categorie
 																Open
 															</Button>
 														</Link>
-														<Button
+														{/* <Button
 															size="sm"
 															variant="outline"
 															onClick={() => handlePreview(resource)}
@@ -482,6 +535,19 @@ export default function ResourcesPage({ resources, topViewedResources, categorie
 															title="Preview in new tab"
 														>
 															<ExternalLink className="w-4 h-4" />
+														</Button> */}
+														<Button
+															size="sm"
+															variant="outline"
+															onClick={() => handleOpenResource(resource)}
+															disabled={isIncrementingView}
+															className=" border-emerald-200 text-emerald-600 hover:bg-emerald-50 hover:border-emerald-300 transition-all duration-300 flex items-center justify-center"
+														>
+															{isIncrementingView ? (
+																<Loader2 className="w-4 h-4 mr-2 animate-spin" />
+															) : (
+																<ExternalLink className="w-4 h-4" />
+															)}
 														</Button>
 													</div>
 												</div>
@@ -494,6 +560,11 @@ export default function ResourcesPage({ resources, topViewedResources, categorie
 					</div>
 				</div>
 			</div>
+			<AuthRequiredModal
+				isOpen={showAuthModal}
+				onClose={() => setShowAuthModal(false)}
+				action="access resources"
+			/>
 		</div>
 	);
 }

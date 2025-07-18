@@ -15,6 +15,7 @@ export function convertToApiUrl(url: string): string {
   // If it's a localhost upload URL, convert to use our API route
   if (url.includes('localhost:3000/uploads/')) {
     const urlObj = new URL(url);
+    console.log('urlObj:', `/api${urlObj.pathname}`);
     return `/api${urlObj.pathname}`;
   }
   

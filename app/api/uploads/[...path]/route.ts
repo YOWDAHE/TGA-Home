@@ -10,6 +10,7 @@ export async function GET(
   try {
     const path = params.path.join('/');
     const backendUrl = `${BACKEND_URL}/uploads/${path}`;
+    console.log('backendUrl:>>>', backendUrl);
     
     console.log('API route: Proxying upload request to:', backendUrl);
     
@@ -25,7 +26,7 @@ export async function GET(
     return new NextResponse(response.data, {
       headers: {
         'Content-Type': contentType,
-        'Cache-Control': 'public, max-age=31536000, immutable', // Cache for 1 year
+        'Cache-Control': 'public, max-age=31536000, immutable',
         'Access-Control-Allow-Origin': '*',
       },
     });

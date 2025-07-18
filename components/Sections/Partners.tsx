@@ -18,7 +18,7 @@ const Partners = React.memo(function Partners({ partners }: PartnersProps) {
 	const memoizedPartners = useMemo(() => partners, [partners]);
 
 	return (
-		<section className="py-20 bg-[#f6f7f8] relative overflow-hidden min-h-[800px] flex items-center justify-center">
+		<section className="py-20 bg-[#f6f7f8] relative overflow-hidden min-h-[500px] flex items-center justify-center">
 			<div className="absolute inset-0 bg-[url('/placeholder.svg?height=100&width=100')] opacity-5"></div>
 			<div className="container mx-auto px-4 relative z-10">
 				<div className="text-center mb-16">

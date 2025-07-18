@@ -22,7 +22,7 @@ const formatDate = (dateString: string | Date) => {
 // Helper function to get image URL
 const getImageUrl = (newsItem: News) => {
 	if (newsItem.visual_content && newsItem.visual_content.length > 0) {
-		return convertToApiUrl(newsItem.visual_content[0].secure_url);
+		return convertToApiUrl(newsItem.visual_content[0]);
 	}
 	return "/placeholder.svg";
 };
@@ -51,43 +51,45 @@ export default function News({ news, resources }: NewsProps) {
 							Follow the latest news in the industry here.
 						</p>
 
-						<div className="space-y-6">
+						<div className="flex flex-col gap-4">
 							{news.slice(0, 4).map((item) => (
-								<Card
-									key={item.id}
-									className="overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02] border-0 shadow-lg bg-white rounded-xl h-[150px]"
-								>
-									<CardContent className="p-0">
-										<div className="flex">
-											<div className="relative w-40 h-[150px] bg-gradient-to-br from-blue-900 to-slate-800 flex items-center justify-center overflow-hidden">
-												<Image
-													src={getImageUrl(item)}
-													layout="fill"
-													alt={item.title}
-													className="absolute inset-0 w-full h-full object-cover"
-												/>
-											</div>
-											<div className="p-6 flex-1">
-												<h3 className="font-bold text-gray-900 mb-2 text-lg leading-tight line-clamp-1">
-													{item.title}
-												</h3>
-												<p className="text-sm text-gray-600 line-clamp-2 leading-relaxed mb-3">
-													{item.content}
-												</p>
-												<div className="flex items-center text-xs text-gray-500 space-x-4">
-													<span className="flex items-center">
-														<User className="w-3 h-3 mr-1" />
-														{item.created_by}
-													</span>
-													<span className="flex items-center">
-														<Calendar className="w-3 h-3 mr-1" />
-														{formatDate(item.published_date)}
-													</span>
+								<Link href={`/news/${item.id}`} key={item.id}>
+									<Card
+										key={item.id}
+										className="overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02] border-0 shadow-lg bg-white rounded-xl h-[150px]"
+									>
+										<CardContent className="p-0">
+											<div className="flex">
+												<div className="relative w-40 h-[150px] bg-gradient-to-br from-blue-900 to-slate-800 flex items-center justify-center overflow-hidden">
+													<Image
+														src={getImageUrl(item)}
+														layout="fill"
+														alt={item.title}
+														className="absolute inset-0 w-full h-full object-cover"
+													/>
+												</div>
+												<div className="p-6 flex-1">
+													<h3 className="font-bold text-gray-900 mb-2 text-lg leading-tight line-clamp-1">
+														{item.title}
+													</h3>
+													<p className="text-sm text-gray-600 line-clamp-2 leading-relaxed mb-3">
+														{item.content}
+													</p>
+													<div className="flex items-center text-xs text-gray-500 space-x-4">
+														<span className="flex items-center">
+															<User className="w-3 h-3 mr-1" />
+															TG&A Law Group
+														</span>
+														<span className="flex items-center">
+															<Calendar className="w-3 h-3 mr-1" />
+															{formatDate(item.published_date)}
+														</span>
+													</div>
 												</div>
 											</div>
-										</div>
-									</CardContent>
-								</Card>
+										</CardContent>
+									</Card>
+								</Link>
 							))}
 						</div>
 					</div>
@@ -113,46 +115,48 @@ export default function News({ news, resources }: NewsProps) {
 								Look through our articles and updates here.
 							</p>
 
-							<div className="space-y-6">
+							<div className="flex flex-col gap-4">
 								{resources.slice(0, 4).map((resource) => (
-									<Card
-										key={resource.id}
-										className="bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-all duration-300 rounded-2xl overflow-hidden h-[150px]"
-									>
-										<CardContent className="p-6">
-											<div className="flex items-center">
-												<div className="mr-6 flex-shrink-0">
-													<div className="bg-white rounded-2xl p-4 w-16 h-16 flex items-center justify-center shadow-lg">
-														<FileText className="text-orange-500 w-8 h-8" />
+									<Link href={`/resources/${resource.id}`} key={resource.id}>
+										<Card
+											key={resource.id}
+											className="bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-all duration-300 rounded-2xl overflow-hidden h-[150px]"
+										>
+											<CardContent className="p-6">
+												<div className="flex items-center">
+													<div className="mr-6 flex-shrink-0">
+														<div className="bg-white rounded-2xl p-4 w-16 h-16 flex items-center justify-center shadow-lg">
+															<FileText className="text-orange-500 w-8 h-8" />
+														</div>
+													</div>
+													<div className="flex-1">
+														<h3 className="font-bold mb-2 text-lg line-clamp-1">
+															{resource.title}
+														</h3>
+														<p className="text-sm text-white/80 leading-relaxed line-clamp-2">
+															{resource.description ||
+																"Essential legal resources for your business needs"}
+														</p>
+														<div className="flex items-center text-xs text-white/60 mt-2 space-x-3">
+															<span className="flex items-center">
+																<User className="w-3 h-3 mr-1" />
+																TG&A Law Group
+															</span>
+															<span className="flex items-center">
+																<Calendar className="w-3 h-3 mr-1" />
+																{formatDate(resource.createdAt)}
+															</span>
+														</div>
+													</div>
+													<div className="ml-4 hidden md:block">
+														<span className="bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs px-3 py-2 rounded-full font-medium shadow-lg">
+															{resource.filename.split(".").pop()?.toUpperCase() || "PDF"}
+														</span>
 													</div>
 												</div>
-												<div className="flex-1">
-													<h3 className="font-bold mb-2 text-lg line-clamp-1">
-														{resource.title}
-													</h3>
-													<p className="text-sm text-white/80 leading-relaxed line-clamp-2">
-														{resource.description ||
-															"Essential legal resources for your business needs"}
-													</p>
-													<div className="flex items-center text-xs text-white/60 mt-2 space-x-3">
-														<span className="flex items-center">
-															<User className="w-3 h-3 mr-1" />
-															{resource.author}
-														</span>
-														<span className="flex items-center">
-															<Calendar className="w-3 h-3 mr-1" />
-															{formatDate(resource.createdAt)}
-														</span>
-													</div>
-												</div>
-												<div className="ml-4 hidden md:block">
-													<span className="bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs px-3 py-2 rounded-full font-medium shadow-lg">
-														{resource.filename.split(".").pop()?.toUpperCase() || "PDF"}
-													</span>
-												</div>
-											</div>
-										</CardContent>
-									</Card>
+											</CardContent>
+										</Card>
+									</Link>
 								))}
 							</div>
 						</div>

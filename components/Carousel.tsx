@@ -176,7 +176,7 @@ export default function Carousel<T>({
 			// Left 1 (mirror right 1)
 			style = {
 				transform: `perspective(1000px) rotateY(-25deg) scale(1.1) translateX(-400px) ${dragTransform}`,
-				backgroundColor: "rgba(85, 89, 101, 1)",
+				backgroundColor: "rgba(95, 99, 111, 1)",
 				// filter: "blur(2px)",
 				transition: isDragging ? "none" : "transform 0.5s, filter 0.5s, background-color 1s",
 			};
@@ -185,7 +185,7 @@ export default function Carousel<T>({
 			// Right 1
 			style = {
 				transform: `perspective(1000px) rotateY(30deg) scale(0.9) translateX(300px) ${dragTransform}`,
-				backgroundColor: "rgba(85, 89, 101, 1)",
+				backgroundColor: "rgba(95, 99, 111, 1)",
 				// filter: "blur(2px)",
 				transition: isDragging ? "none" : "transform 0.5s, filter 0.5s, background-color 1s",
 			};
@@ -194,7 +194,7 @@ export default function Carousel<T>({
 			// Left 2 (mirror right 2)
 			style = {
 				transform: `perspective(1000px) rotateY(-25deg) scale(0.9) translateX(-700px) ${dragTransform}`,
-				backgroundColor: "rgba(125, 129, 141, 1)",
+				backgroundColor: "rgba(155, 159, 171, 1)",
 				// filter: "blur(10px)",
 				transition: isDragging ? "none" : "transform 0.5s, filter 0.5s, background-color 1s",
 			};
@@ -203,9 +203,11 @@ export default function Carousel<T>({
 			// Right 2
 			style = {
 				transform: `perspective(1000px) rotateY(45deg) scale(0.8) translateX(600px) ${dragTransform}`,
-				backgroundColor: "rgba(125, 129, 141, 1)",
+				backgroundColor: "rgba(155, 159, 171, 1)",
 				// filter: "blur(10px)",
-				transition: isDragging ? "none" : "transform 0.5s, filter 0.5s, background-color 1s",
+				transition: isDragging
+					? "none"
+					: "transform 0.5s, filter 0.5s, background-color 1s",
 			};
 			zIndex = 1;
 		} else {
