@@ -2,6 +2,45 @@ import ResourcesPage from '@/components/Sections/ResourcesPage'
 import React, { Suspense } from 'react'
 import { getResources, getTopViewedResources } from '../actions/resources.actions';
 import { getCategories } from '../actions/news.actions';
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Legal Resources & Documents',
+  description: 'Access comprehensive legal resources, documents, and materials from TGA Law Group. Download legal guides, templates, and expert legal content.',
+  keywords: [
+    'legal resources',
+    'legal documents',
+    'legal templates',
+    'legal guides',
+    'law firm resources',
+    'legal downloads',
+    'attorney resources',
+    'legal materials'
+  ],
+  openGraph: {
+    title: 'Legal Resources & Documents | TGA Law Group',
+    description: 'Access comprehensive legal resources, documents, and materials from TGA Law Group. Download legal guides, templates, and expert legal content.',
+    url: '/resources',
+    type: 'website',
+    images: [
+      {
+        url: '/Images/logo/TGA_LOGO.svg',
+        width: 1200,
+        height: 630,
+        alt: 'TGA Law Group Resources',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Legal Resources & Documents | TGA Law Group',
+    description: 'Access comprehensive legal resources, documents, and materials from TGA Law Group.',
+    images: ['/Images/logo/TGA_LOGO.svg'],
+  },
+  alternates: {
+    canonical: '/resources',
+  },
+}
 
 interface PageProps {
   searchParams: Promise<{

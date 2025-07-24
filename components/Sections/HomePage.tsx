@@ -47,7 +47,7 @@ export default function LandingPage({ data, news, resources }: LandingPageProps)
 
   return (
     <div className="min-h-screen bg-white relative">
-      <Header />
+      <Header showHeader={false} />
       <Hero />
       <AboutUs />
       <Statistics stats={data.stats} />

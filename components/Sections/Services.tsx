@@ -22,16 +22,16 @@ export class Services extends Component {
 					<div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
 						{[
 							{
-								title: "RETENTION AND ONGOING LEGAL SUPPORT",
-								content:
-									"We have been successful in being able to retain huge national and multi-national corporations as retentions clients by offering a quality ongoing legal support, including International organizations as we combine Seasoned lawyers in various fields of Law.",
-								icon: "🛡️",
-							},
-							{
 								title: "REPRESENTATION",
 								content:
 									"We have the best litigation lawyers in the Ethiopian Legal Landscape in minefield areas of the law including taxation, Contracts, Investment disputes, Construction Issues and Criminal Law.",
 								icon: "⚖️",
+							},
+							{
+								title: "RETENTION AND ONGOING LEGAL SUPPORT",
+								content:
+									"We have been successful in being able to retain huge national and multi-national corporations as retentions clients by offering a quality ongoing legal support, including International organizations as we combine Seasoned lawyers in various fields of Law.",
+								icon: "🛡️",
 							},
 							{
 								title: "CONSULTING AND ADVISORY",
@@ -55,9 +55,7 @@ export class Services extends Component {
 							<div
 								key={index}
 								className={`bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20 hover:bg-white/20 transition-all duration-300 transform hover:scale-105 ${
-									index === 3 ? "lg:col-span-2" : ""
-								} ${
-									index === 4 ? "lg:col-start-3" : ""
+									index === 0 ? "lg:col-span-2" : ""
 								}`}
 							>
 								<div className="text-4xl mb-4">{service.icon}</div>
