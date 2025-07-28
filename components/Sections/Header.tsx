@@ -109,7 +109,7 @@ export default function Header({
 								Home
 							</Link>
 							<Link 
-								href="#about" 
+								href="/about-us" 
 								className={`font-medium hover:text-teal-500 ${
 									currentPage === "about" ? "text-teal-500" : "text-gray-700"
 								}`}

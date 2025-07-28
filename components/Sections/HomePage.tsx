@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowUp } from "lucide-react";
@@ -13,61 +14,120 @@ import News from "@/components/Sections/News";
 import PracticeAreas from "@/components/Sections/PracticeAreas";
 import ContactUs from "@/components/Sections/ContactUs";
 import Footer from "@/components/Sections/Footer";
-import { Stat, Partner, Practice, ContactUs as ContactUsType, NewsLink, LandingData } from "@/app/types/landing";
+import {
+	Stat,
+	Partner,
+	Practice,
+	ContactUs as ContactUsType,
+	NewsLink,
+	LandingData,
+} from "@/app/types/landing";
 import type { News as NewsType } from "@/app/types/news";
 import type { Resource } from "@/app/actions/resources.actions";
 
 interface LandingPageProps {
-  data: {
-    landing: LandingData;
-    stats: Stat[];
-    partners: Partner[];
-    practices: Practice[];
-    contactUs: ContactUsType[];
-    newsLinks: NewsLink[];
-  };
-  news: NewsType[];
-  resources: Resource[];
+	data: {
+		landing: LandingData;
+		stats: Stat[];
+		partners: Partner[];
+		practices: Practice[];
+		contactUs: ContactUsType[];
+		newsLinks: NewsLink[];
+	};
+	news: NewsType[];
+	resources: Resource[];
 }
 
-export default function LandingPage({ data, news, resources }: LandingPageProps) {
-  const [showScrollTop, setShowScrollTop] = useState(false);
+export default function LandingPage({
+	data,
+	news,
+	resources,
+}: LandingPageProps) {
+	const [showScrollTop, setShowScrollTop] = useState(false);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setShowScrollTop(window.scrollY > 400);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+	const [currentSection, setCurrentSection] = useState<
+		"home" | "about" | "services"
+	>("home");
 
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+	const aboutRef = React.useRef<HTMLDivElement>(null);
+	const servicesRef = React.useRef<HTMLDivElement>(null);
 
-  return (
-    <div className="min-h-screen bg-white relative">
-      <Header showHeader={false} />
-      <Hero />
-      <AboutUs />
-      <Statistics stats={data.stats} />
-      <Services />
-      <PracticeAreas practices={data.practices} />
-      <News news={news} resources={resources} />
-      <Partners partners={data.partners} />
-      <ContactUs contactUs={data.contactUs} />
-      <Footer contactUs={data.contactUs} />
+	useEffect(() => {
+		const handleScroll = () => {
+			setShowScrollTop(window.scrollY > 400);
 
-      {/* Scroll to Top Button */}
-      {showScrollTop && (
-        <Button
-          onClick={scrollToTop}
-          className="fixed bottom-8 right-8 rounded-full w-12 h-12 bg-slate-700 hover:bg-slate-600 text-white shadow-lg z-50"
-          size="icon"
-        >
-          <ArrowUp className="w-5 h-5" />
-        </Button>
-      )}
-    </div>
-  );
+			const viewportHeight = window.innerHeight;
+			const viewportCenter = window.scrollY + viewportHeight / 2;
+
+			const aboutRect = aboutRef.current?.getBoundingClientRect();
+			const aboutTop = aboutRef.current
+				? window.scrollY + aboutRect!.top
+				: null;
+			const aboutBottom = aboutRef.current
+				? window.scrollY + aboutRect!.bottom
+				: null;
+
+			const servicesRect = servicesRef.current?.getBoundingClientRect();
+			const servicesTop = servicesRef.current
+				? window.scrollY + servicesRect!.top
+				: null;
+			const servicesBottom = servicesRef.current
+				? window.scrollY + servicesRect!.bottom
+				: null;
+
+			if (
+				aboutTop !== null &&
+				aboutBottom !== null &&
+				viewportCenter >= aboutTop &&
+				viewportCenter <= aboutBottom
+			) {
+				setCurrentSection("about");
+			} else if (
+				servicesTop !== null &&
+				servicesBottom !== null &&
+				viewportCenter >= servicesTop &&
+				viewportCenter <= servicesBottom
+			) {
+				setCurrentSection("services");
+			} else {
+				setCurrentSection("home");
+			}
+		};
+		window.addEventListener("scroll", handleScroll);
+		return () => window.removeEventListener("scroll", handleScroll);
+	}, []);
+
+	const scrollToTop = () => {
+		window.scrollTo({ top: 0, behavior: "smooth" });
+	};
+
+	return (
+		<div className="min-h-screen bg-white relative">
+			<Header showHeader={false} currentPage={currentSection} />
+			<Hero />
+			<div ref={aboutRef}>
+				<AboutUs />
+			</div>
+			<Statistics stats={data.stats} />
+			<div ref={servicesRef}>
+				<Services />
+			</div>
+			<PracticeAreas practices={data.practices} />
+			<News news={news} resources={resources} />
+			<Partners partners={data.partners} />
+			<ContactUs contactUs={data.contactUs} />
+			<Footer contactUs={data.contactUs} />
+
+			{/* Scroll to Top Button */}
+			{showScrollTop && (
+				<Button
+					onClick={scrollToTop}
+					className="fixed bottom-8 right-8 rounded-full w-12 h-12 bg-slate-700 hover:bg-slate-600 text-white shadow-lg z-50"
+					size="icon"
+				>
+					<ArrowUp className="w-5 h-5" />
+				</Button>
+			)}
+		</div>
+	);
 }

@@ -4,16 +4,17 @@ import Image from "next/image";
 import { ContactUs as ContactUsType } from "@/app/types/landing";
 
 interface FooterProps {
-	contactUs: ContactUsType[];
+	contactUs?: ContactUsType[];
 }
 
 export default function Footer({ contactUs }: FooterProps) {
 	// Extract contact information from contactUs data
 	const getContactInfo = (type: string) => {
+		contactUs = contactUs || [];
 		const contact = contactUs.find(c => 
 			c.medium.toLowerCase().includes(type.toLowerCase())
 		);
-		return contact?.email || contact?.phone_number || "-";
+		return contact?.email || contact?.phone_number || "";
 	};
 
 	// Services data (matching the Services component)
