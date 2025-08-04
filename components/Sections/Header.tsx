@@ -96,7 +96,7 @@ export default function Header({
 			>
 				<div className="container mx-auto px-4 py-1">
 					<nav className="flex items-center justify-between">
-						<Image src="/loader/loader-1.svg" alt="Logo" width={100} height={100} />
+						<img src="/loader/loader-1.svg" alt="Logo" width={100} height={100} />
 						
 						{/* Desktop Navigation */}
 						<div className="hidden md:flex items-center space-x-8">

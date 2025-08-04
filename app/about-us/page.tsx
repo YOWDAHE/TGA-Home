@@ -44,7 +44,7 @@ function page() {
                             `}
 							>
 								<Image
-									src={image || "/placeholder.svg"}
+									src={image || "/placeholder.jpg"}
 									alt="about us"
 									width={60}
 									height={40}
@@ -171,8 +171,8 @@ function page() {
 						</div>
 					</div>
 				</div>
-            </div>
-            <Footer/>
+			</div>
+			<Footer />
 		</>
 	);
 }

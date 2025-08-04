@@ -28,6 +28,18 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
       {
+        protocol: 'http',
+        hostname: 'backend',
+        port: '3000',
+        pathname: '/uploads/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'backend',
+        port: '3000',
+        pathname: '/uploads/**',
+      },
+      {
         protocol: 'https',
         hostname: 'localhost',
         port: '3000',
@@ -60,7 +72,7 @@ const nextConfig: NextConfig = {
       },
     ],
     // Add image optimization settings
-    formats: ['image/webp', 'image/avif'],
+    formats: ['image/webp', 'image/avif',],
     minimumCacheTTL: 31536000, // 1 year
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
@@ -80,6 +92,16 @@ const nextConfig: NextConfig = {
         ],
       },
     ];
+  },
+
+  webpack(config) {
+    // Add SVG support with @svgr/webpack for importing SVGs as React components
+    config.module.rules.push({
+      test: /\.svg$/,
+      issuer: /\.[jt]sx?$/,
+      use: ['@svgr/webpack'],
+    });
+    return config;
   },
 }
 

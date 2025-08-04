@@ -24,7 +24,7 @@ const getImageUrl = (newsItem: News) => {
 	if (newsItem.visual_content && newsItem.visual_content.length > 0) {
 		return convertToApiUrl(newsItem.visual_content[0]);
 	}
-	return "/placeholder.svg";
+	return "/placeholder.jpg";
 };
 
 export default function News({ news, resources }: NewsProps) {

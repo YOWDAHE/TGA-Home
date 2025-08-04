@@ -65,14 +65,14 @@ export class Hero extends Component {
 					<Link href="#contact">Contact</Link>
 				</div>
 				<div className="container mx-auto px-4 text-center relative z-10 flex flex-col items-center justify-center gap-10">
-					<Image
+					<img
 						src="/loader/loader-1.svg"
 						alt="Hero"
 						width={350}
 						height={350}
 						className="object-cover rounded-lg bg-white hidden md:block"
 					/>
-					<Image
+					<img
 						src="/loader/loader-1.svg"
 						alt="Hero"
 						width={150}

@@ -19,7 +19,7 @@ const Partners = React.memo(function Partners({ partners }: PartnersProps) {
 
 	return (
 		<section className="py-20 bg-[#f6f7f8] relative overflow-hidden min-h-[500px] flex items-center justify-center">
-			<div className="absolute inset-0 bg-[url('/placeholder.svg?height=100&width=100')] opacity-5"></div>
+			<div className="absolute inset-0 bg-[url('/placeholder.jpg?height=100&width=100')] opacity-5"></div>
 			<div className="container mx-auto px-4 relative z-10">
 				<div className="text-center mb-16">
 					<h2 className="md:text-5xl text-2xl font-bold bg-gradient-to-r from-teal-600 to-emerald-600 bg-clip-text text-transparent mb-6">
@@ -72,7 +72,7 @@ const Partners = React.memo(function Partners({ partners }: PartnersProps) {
         `}
 									>
 										<Image
-											src={convertToApiUrl(partner.logo_url) || "/placeholder.svg"}
+											src={convertToApiUrl(partner.logo_url) || "/placeholder.jpg"}
 											alt={partner.name}
 											width={60}
 											height={40}

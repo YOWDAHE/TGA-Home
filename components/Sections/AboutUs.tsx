@@ -16,7 +16,7 @@ export class AboutUs extends Component {
 					height={1000}
 					className="absolute top-0 left-0 w-full h-full object-cover blur-[5px] opacity-50"
 				/>
-				<div className="absolute inset-0 bg-[url('/placeholder.svg?height=100&width=100')] opacity-5"></div>
+				<div className="absolute inset-0 bg-[url('/placeholder.jpg?height=100&width=100')] opacity-5"></div>
 				<div className="container mx-auto px-4 relative z-10">
 					<div className="max-w-6xl mx-auto">
 						<div className="text-center mb-16">

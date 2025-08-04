@@ -6,7 +6,7 @@
     "build": "next build",
     "dev": "next dev",
     "lint": "next lint",
-    "start": "next start"
+    "start": "next start -p 3002"
   },
   "dependencies": {
     "@glidejs/glide": "^3.7.1",
@@ -70,6 +70,7 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@svgr/webpack": "^8.1.0",
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",

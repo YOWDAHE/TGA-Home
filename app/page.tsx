@@ -6,11 +6,14 @@ import { getResources } from "./actions/resources.actions";
 
 export default async function page() {
 	try {
-		const [landingData, newsResponse, resourcesResponse] = await Promise.all([
-			getLandingPageData(),
-			getNewsByQuery({ limit: 4, sortBy: 'published_date', order: 'desc' }),
-			getResources({ limit: 4 })
-		]);
+		// const [landingData, newsResponse, resourcesResponse] = await Promise.all([
+		// 	getLandingPageData(),
+		// 	getNewsByQuery({ limit: 4, sortBy: 'published_date', order: 'desc' }),
+		// 	getResources({ limit: 4 })
+		// ]);
+		const landingData = await getLandingPageData();
+		const newsResponse = await getNewsByQuery({ limit: 4, sortBy: 'published_date', order: 'desc' });
+		const resourcesResponse = await getResources({ limit: 4 });
 
 		if (!landingData.data) {
 			return <div>Loading...</div>;
@@ -25,6 +28,6 @@ export default async function page() {
 		);
 	} catch (error) {
 		console.error('Error fetching page data:', error);
-		return <div>Error loading page data</div>;
+		return <div>Error loading page data:</div>;
 	}
 }

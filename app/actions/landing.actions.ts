@@ -1,14 +1,15 @@
 import axios from 'axios';
 import { LandingPageResponse } from '../types/landing';
 
-const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
+const NEXT_PUBLIC_API_URL = process.env.BACKEND_URL;
 
 export const getLandingPageData = async (): Promise<LandingPageResponse> => {
     try {
         console.log('Fetching landing page data from Next.js API route');
         
         // Call our Next.js API route instead of the backend directly
-        const response = await axios.get<LandingPageResponse>(`${NEXT_PUBLIC_API_URL}/landing`);
+        // const response = await axios.get<LandingPageResponse>(`${NEXT_PUBLIC_API_URL}/landing`);
+        const response = await axios.get<LandingPageResponse>(`${NEXT_PUBLIC_API_URL}/api/landing`);
         
         console.log('Landing page data fetched successfully');
         return response.data;
