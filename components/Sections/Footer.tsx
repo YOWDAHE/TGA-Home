@@ -42,7 +42,7 @@ export default function Footer({ contactUs }: FooterProps) {
 			<div className="container mx-auto px-4">
 				<div className="grid md:grid-cols-4 gap-8">
 					<div>
-						<Image src="/loader/loader-1.svg" alt="Logo" width={100} height={100} className=" bg-white rounded-md mb-4" />
+						<img src="/loader/loader-1.svg" alt="Logo" width={100} height={100} className=" bg-white rounded-md mb-4" />
 						<p className="text-gray-400">
 							Committed to excellence in legal services across Ethiopia and Africa.
 						</p>

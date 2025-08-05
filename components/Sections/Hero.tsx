@@ -101,7 +101,7 @@ export class Hero extends Component {
 							<Button
 								size="lg"
 								variant="outline"
-								className="border-2 border-white/30 text-white hover:bg-white/10 px-8 py-4 rounded-xl backdrop-blur-sm bg-transparent"
+								className="border-2 border-white/30 text-white hover:bg-white/10 px-8 py-4 rounded-xl backdrop-blur-sm bg-transparent hover:text-white"
 							>
 								Learn More
 							</Button>

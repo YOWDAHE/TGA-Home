@@ -18,6 +18,7 @@ COPY public ./public
 COPY node_modules ./node_modules
 COPY package.json ./
 
+ENV BACKEND_URL=http://backend:3000
 EXPOSE 3002
 
 # Start the app
