@@ -19,6 +19,7 @@ COPY node_modules ./node_modules
 COPY package.json ./
 
 ENV BACKEND_URL=http://backend:3000
+ENV NEXT_PUBLIC_API_URL=http://frontend-home:3002/api
 EXPOSE 3002
 
 # Start the app

@@ -1,18 +1,16 @@
 import { SignUpRequest, SignInRequest, AuthResponse, User, ApiResponse } from "@/app/types/auth";
+import axios from "axios";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
 export const signUp = async (data: SignUpRequest): Promise<AuthResponse> => {
-	const response = await fetch(`${API_BASE_URL}/api-auth/signup`, {
-		method: "POST",
+	const response = await axios.post(`/api/api-auth/signup`, data, {
+		withCredentials: true,
 		headers: {
 			"Content-Type": "application/json",
 		},
-		body: JSON.stringify(data),
-		credentials: "include",
 	});
-
-	const result = await response.json();
+	const result = response.data;
 
 	if (result.status === "error") {
 		throw new Error(result.error || "Failed to sign up");
@@ -22,16 +20,13 @@ export const signUp = async (data: SignUpRequest): Promise<AuthResponse> => {
 };
 
 export const signIn = async (data: SignInRequest): Promise<AuthResponse> => {
-	const response = await fetch(`${API_BASE_URL}/api-auth/signin`, {
-		method: "POST",
+	const response = await axios.post(`/api/api-auth/signin`, data, {
+		withCredentials: true,
 		headers: {
 			"Content-Type": "application/json",
 		},
-		body: JSON.stringify(data),
-		credentials: "include",
 	});
-
-	const result = await response.json();
+	const result = response.data;
 
 	if (result.status === "error") {
 		throw new Error(result.error || "Failed to sign in");
@@ -41,12 +36,10 @@ export const signIn = async (data: SignInRequest): Promise<AuthResponse> => {
 };
 
 export const signOut = async (): Promise<void> => {
-	const response = await fetch(`${API_BASE_URL}/api-auth/signout`, {
-		method: "POST",
-		credentials: "include",
+	const response = await axios.post(`/api/api-auth/signout`, {}, {
+		withCredentials: true,
 	});
-
-	const result = await response.json();
+	const result = response.data;
 
 	if (result.status === "error") {
 		throw new Error(result.error || "Failed to sign out");
@@ -56,12 +49,10 @@ export const signOut = async (): Promise<void> => {
 export const getCurrentUser = async (): Promise<User | null> => {
     try {
         console.log("Getting current user from", API_BASE_URL);
-		const response = await fetch(`${API_BASE_URL}/api-auth/me`, {
-			method: "GET",
-			credentials: "include",
+		const response = await axios.get(`/api/api-auth/me`, {
+			withCredentials: true,
 		});
-
-		const result: ApiResponse<User> = await response.json();
+		const result: ApiResponse<User> = response.data;
 
 		if (result.status === "error") {
 			// If it's a 401 (unauthorized), return null instead of throwing
@@ -72,9 +63,13 @@ export const getCurrentUser = async (): Promise<User | null> => {
 		}
 
 		return result.data || null;
-	} catch (error) {
+	} catch (error: any) {
 		// If there's a network error or other issue, return null
 		console.error("Error getting current user:", error);
+		// Axios error handling for 401
+		if (error.response && error.response.status === 401) {
+			return null;
+		}
 		return null;
 	}
-}; 
+};
