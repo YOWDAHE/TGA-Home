@@ -44,7 +44,7 @@ function page() {
                             `}
 							>
 								<Image
-									src={image || "/placeholder.jpg"}
+									src={image || "/office/placeholder.jpg"}
 									alt="about us"
 									width={60}
 									height={40}

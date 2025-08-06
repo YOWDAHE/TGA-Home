@@ -238,7 +238,7 @@ export default function ResourcesPage({ resources, topViewedResources, categorie
 
 	return (
 		<div className="min-h-screen bg-white">
-			<Header />
+			<Header currentPage="resources"/>
 
 			<div className="container mx-auto px-4 py-8 mt-16">
 				<div className="grid lg:grid-cols-4 gap-8">

@@ -156,7 +156,7 @@ export default function NewsDetailPage({
 		if (newsItem.visual_content && newsItem.visual_content.length > 0) {
 			return convertToApiUrl(newsItem.visual_content[0]);
 		}
-		return "/placeholder.jpg";
+		return "/office/placeholder.jpg";
 	};
 
 	// Helper function to get all visual content URLs
@@ -164,7 +164,7 @@ export default function NewsDetailPage({
 		if (newsItem.visual_content && newsItem.visual_content.length > 0) {
 			return newsItem.visual_content.map((item: any) => convertToApiUrl(item));
 		}
-		return ["/placeholder.jpg"];
+		return ["/office/placeholder.jpg"];
 	};
 
 	// Helper function to format date
@@ -185,10 +185,10 @@ export default function NewsDetailPage({
 			visual_content: {
 				images: newsItem.news.visual_content
 					? [getImageUrl(newsItem.news)]
-					: ["/placeholder.jpg?height=600&width=1200"],
+					: ["/office/placeholder.jpg?height=600&width=1200"],
 				thumbnail: newsItem.news.visual_content
 					? getImageUrl(newsItem.news)
-					: "/placeholder.jpg?height=400&width=600",
+					: "/office/placeholder.jpg?height=400&width=600",
 			},
 			links: {
 				external: [],
@@ -786,7 +786,7 @@ export default function NewsDetailPage({
 														<div className="w-16 h-12 flex-shrink-0">
 															<Image
 																src={
-																	relatedArticle.visual_content.thumbnail || "/placeholder.jpg"
+																	relatedArticle.visual_content.thumbnail || "/office/placeholder.jpg"
 																}
 																alt={relatedArticle.title || "No title"}
 																width={64}

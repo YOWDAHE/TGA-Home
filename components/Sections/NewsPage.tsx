@@ -98,7 +98,7 @@ export default function NewsPage({
 		if (newsItem.visual_content && newsItem.visual_content.length > 0) {
 			return convertToApiUrl(newsItem.visual_content[0]);
 		}
-		return "/placeholder.jpg";
+		return "/office/placeholder.jpg";
 	};
 
 	// Helper function to format date

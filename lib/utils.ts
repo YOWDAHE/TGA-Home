@@ -7,7 +7,7 @@ export function cn(...inputs: ClassValue[]) {
 
 // Utility function to convert backend URLs to use Next.js API routes for better caching
 export function convertToApiUrl(url: string): string {
-  if (!url) return '/placeholder.jpg';
+  if (!url) return '/office/placeholder.jpg';
   
   // If it's already a relative URL, return as is
   if (url.startsWith('/')) return url;

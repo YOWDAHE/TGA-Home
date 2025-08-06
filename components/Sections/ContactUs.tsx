@@ -93,7 +93,7 @@ export default function ContactUs({ contactUs }: ContactUsProps) {
 				id="contact"
 				className="py-20 bg-gradient-to-br from-gray-100 via-gray-50 to-white relative overflow-hidden"
 			>
-				<div className="absolute inset-0 bg-[url('/placeholder.jpg?height=50&width=50')] opacity-5"></div>
+				<div className="absolute inset-0 bg-[url('/office/placeholder.jpg?height=50&width=50')] opacity-5"></div>
 				<div className="container mx-auto px-4 relative z-10">
 					<div className="text-center mb-16">
 						<h2 className="text-2xl md:text-5xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent mb-6">
