@@ -48,7 +48,8 @@ export async function POST(request: NextRequest) {
 		if (result.data.accessToken) {
 			nextResponse.cookies.set("tga_home_access_token", result.data.accessToken, {
 				httpOnly: true,
-				secure: process.env.NODE_ENV === "production",
+				// secure: process.env.NODE_ENV === "production",
+				secure: false,
 				sameSite: "strict",
 				maxAge: 24 * 60 * 60,
 			});
@@ -57,7 +58,8 @@ export async function POST(request: NextRequest) {
 		if (result.data.refreshToken) {
 			nextResponse.cookies.set("tga_home_refresh_token", result.data.refreshToken, {
 				httpOnly: true,
-				secure: process.env.NODE_ENV === "production",
+				// secure: process.env.NODE_ENV === "production",
+				secure: false,
 				sameSite: "strict",
 				maxAge: 7 * 24 * 60 * 60, // 7 days
 			});
