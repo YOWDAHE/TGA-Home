@@ -71,8 +71,8 @@ const Partners = React.memo(function Partners({ partners }: PartnersProps) {
           flex-shrink-0
         `}
 									>
-										<Image
-											src={convertToApiUrl(partner.logo_url) || "//officeplaceholder.jpg"}
+										<img
+											src={partner.logo_url || "/office/placeholder.jpg"}
 											alt={partner.name}
 											width={60}
 											height={40}

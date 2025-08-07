@@ -459,7 +459,7 @@ export default function NewsDetailPage({
 						{article.visual_content.length === 1 ? (
 							// Single image display
 							<div className="flex justify-center">
-								<Image
+								<img
 									src={getImageUrl(article)}
 									alt={article.title}
 									width={1200}
@@ -485,7 +485,7 @@ export default function NewsDetailPage({
 											(imageUrl: string, index: number) => (
 												<CarouselItem key={index}>
 													<div className="relative">
-														<Image
+														<img
 															src={imageUrl}
 															alt={`${article.title} - Image ${index + 1}`}
 															width={1200}
@@ -784,7 +784,7 @@ export default function NewsDetailPage({
 												<CardContent className="p-4">
 													<div className="flex space-x-3">
 														<div className="w-16 h-12 flex-shrink-0">
-															<Image
+															<img
 																src={
 																	relatedArticle.visual_content.thumbnail || "/office/placeholder.jpg"
 																}

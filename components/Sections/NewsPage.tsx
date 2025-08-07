@@ -337,11 +337,10 @@ export default function NewsPage({
 													<Link href={`/news/${article.id}`} key={article.id}>
 														<div className="overflow-hidden">
 															<div className="relative h-[200px] md:h-[300px] lg:h-[400px] w-full">
-																<Image
+																<img
 																	src={getImageUrl(article)}
 																	alt={article.title}
-																	fill={true}
-																	className="object-cover"
+																	className="object-cover w-full h-full"
 																/>
 															</div>
 															<CardContent className="p-3 md:p-4 bg-white">
@@ -400,11 +399,10 @@ export default function NewsPage({
 													<CardContent className="p-2 md:p-3">
 														<div className="flex space-x-2 md:space-x-3">
 															<div className="w-8 h-8 md:w-12 md:h-12 flex-shrink-0 relative bg-gray-200 rounded">
-																<Image
+																<img
 																	src={getImageUrl(article)}
 																	alt={article.title}
-																	fill={true}
-																	className="object-cover rounded"
+																	className="object-cover rounded w-full h-full"
 																/>
 															</div>
 															<div className="flex-1 min-w-0">
@@ -441,11 +439,10 @@ export default function NewsPage({
 													<CardContent className="p-2 md:p-3">
 														<div className="flex space-x-2 md:space-x-3">
 															<div className="w-8 h-8 md:w-12 md:h-12 flex-shrink-0 relative bg-gray-200 rounded">
-																<Image
+																<img
 																	src={getImageUrl(article)}
 																	alt={article.title}
-																	fill={true}
-																	className="object-cover rounded"
+																	className="object-cover rounded w-full h-full"
 																/>
 															</div>
 															<div className="flex-1 min-w-0">
@@ -487,7 +484,7 @@ export default function NewsPage({
 									className="overflow-hidden hover:shadow-xl transition-shadow"
 								>
 									<div className="relative">
-										<Image
+										<img
 											src={getImageUrl(article)}
 											alt={article.title}
 											width={400}
@@ -580,13 +577,12 @@ export default function NewsPage({
 										<CardContent className="p-0">
 											<div className="flex">
 												<div className="w-32 h-26 flex-shrink-0 relative bg-red-500">
-													<Image
+													<img
 														src={getImageUrl(article)}
 														alt={article.title}
 														// width={128}
 														// height={96}
 														className="w-full h-full object-cover"
-														fill={true}
 													/>
 												</div>
 												<div className="p-3 md:p-4 flex-1">
@@ -820,7 +816,7 @@ export default function NewsPage({
 										className="overflow-hidden hover:shadow-lg transition-shadow"
 									>
 										<div className="relative">
-											<Image
+											<img
 												src={getImageUrl(article)}
 												alt={article.title}
 												width={400}

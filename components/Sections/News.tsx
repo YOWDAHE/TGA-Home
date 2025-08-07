@@ -61,9 +61,8 @@ export default function News({ news, resources }: NewsProps) {
 										<CardContent className="p-0">
 											<div className="flex">
 												<div className="relative w-40 h-[150px] bg-gradient-to-br from-blue-900 to-slate-800 flex items-center justify-center overflow-hidden">
-													<Image
+													<img
 														src={getImageUrl(item)}
-														layout="fill"
 														alt={item.title}
 														className="absolute inset-0 w-full h-full object-cover"
 													/>
