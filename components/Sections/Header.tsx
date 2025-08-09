@@ -18,7 +18,7 @@ export default function Header({
 	currentPage = "home",
 }: {
 	showHeader?: boolean;
-	currentPage?: "home" | "about" | "services" | "resources" | "news";
+	currentPage?: "home" | "about-us" | "services" | "resources" | "news";
 }) {
 	const [isVisible, setIsVisible] = useState(showHeader);
 	const [lastScrollY, setLastScrollY] = useState(0);
@@ -88,7 +88,7 @@ export default function Header({
 
 	return (
 		<>
-			<header
+			{!isMobileMenuOpen && <header
 				className={`bg-white shadow-sm fixed top-0 left-0 right-0 z-50 transition-transform duration-300 ease-in-out ${
 					isVisible ? "translate-y-0" : "-translate-y-full"
 				}`}
@@ -110,7 +110,7 @@ export default function Header({
 							<Link
 								href="/about-us"
 								className={`font-medium hover:text-teal-500 ${
-									currentPage === "about" ? "text-teal-500" : "text-gray-700"
+									currentPage === "about-us" ? "text-teal-500" : "text-gray-700"
 								}`}
 							>
 								About
@@ -207,7 +207,7 @@ export default function Header({
 						</button>
 					</nav>
 				</div>
-			</header>
+			</header>}
 
 			{/* Mobile Sidebar */}
 			<div
@@ -225,7 +225,7 @@ export default function Header({
 
 				{/* Sidebar */}
 				<div
-					className={`absolute right-0 top-0 h-full w-80 bg-white shadow-xl transform transition-transform duration-300 ${
+					className={`absolute right-0 top-0 h-full w-80 bg-white shadow-xl transform transition-transform duration-300 z-20 ${
 						isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
 					}`}
 				>
@@ -261,10 +261,10 @@ export default function Header({
 									Home
 								</Link>
 								<Link
-									href="#about"
+									href="/about-us"
 									onClick={handleNavClick}
 									className={`block py-3 px-4 font-medium transition-colors ${
-										currentPage === "about"
+										currentPage === "about-us"
 											? "bg-teal-50 text-teal-600 border-l-4 border-teal-500"
 											: "text-gray-700 hover:bg-gray-50"
 									}`}
