@@ -7,7 +7,7 @@ export class AboutUs extends Component {
 		return (
 			<section
 				id="about"
-				className="py-20 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden min-h-[calc(100vh-90px)] md:h-[calc(100vh-90px)] md:max-h-[1000px]"
+				className="py-20 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden min-h-[900px] md:h-[calc(100vh-90px)] md:max-h-[1000px]"
 			>
 				<Image
 					src="/Images/aboutUs/woman.png"
