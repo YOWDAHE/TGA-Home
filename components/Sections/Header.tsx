@@ -232,7 +232,7 @@ export default function Header({
 					<div className="flex flex-col h-full">
 						{/* Header */}
 						<div className="flex items-center justify-between p-6 border-b">
-							<Image
+							<img
 								src="/Images/logo/TGA_LOGO.svg"
 								alt="Logo"
 								width={80}
