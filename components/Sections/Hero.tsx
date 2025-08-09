@@ -20,10 +20,10 @@ export class Hero extends Component {
 		return (
 			<section
 				id="hero-section"
-				className="relative bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 text-white py-32 overflow-hidden h-[calc(100vh-90px)] max-h-[1200px] flex items-center justify-center"
+				className="relative min-h-[700px] bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 text-white py-32 overflow-hidden max-h-[calc(100vh-90px)] flex items-center justify-center"
 			>
 				{/* Rotating hero images background carousel */}
-				<div className="absolute inset-0 overflow-hidden h-[calc(100vh-90px)]">
+				<div className="absolute inset-0 overflow-hidden h-full">
 					<Carousel
 						opts={{
 							loop: true,
@@ -39,7 +39,7 @@ export class Hero extends Component {
 										<img
 											src={image}
 											alt={`Hero background ${index + 1}`}
-											className="object-cover opacity-30 w-full h-[calc(100vh-90px)]"
+											className="object-cover opacity-30 w-full h-full"
 										/>
 									</div>
 								</CarouselItem>
