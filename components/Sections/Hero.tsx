@@ -178,7 +178,7 @@ export class Hero extends Component<{}, HeroState> {
 
 				<div className="hidden lg:flex items-center justify-center lg:gap-10 gap-4 absolute left-0 w-full top-10 text-sm lg:text-base">
 					<Link href="/">Home</Link>
-					<Link href="#about">About</Link>
+					<Link href="/about-us">About</Link>
 					<Link href="#services">Services</Link>
 					<Link href="/resources">Resources</Link>
 					<Link href="/news">News</Link>

@@ -5,12 +5,16 @@ import { AuthProvider } from '@/contexts/AuthContext'
 
 export const metadata: Metadata = {
   title: {
-    default: 'TGA Law Group - Professional Legal Services',
+    default: 'TGA Global Law Firm',
     template: '%s | TGA Law Group'
+  },
+  icons: {
+    icon: '/favicon.ico',
   },
   description: 'TGA Law Group provides comprehensive legal services with expertise in corporate law, litigation, and legal consulting. Trust our experienced attorneys for your legal needs.',
   keywords: [
     'TGA Law Group',
+    'International law',
     'legal services',
     'law firm',
     'attorneys',

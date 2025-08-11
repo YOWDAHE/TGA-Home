@@ -46,7 +46,7 @@ export default function LandingPage({
 	const [showScrollTop, setShowScrollTop] = useState(false);
 
 	const [currentSection, setCurrentSection] = useState<
-		"home" | "about" | "services"
+		"news" | "resources" | "home" | "services" | "about-us" | undefined
 	>("home");
 
 	const aboutRef = React.useRef<HTMLDivElement>(null);
@@ -76,13 +76,6 @@ export default function LandingPage({
 				: null;
 
 			if (
-				aboutTop !== null &&
-				aboutBottom !== null &&
-				viewportCenter >= aboutTop &&
-				viewportCenter <= aboutBottom
-			) {
-				setCurrentSection("about");
-			} else if (
 				servicesTop !== null &&
 				servicesBottom !== null &&
 				viewportCenter >= servicesTop &&

@@ -18,10 +18,16 @@ const images = Array.from(
 		`/aboutUs/IMG-20250727-WA00${(i + 1).toString().padStart(2, "0")}.jpg`
 );
 
+const office_images = Array.from(
+	{ length: 15 },
+	(_, i) =>
+		`/aboutUs/offices/office${(i + 1).toString()}.jpg`
+);
+
 function page() {
 	return (
 		<>
-			<Header currentPage="about" />
+			<Header currentPage="about-us" />
 			<div className=" mx-auto py-8 px-4 mt-16 overflow-hidden">
 				<div className="text-center mb-16">
 					<h2 className="text-2xl md:text-4xl font-bold mb-4">ABOUT US</h2>
@@ -57,6 +63,7 @@ function page() {
 						<Carousel
 							opts={{
 								align: "start",
+								loop: true,
 							}}
 							plugins={[
 								Autoplay({
@@ -84,7 +91,7 @@ function page() {
 							<CarouselNext /> */}
 						</Carousel>
 					</div>
-					<div className="md:w-[80%] flex flex-col justify-center items-center mx-auto text-lg text-justify">
+					<div className="md:w-[80%] flex flex-col justify-center items-center mx-auto">
 						Tewodros Getachew Tulu and Associates Law Group (TGA Law Group) is a
 						leading law office in Ethiopia specialized in diversified area of
 						expertise, providing a quality legal service with creative solutions.
@@ -126,7 +133,7 @@ function page() {
 				</div>
 				<div className="md:p-10 p-4 bg-gradient-to-br from-teal-500 via-teal-600 to-emerald-600 mt-14 w-full rounded-lg flex flex-col gap-4 justify-center items-center">
 					<div className="text-center mb-16">
-						<h2 className="text-2xl md:text-4xl font-bold mb-4 px-4 md:px-0">
+						<h2 className="text-2xl md:text-4xl font-bold mb-4 px-4 md:px-0 text-white">
 							Memberships and Positions
 						</h2>
 						<div className="w-24 h-1 bg-white/50 mx-auto rounded-full"></div>
@@ -170,6 +177,52 @@ function page() {
 							</p>
 						</div>
 					</div>
+				</div>
+
+				<div className="mt-16 flex flex-col items-center">
+					<div className="text-center mb-16">
+						<h2 className="text-2xl md:text-4xl font-bold mb-4">OUR OFFICES</h2>
+						<div className="w-24 h-1 bg-black/50 mx-auto rounded-full"></div>
+					</div>
+
+					<div className="max-w-4xl text-center mb-16">
+						With strategically located offices, we are positioned to serve clients
+						efficiently and effectively. Each location is equipped to deliver the
+						highest standard of legal service, ensuring consistency, confidentiality,
+						and professionalism. Explore our offices to see where we can best support
+						your legal needs.
+					</div>
+
+					<Carousel
+						opts={{
+							align: "start",
+							loop: true,
+						}}
+						plugins={[
+							Autoplay({
+								delay: 2000,
+							}),
+						]}
+						className="w-full"
+					>
+						<CarouselContent>
+							{office_images.map((src, idx) => (
+								<CarouselItem
+									key={src}
+									className="flex justify-center items-center max-h-120 h-[520px] relative md:basis-1/2 lg:basis-1/3"
+								>
+									<Image
+										src={src}
+										alt={`Office ${idx + 1}`}
+										fill={true}
+										className="object-cover px-1"
+									/>
+								</CarouselItem>
+							))}
+						</CarouselContent>
+						{/* <CarouselPrevious />
+							<CarouselNext /> */}
+					</Carousel>
 				</div>
 			</div>
 			<Footer />

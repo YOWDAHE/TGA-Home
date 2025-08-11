@@ -16,67 +16,88 @@ type AboutUsSlide = {
 };
 
 const aboutUsSlides: AboutUsSlide[] = [
-	{
-		images: [image1_1, image1_2],
-		description: (
-			<div>
-				A{" "}
-				<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
-					globally renowned legal firm
-				</span>{" "}
-				with a distinct presence and forged partnerships in over{" "}
-				<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
-					52 jurisdictions and nations
-				</span>{" "}
-				across four continents
-			</div>
-		),
-	},
+	// {
+	// 	images: [image1_1, image1_2],
+	// 	description: (
+	// 		<div>
+	// 			A{" "}
+	// 			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
+	// 				globally renowned legal firm
+	// 			</span>{" "}
+	// 			with a distinct presence and forged partnerships in over{" "}
+	// 			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
+	// 				52 jurisdictions and nations
+	// 			</span>{" "}
+	// 			across four continents
+	// 		</div>
+	// 	),
+	// },
+	// {
+	// 	images: [image2_1, image2_2],
+	// 	description: (
+	// 		<div>
+	// 			The first and only African law firm chosen to the governing council of the{" "}
+	// 			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
+	// 				BRILSA/Belt and Road International Legal Services Association
+	// 			</span>
+	// 			, which is estimated to contribute{" "}
+	// 			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
+	// 				$7.1 trillion to the global GDP
+	// 			</span>{" "}
+	// 			annually and has{" "}
+	// 			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
+	// 				153 member countries worldwide
+	// 			</span>
+	// 			.
+	// 		</div>
+	// 	),
+	// },
+	// {
+	// 	images: [image1_1, image1_2],
+	// 	description: (
+	// 		<div>
+	// 			The managing partner of this{" "}
+	// 			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
+	// 				premier
+	// 			</span>{" "}
+	// 			law company holds a number of prestigious positions and has garnered{" "}
+	// 			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
+	// 				international recognition
+	// 			</span>
+	// 			, including{" "}
+	// 			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
+	// 				President
+	// 			</span>{" "}
+	// 			of the{" "}
+	// 			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
+	// 				Pan African Lawyers Union (PALU)
+	// 			</span>{" "}
+	// 			and{" "}
+	// 			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
+	// 				President of the Ethiopian Federal Bar Association
+	// 			</span>
+	// 			.
+	// 		</div>
+	// 	),
+	// },
 	{
 		images: [image2_1, image2_2],
 		description: (
 			<div>
-				The first and only African law firm chosen to the governing council of the{" "}
+				The{" "}
 				<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
-					BRILSA/Belt and Road International Legal Services Association
-				</span>
-				, which is estimated to contribute{" "}
-				<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
-					$7.1 trillion to the global GDP
+					largest and most prominent law firm
 				</span>{" "}
-				annually and has{" "}
+				in the world{" "}
 				<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
-					153 member countries worldwide
-				</span>
-				.
-			</div>
-		),
-	},
-	{
-		images: [image3_1, image3_1],
-		description: (
-			<div>
-				The managing partner of this{" "}
-				<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
-					premier
+					Yingke
 				</span>{" "}
-				law company holds a number of prestigious positions and has garnered{" "}
+				as well as numerous other prestigious firms in their respective countries,
+				are{" "}
 				<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
-					international recognition
-				</span>
-				, including{" "}
-				<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
-					President
+					strategic partners
 				</span>{" "}
-				of the{" "}
-				<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
-					Pan African Lawyers Union (PALU)
-				</span>{" "}
-				and{" "}
-				<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
-					President of the Ethiopian Federal Bar Association
-				</span>
-				.
+				of TGA Global Law Firm.
 			</div>
 		),
 	},
