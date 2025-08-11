@@ -8,9 +8,103 @@ import {
 	CarouselItem,
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
+import { AnimatePresence, motion } from "framer-motion";
 
-export class Hero extends Component {
+type HeroState = {
+	currentTextIndex: number;
+};
+
+export class Hero extends Component<{}, HeroState> {
+	interval?: ReturnType<typeof setInterval>;
+
+	state: HeroState = {
+		currentTextIndex: 0,
+	};
+
+	componentDidMount() {
+		this.interval = setInterval(() => {
+			this.setState(({ currentTextIndex }) => ({
+				currentTextIndex: (currentTextIndex + 1) % this.texts.length,
+			}));
+		}, 6000);
+	}
+
+	componentWillUnmount() {
+		clearInterval(this.interval);
+	}
+
+	texts = [
+		<div>
+			COMMITTED TO A{" "}
+			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">
+				ROBUST BUSINESS AND INVESTMENT
+			</span>{" "}
+			ENVIRONMENT
+			<br />
+			IN ETHIOPIA AND AFRICA
+		</div>,
+		<div>
+			A{" "}
+			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">
+				globally renowned legal firm
+			</span>{" "}
+			with a distinct presence and forged partnerships in over{" "}
+			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">
+				52 jurisdictions and nations
+			</span>{" "}
+			across four continents
+		</div>,
+		<div>
+			The first and only African law firm chosen to the governing council of the{" "}
+			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">
+				{" "}
+				BRILSA/Belt and Road International Legal Services Association
+			</span>
+			, which is estimated to contribute{" "}
+			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">
+				{" "}
+				$7.1 trillion to the global GDP
+			</span>{" "}
+			annually and has{" "}
+			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">
+				{" "}
+				153 member countries worldwide
+			</span>
+			.
+		</div>,
+		<div className="">
+			The managing partner of this{" "}
+			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">
+				premier
+			</span>{" "}
+			law company holds a number of prestigious positions and has garnered{" "}
+			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">
+				international recognition
+			</span>
+			, including{" "}
+			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">
+				President
+			</span>{" "}
+			of the{" "}
+			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">
+				Pan African Lawyers Union (PALU)
+			</span>{" "}
+			and{" "}
+			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">
+				President of the Ethiopian Federal Bar Association
+			</span>
+			.
+		</div>,
+	];
+	images = [
+		{ src: "/loader/loader-1.svg", alt: "Hero", width: 350, height: 350 },
+		{ src: "/loader/loader-1.svg", alt: "Hero 2", width: 350, height: 350 },
+		{ src: "/loader/loader-1.svg", alt: "Hero 3", width: 350, height: 350 },
+		{ src: "/loader/loader-1.svg", alt: "Hero 3", width: 350, height: 350 },
+	];
+
 	render() {
+		const { currentTextIndex } = this.state;
 		const heroImages = [
 			"/Images/hero/hero-1.jpg",
 			"/Images/hero/hero-2.jpg",
@@ -22,8 +116,34 @@ export class Hero extends Component {
 				id="hero-section"
 				className="relative min-h-[700px] bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 text-white py-32 overflow-hidden max-h-[calc(100vh-90px)] flex items-center justify-center"
 			>
+				<div className="flex justify-evenly absolute top-10 gap-10 z-20 md:hidden">
+					<Link
+						href="/about-us"
+						className={`font-medium hover:text-teal-500`}
+					>
+						About
+					</Link>
+					<Link
+						href="#services"
+						className={`font-medium hover:text-teal-500`}
+					>
+						service
+					</Link>
+					<Link
+						href="/resources"
+						className={`font-medium hover:text-teal-500`}
+					>
+						Resources
+					</Link>
+					<Link
+						href="/news"
+						className={`font-medium hover:text-teal-500`}
+					>
+						News
+					</Link>
+				</div>
 				{/* Rotating hero images background carousel */}
-				<div className="absolute inset-0 overflow-hidden h-full">
+				<div className="absolute inset-0 overflow-hidden min-h-[700px] h-full">
 					<Carousel
 						opts={{
 							loop: true,
@@ -39,7 +159,7 @@ export class Hero extends Component {
 										<img
 											src={image}
 											alt={`Hero background ${index + 1}`}
-											className="object-cover opacity-30 w-full h-full"
+											className="object-cover opacity-30 w-full min-h-[700px] h-full"
 										/>
 									</div>
 								</CarouselItem>
@@ -79,15 +199,40 @@ export class Hero extends Component {
 						height={150}
 						className="object-cover rounded-lg bg-white md:hidden"
 					/>
-					<div className="text-xl md:text-3xl font-bold mb-8 leading-tight">
-						COMMITTED TO A{" "}
-						<span className="bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">
-							ROBUST BUSINESS AND INVESTMENT
-						</span>{" "}
-						ENVIRONMENT
-						<br />
-						IN ETHIOPIA AND AFRICA
-					</div>
+					{/* <AnimatePresence mode="wait">
+						<motion.div
+							key={currentTextIndex}
+							className="..."
+							initial={{ opacity: 0, y: 10 }}
+							animate={{ opacity: 1, y: 0 }}
+							exit={{ opacity: 0, y: -60 }}
+							transition={{ duration: 0.5, ease: "easeInOut" }}
+						>
+							<img
+								src={this.images[currentTextIndex].src}
+								alt={this.images[currentTextIndex].alt}
+								width={this.images[currentTextIndex].width}
+								height={this.images[currentTextIndex].height}
+								className="object-cover rounded-lg bg-white"
+							/>
+						</motion.div>
+					</AnimatePresence> */}
+
+					<AnimatePresence mode="wait">
+						<motion.div
+							className="text-xl md:text-3xl mb-8 leading-tight max-w-6xl mx-auto h-[120px] flex flex-col items-center justify-center mt-10 lg:mt-0"
+							style={{ minHeight: "5.5rem" }}
+							key={currentTextIndex}
+							initial={{ opacity: 0, y: 30 }}
+							animate={{ opacity: 1, y: 0 }}
+							exit={{ opacity: 0, y: -30 }}
+							transition={{ duration: 0.8, ease: "easeInOut" }}
+						>
+							{this.texts[currentTextIndex]}
+						</motion.div>
+					</AnimatePresence>
+
+					<div></div>
 					<div className="flex flex-col sm:flex-row gap-4 justify-center">
 						<Link href="#contact">
 							<Button
