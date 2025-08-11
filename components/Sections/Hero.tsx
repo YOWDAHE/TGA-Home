@@ -116,7 +116,7 @@ export class Hero extends Component<{}, HeroState> {
 				id="hero-section"
 				className="relative min-h-[700px] bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 text-white py-32 overflow-hidden max-h-[calc(100vh-90px)] flex items-center justify-center"
 			>
-				<div className="flex justify-evenly absolute top-10 gap-10 z-20 md:hidden">
+				<div className="flex justify-evenly absolute top-10 gap-6 z-20 md:hidden">
 					<Link
 						href="/about-us"
 						className={`font-medium hover:text-teal-500`}
@@ -159,7 +159,7 @@ export class Hero extends Component<{}, HeroState> {
 										<img
 											src={image}
 											alt={`Hero background ${index + 1}`}
-											className="object-cover opacity-30 w-full min-h-[700px] h-full"
+											className="object-cover opacity-30 w-full min-h-[700px] h-[100vh]"
 										/>
 									</div>
 								</CarouselItem>
@@ -184,7 +184,7 @@ export class Hero extends Component<{}, HeroState> {
 					<Link href="/news">News</Link>
 					<Link href="#contact">Contact</Link>
 				</div>
-				<div className="container mx-auto px-4 text-center relative z-10 flex flex-col items-center justify-center gap-10">
+				<div className="container mx-auto px-4 text-center relative z-10 flex flex-col items-center justify-center gap-10 mt-4">
 					<img
 						src="/loader/loader-1.svg"
 						alt="Hero"
@@ -195,8 +195,8 @@ export class Hero extends Component<{}, HeroState> {
 					<img
 						src="/loader/loader-1.svg"
 						alt="Hero"
-						width={150}
-						height={150}
+						width={200}
+						height={200}
 						className="object-cover rounded-lg bg-white md:hidden"
 					/>
 					{/* <AnimatePresence mode="wait">
@@ -232,7 +232,6 @@ export class Hero extends Component<{}, HeroState> {
 						</motion.div>
 					</AnimatePresence>
 
-					<div></div>
 					<div className="flex flex-col sm:flex-row gap-4 justify-center">
 						<Link href="#contact">
 							<Button
