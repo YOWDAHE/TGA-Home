@@ -220,7 +220,7 @@ const AboutUs: React.FC = () => {
 						</div>
 
 						{/* Description */}
-						<div className="flex-1 bg-white/80 backdrop-blur-md rounded-3xl shadow-2xl p-8 md:p-12 border border-gray-100 flex items-center gap-10">
+						<div className="flex-1 bg-white/80 backdrop-blur-md rounded-3xl shadow-2xl border border-gray-100 flex items-center gap-10">
 							<AnimatePresence mode="wait">
 								<motion.div
 									key={currentSlideIndex}
@@ -229,7 +229,7 @@ const AboutUs: React.FC = () => {
 									exit={{ opacity: 0, y: -20 }}
 									transition={{ duration: 0.6 }}
 								>
-									<div className="text-lg text-gray-800 leading-relaxed h-[200px] lg:h-[400px]">
+									<div className="text-lg text-gray-800 leading-relaxed h-[250px] lg:h-[400px] flex items-center justify-center p-8 md:p-12">
 										{currentSlide.description}
 									</div>
 								</motion.div>
