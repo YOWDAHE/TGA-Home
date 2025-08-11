@@ -242,9 +242,7 @@ const AboutUs: React.FC = () => {
 						<img
 							src="/Images/aboutUs/Tewodros.jpg"
 							alt="Tewodros Getachew Tulu"
-							width={300}
-							height={400}
-							className="object-cover rounded-lg"
+							className="object-cover rounded-lg h-full w-auto"
 						/>
 						<p className="lg:text-md text-base text-gray-700 leading-relaxed text-start max-w-4xl mx-auto flex-1">
 							Tewodros Getachew Tulu is a prominent Ethiopian lawyer and continental
