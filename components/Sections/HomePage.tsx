@@ -24,6 +24,7 @@ import {
 } from "@/app/types/landing";
 import type { News as NewsType } from "@/app/types/news";
 import type { Resource } from "@/app/actions/resources.actions";
+import { usePathname } from "next/navigation";
 
 interface LandingPageProps {
 	data: {
@@ -51,6 +52,35 @@ export default function LandingPage({
 
 	const aboutRef = React.useRef<HTMLDivElement>(null);
 	const servicesRef = React.useRef<HTMLDivElement>(null);
+	const pathname = usePathname();
+	const hash = window.location.hash;
+
+	useEffect(() => {
+		// Scroll handler for hash links
+		const handleHashScroll = () => {
+			if (hash) {
+				const id = hash.replace("#", "");
+				const element = document.getElementById(id);
+				if (element) {
+					
+					setTimeout(() => {
+						element.scrollIntoView({
+							behavior: "smooth",
+							block: "start",
+						});
+					}, 100);
+				}
+			}
+		};
+		handleHashScroll();
+
+		// Also handle hash changes
+		window.addEventListener("hashchange", handleHashScroll);
+
+		return () => {
+			window.removeEventListener("hashchange", handleHashScroll);
+		};
+	}, [hash]);
 
 	useEffect(() => {
 		const handleScroll = () => {
@@ -102,7 +132,7 @@ export default function LandingPage({
 				<AboutUs />
 			</div>
 			<Statistics stats={data.stats} />
-			<div ref={servicesRef}>
+			<div ref={servicesRef} id="services">
 				<Services />
 			</div>
 			<PracticeAreas practices={data.practices} />

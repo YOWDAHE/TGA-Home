@@ -116,7 +116,8 @@ export default function Header({
 								About
 							</Link>
 							<Link
-								href="#services"
+								href="/#services"
+								scroll={true}
 								className={`font-medium hover:text-teal-500 ${
 									currentPage === "services" ? "text-teal-500" : "text-gray-700"
 								}`}
@@ -272,7 +273,7 @@ export default function Header({
 									About
 								</Link>
 								<Link
-									href="#services"
+									href="/#services"
 									onClick={handleNavClick}
 									className={`block py-3 px-4 font-medium transition-colors ${
 										currentPage === "services"

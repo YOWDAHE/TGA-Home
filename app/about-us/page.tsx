@@ -1,5 +1,6 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import {
 	Carousel,
 	CarouselContent,
@@ -20,11 +21,38 @@ const images = Array.from(
 
 const office_images = Array.from(
 	{ length: 15 },
-	(_, i) =>
-		`/aboutUs/offices/office${(i + 1).toString()}.jpg`
+	(_, i) => `/aboutUs/offices/office${(i + 1).toString()}.jpg`
 );
 
 function page() {
+	const pathname = usePathname();
+	const [hash, setHash] = useState("");
+
+	useEffect(() => {
+		setHash(window.location.hash);
+		const handleHashScroll = () => {
+			if (hash) {
+				const id = hash.replace("#", "");
+				const element = document.getElementById(id);
+				if (element) {
+					setTimeout(() => {
+						element.scrollIntoView({
+							behavior: "smooth",
+							block: "start",
+						});
+					}, 100);
+				}
+			}
+		};
+
+		handleHashScroll();
+
+		window.addEventListener("hashchange", handleHashScroll);
+
+		return () => {
+			window.removeEventListener("hashchange", handleHashScroll);
+		};
+	}, [hash]);
 	return (
 		<>
 			<Header currentPage="about-us" />
@@ -223,6 +251,30 @@ function page() {
 						{/* <CarouselPrevious />
 							<CarouselNext /> */}
 					</Carousel>
+				</div>
+
+				<div className="max-w-4xl mx-auto text-center mt-16 mb-8" id="disclosure">
+					<div className="text-center mb-16">
+						<h2 className="text-xl md:text-2xl font-bold mb-2">
+							Global Reach & Legal Disclosures
+						</h2>
+						<div className="w-24 h-1 bg-black/50 mx-auto rounded-full"></div>
+					</div>
+					<div>
+						<p>
+							© 2025 TGA Global Law Firm. All rights reserved.{" "}
+							<strong>Attorney Advertising.</strong>
+						</p>
+						<p>
+							TGA Global Law Firm is a global law firm operating through various
+							separate and distinct legal entities. Through its affiliates and partner
+							companies, TGA Global is an international legal practice offering
+							full-fledged client services. With a wealth of diverse experience and
+							outstanding expertise, TGA Global Law Firm is a prominent Ethiopian law
+							practice that offers top-notch legal services throughout Ethiopia and
+							Africa.
+						</p>
+					</div>
 				</div>
 			</div>
 			<Footer />

@@ -42,7 +42,13 @@ export default function Footer({ contactUs }: FooterProps) {
 			<div className="container mx-auto px-4">
 				<div className="grid md:grid-cols-4 gap-8">
 					<div>
-						<img src="/loader/loader-1.svg" alt="Logo" width={100} height={100} className=" bg-white rounded-md mb-4" />
+						<img
+							src="/loader/loader-1.svg"
+							alt="Logo"
+							width={100}
+							height={100}
+							className=" bg-white rounded-md mb-4"
+						/>
 						<p className="text-gray-400">
 							Committed to excellence in legal services across Ethiopia and Africa.
 						</p>
@@ -98,7 +104,16 @@ export default function Footer({ contactUs }: FooterProps) {
 				</div>
 
 				<div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-					<p>&copy; 2024 TG&A Law Group. All rights reserved.</p>
+					<p>
+						&copy; 2024 TG&A Law Group. All rights reserved. |{" "}
+						<a href="/about-us#disclosure">Attorney Advertising</a>
+					</p>
+					<p className="mt-6 text-sm opacity-60 group cursor-pointer">
+						Website made by{" "}
+						<a href="https://www.linkedin.com/in/yodahe-ketema-08310a208/" className="text-white group-hover:underline opacity-75">
+							Yodahe Ketema
+						</a>
+					</p>
 				</div>
 			</div>
 		</footer>

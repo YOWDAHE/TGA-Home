@@ -1,3 +1,5 @@
+'use client'
+
 import { Award, User } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { StaticImageData } from "next/image";
@@ -7,8 +9,10 @@ import image1_2 from "@/public/Images/aboutUs/image1.2.jpg";
 import image2_1 from "@/public/Images/aboutUs/image2.1.jpg";
 import image2_2 from "@/public/Images/aboutUs/image2.2.jpg";
 import image3_1 from "@/public/Images/aboutUs/image3.1.jpg";
+import image4_1 from "@/public/Images/aboutUs/image4.1.jpg";
 
 import { motion, AnimatePresence } from "framer-motion";
+import { usePathname } from "next/navigation";
 
 type AboutUsSlide = {
 	images: StaticImageData[];
@@ -16,72 +20,72 @@ type AboutUsSlide = {
 };
 
 const aboutUsSlides: AboutUsSlide[] = [
-	// {
-	// 	images: [image1_1, image1_2],
-	// 	description: (
-	// 		<div>
-	// 			A{" "}
-	// 			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
-	// 				globally renowned legal firm
-	// 			</span>{" "}
-	// 			with a distinct presence and forged partnerships in over{" "}
-	// 			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
-	// 				52 jurisdictions and nations
-	// 			</span>{" "}
-	// 			across four continents
-	// 		</div>
-	// 	),
-	// },
-	// {
-	// 	images: [image2_1, image2_2],
-	// 	description: (
-	// 		<div>
-	// 			The first and only African law firm chosen to the governing council of the{" "}
-	// 			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
-	// 				BRILSA/Belt and Road International Legal Services Association
-	// 			</span>
-	// 			, which is estimated to contribute{" "}
-	// 			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
-	// 				$7.1 trillion to the global GDP
-	// 			</span>{" "}
-	// 			annually and has{" "}
-	// 			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
-	// 				153 member countries worldwide
-	// 			</span>
-	// 			.
-	// 		</div>
-	// 	),
-	// },
-	// {
-	// 	images: [image1_1, image1_2],
-	// 	description: (
-	// 		<div>
-	// 			The managing partner of this{" "}
-	// 			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
-	// 				premier
-	// 			</span>{" "}
-	// 			law company holds a number of prestigious positions and has garnered{" "}
-	// 			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
-	// 				international recognition
-	// 			</span>
-	// 			, including{" "}
-	// 			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
-	// 				President
-	// 			</span>{" "}
-	// 			of the{" "}
-	// 			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
-	// 				Pan African Lawyers Union (PALU)
-	// 			</span>{" "}
-	// 			and{" "}
-	// 			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
-	// 				President of the Ethiopian Federal Bar Association
-	// 			</span>
-	// 			.
-	// 		</div>
-	// 	),
-	// },
+	{
+		images: [image1_1, image1_2],
+		description: (
+			<div>
+				A{" "}
+				<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
+					globally renowned legal firm
+				</span>{" "}
+				with a distinct presence and forged partnerships in over{" "}
+				<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
+					52 jurisdictions and nations
+				</span>{" "}
+				across four continents
+			</div>
+		),
+	},
 	{
 		images: [image2_1, image2_2],
+		description: (
+			<div>
+				The first and only African law firm chosen to the governing council of the{" "}
+				<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
+					BRILSA/Belt and Road International Legal Services Association
+				</span>
+				, which is estimated to contribute{" "}
+				<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
+					$7.1 trillion to the global GDP
+				</span>{" "}
+				annually and has{" "}
+				<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
+					153 member countries worldwide
+				</span>
+				.
+			</div>
+		),
+	},
+	{
+		images: [image1_1, image1_2],
+		description: (
+			<div>
+				The managing partner of this{" "}
+				<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
+					premier
+				</span>{" "}
+				law company holds a number of prestigious positions and has garnered{" "}
+				<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
+					international recognition
+				</span>
+				, including{" "}
+				<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
+					President
+				</span>{" "}
+				of the{" "}
+				<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
+					Pan African Lawyers Union (PALU)
+				</span>{" "}
+				and{" "}
+				<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
+					President of the Ethiopian Federal Bar Association
+				</span>
+				.
+			</div>
+		),
+	},
+	{
+		images: [image4_1, image4_1],
 		description: (
 			<div>
 				The{" "}
@@ -227,14 +231,21 @@ const AboutUs: React.FC = () => {
 									animate={{ opacity: 1, scale: 1 }}
 									exit={{ opacity: 0, scale: 0.95 }}
 									transition={{ duration: 0.5 }}
-									className="overflow-hidden rounded-lg shadow-lg"
+									className="overflow-hidden rounded-lg shadow-lg relative"
 								>
 									<img
 										src={currentSlide.images[currentImageIndex].src}
 										alt={`About Us Slide ${currentSlideIndex + 1} Image ${
 											currentImageIndex + 1
 										}`}
-										className="w-[600px] h-[400px] object-cover"
+										className="w-[600px] h-[400px] object-contain z-10 relative"
+									/>
+									<img
+										src={currentSlide.images[currentImageIndex].src}
+										alt={`About Us Slide ${currentSlideIndex + 1} Image ${
+											currentImageIndex + 1
+										}`}
+										className="w-[600px] h-[400px] object-cover absolute inset-0 blur-[40px] opacity-70"
 									/>
 								</motion.div>
 							</AnimatePresence>
