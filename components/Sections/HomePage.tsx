@@ -53,10 +53,14 @@ export default function LandingPage({
 	const aboutRef = React.useRef<HTMLDivElement>(null);
 	const servicesRef = React.useRef<HTMLDivElement>(null);
 	const pathname = usePathname();
-	const hash = window.location.hash;
+	const [hash, setHash] = useState("");
 
 	useEffect(() => {
+
+		setHash(window.location.hash);
+
 		// Scroll handler for hash links
+		
 		const handleHashScroll = () => {
 			if (hash) {
 				const id = hash.replace("#", "");
