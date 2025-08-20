@@ -108,12 +108,12 @@ export default function Footer({ contactUs }: FooterProps) {
 						&copy; 2024 TG&A Law Group. All rights reserved. |{" "}
 						<a href="/about-us#disclosure">Attorney Advertising</a>
 					</p>
-					<p className="mt-6 text-sm opacity-60 group cursor-pointer">
+					{/* <p className="mt-6 text-sm opacity-60 group cursor-pointer">
 						Website made by{" "}
 						<a href="https://www.linkedin.com/in/yodahe-ketema-08310a208/" className="text-white group-hover:underline opacity-75">
 							Yodahe Ketema
 						</a>
-					</p>
+					</p> */}
 				</div>
 			</div>
 		</footer>
