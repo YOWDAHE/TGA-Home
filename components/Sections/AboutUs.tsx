@@ -1,7 +1,7 @@
-'use client'
+"use client";
 
 import { Award, User } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { StaticImageData } from "next/image";
 
 import image1_1 from "@/public/Images/aboutUs/image1.1.jpg";
@@ -15,7 +15,6 @@ import image5_2 from "@/public/Images/aboutUs/image5.2.jpg";
 import image5_3 from "@/public/Images/aboutUs/image5.3.jpg";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { usePathname } from "next/navigation";
 
 type AboutUsSlide = {
 	images: StaticImageData[];
@@ -88,7 +87,7 @@ const aboutUsSlides: AboutUsSlide[] = [
 		),
 	},
 	{
-		images: [image4_1, image4_1],
+		images: [image4_1],
 		description: (
 			<div>
 				The{" "}
@@ -104,7 +103,7 @@ const aboutUsSlides: AboutUsSlide[] = [
 				<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
 					strategic partners
 				</span>{" "}
-				of TGA Global Law Firm.
+				of TGA Global Law Firm.
 			</div>
 		),
 	},
@@ -113,13 +112,23 @@ const aboutUsSlides: AboutUsSlide[] = [
 const AboutUs: React.FC = () => {
 	const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
 	const [currentImageIndex, setCurrentImageIndex] = useState(0);
+	const [isImageTransitioning, setIsImageTransitioning] = useState(false);
 
 	const currentSlide = aboutUsSlides[currentSlideIndex];
-	const hasMultipleImages = currentSlide.images.length > 1;
+	const hasMultipleImages = currentSlide?.images?.length > 1;
+	const currentImage = currentSlide?.images?.[currentImageIndex];
+
+	// Calculate image interval based on number of images
+	const getImageInterval = useCallback(() => {
+		const baseInterval = 6000; // 6 seconds base
+		const numImages = currentSlide?.images?.length || 1;
+		return baseInterval / Math.max(1, numImages - 1);
+	}, [currentSlide?.images?.length]);
 
 	useEffect(() => {
 		const slideInterval = setInterval(() => {
 			setCurrentSlideIndex((prev) => (prev + 1) % aboutUsSlides.length);
+			setCurrentImageIndex(0); // Reset to first image when slide changes
 		}, 12000);
 
 		return () => clearInterval(slideInterval);
@@ -132,11 +141,32 @@ const AboutUs: React.FC = () => {
 		}
 
 		const imageInterval = setInterval(() => {
-			setCurrentImageIndex((prev) => (prev + 1) % currentSlide.images.length);
-		}, 6000);
+			setIsImageTransitioning(true);
+			setCurrentImageIndex((prev) => {
+				const nextIndex = (prev + 1) % currentSlide.images.length;
+				return nextIndex;
+			});
+
+			// Reset transitioning state after animation completes
+			setTimeout(() => setIsImageTransitioning(false), 500);
+		}, getImageInterval());
 
 		return () => clearInterval(imageInterval);
-	}, [currentSlideIndex, hasMultipleImages, currentSlide?.images.length]);
+	}, [
+		currentSlideIndex,
+		hasMultipleImages,
+		currentSlide?.images.length,
+		getImageInterval,
+	]);
+
+	// Add safety check for currentImage
+	if (!currentImage) {
+		return (
+			<section className="py-20 bg-gradient-to-b from-gray-50 to-white min-h-[900px] flex items-center justify-center">
+				<div className="text-center">Loading...</div>
+			</section>
+		);
+	}
 
 	return (
 		<section
@@ -229,7 +259,7 @@ const AboutUs: React.FC = () => {
 						<div className="flex-1 flex justify-center">
 							<AnimatePresence mode="wait">
 								<motion.div
-									key={currentSlide.images[currentImageIndex].src}
+									key={`${currentSlideIndex}-${currentImageIndex}`}
 									initial={{ opacity: 0, scale: 0.95 }}
 									animate={{ opacity: 1, scale: 1 }}
 									exit={{ opacity: 0, scale: 0.95 }}
@@ -237,19 +267,33 @@ const AboutUs: React.FC = () => {
 									className="overflow-hidden rounded-lg shadow-lg relative"
 								>
 									<img
-										src={currentSlide.images[currentImageIndex].src}
+										src={currentImage.src}
 										alt={`About Us Slide ${currentSlideIndex + 1} Image ${
 											currentImageIndex + 1
 										}`}
 										className="w-[600px] h-[400px] object-contain z-10 relative"
 									/>
 									<img
-										src={currentSlide.images[currentImageIndex].src}
+										src={currentImage.src}
 										alt={`About Us Slide ${currentSlideIndex + 1} Image ${
 											currentImageIndex + 1
 										}`}
 										className="w-[600px] h-[400px] object-cover absolute inset-0 blur-[40px] opacity-70"
 									/>
+
+									{/* Image indicator dots */}
+									{hasMultipleImages && (
+										<div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+											{currentSlide.images.map((_, index) => (
+												<div
+													key={index}
+													className={`w-3 h-3 rounded-full ${
+														index === currentImageIndex ? "bg-white" : "bg-white/50"
+													}`}
+												/>
+											))}
+										</div>
+									)}
 								</motion.div>
 							</AnimatePresence>
 						</div>
@@ -285,15 +329,15 @@ const AboutUs: React.FC = () => {
 							Group. Tewodros is the first East African to be elected to the most
 							prestigious position in Africa, President of the Pan African Lawyers
 							Union (PALU). He is the Founding President of the Ethiopian Federal Bar
-							Association, currently leading Ethiopia’s first ever statutory Bar
+							Association, currently leading Ethiopia's first ever statutory Bar
 							Association. <br /> <br />
-							He’s an advisor to the African Union CISSA on national and international
+							He's an advisor to the African Union CISSA on national and international
 							laws, and holds various roles in legal reform structures. He is an
 							international arbitrator under the auspices of various international
 							centers including CIETAC. He chairs various board structures, including
 							COST International, the highest board in the construction sector. <br />{" "}
 							<br />
-							Tewodros Getachew is reshaping Africa’s legal landscape, promoting
+							Tewodros Getachew is reshaping Africa's legal landscape, promoting
 							justice throughout the continent, fostering a strong investment climate,
 							and advancing cross-border legal practice.
 						</p>
