@@ -10,6 +10,9 @@ import image2_1 from "@/public/Images/aboutUs/image2.1.jpg";
 import image2_2 from "@/public/Images/aboutUs/image2.2.jpg";
 import image3_1 from "@/public/Images/aboutUs/image3.1.jpg";
 import image4_1 from "@/public/Images/aboutUs/image4.1.jpg";
+import image5_1 from "@/public/Images/aboutUs/image5.1.jpg";
+import image5_2 from "@/public/Images/aboutUs/image5.2.jpg";
+import image5_3 from "@/public/Images/aboutUs/image5.3.jpg";
 
 import { motion, AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
@@ -21,7 +24,7 @@ type AboutUsSlide = {
 
 const aboutUsSlides: AboutUsSlide[] = [
 	{
-		images: [image1_1, image1_2],
+		images: [image5_3, image5_2, image5_1],
 		description: (
 			<div>
 				A{" "}
