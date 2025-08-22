@@ -72,7 +72,7 @@ const Partners = React.memo(function Partners({ partners }: PartnersProps) {
         `}
 									>
 										<img
-											src={partner.logo_url || "/office/placeholder.jpg"}
+											src={convertToApiUrl(partner.logo_url) || "/office/placeholder.jpg"}
 											alt={partner.name}
 											width={60}
 											height={40}
