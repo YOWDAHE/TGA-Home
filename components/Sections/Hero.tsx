@@ -35,49 +35,46 @@ export class Hero extends Component<{}, HeroState> {
 
 	texts = [
 		<div>
-			COMMITTED TO A{" "}
 			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">
-				ROBUST BUSINESS AND INVESTMENT
+				#1 LAW FIRM IN ETHIOPIA
 			</span>{" "}
-			ENVIRONMENT
+			- COMMITTED TO A ROBUST BUSINESS AND INVESTMENT ENVIRONMENT
 			<br />
 			IN ETHIOPIA AND AFRICA
 		</div>,
 		<div>
-			A{" "}
 			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">
-				globally renowned legal firm
+				INTERNATIONAL LAW FIRM ETHIOPIA
 			</span>{" "}
-			with a distinct presence and forged partnerships in over{" "}
+			- A globally renowned legal firm with a distinct presence and forged partnerships in over{" "}
 			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">
 				52 jurisdictions and nations
 			</span>{" "}
 			across four continents
 		</div>,
 		<div>
-			The first and only African law firm chosen to the governing council of the{" "}
 			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">
-				{" "}
+				TOP AFRICAN LAWYERS
+			</span>{" "}
+			- The first and only African law firm chosen to the governing council of the{" "}
+			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">
 				BRILSA/Belt and Road International Legal Services Association
 			</span>
 			, which is estimated to contribute{" "}
 			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">
-				{" "}
 				$7.1 trillion to the global GDP
 			</span>{" "}
 			annually and has{" "}
 			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">
-				{" "}
 				153 member countries worldwide
 			</span>
 			.
 		</div>,
 		<div className="">
-			The managing partner of this{" "}
 			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">
-				premier
+				PAN AFRICAN LAWYERS UNION PRESIDENT LAW FIRM
 			</span>{" "}
-			law company holds a number of prestigious positions and has garnered{" "}
+			- The managing partner of this premier law company holds a number of prestigious positions and has garnered{" "}
 			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">
 				international recognition
 			</span>
@@ -91,7 +88,7 @@ export class Hero extends Component<{}, HeroState> {
 			</span>{" "}
 			and{" "}
 			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">
-				President of the Ethiopian Federal Bar Association
+				President of the Ethiopian Federal Bar Association
 			</span>
 			.
 		</div>,

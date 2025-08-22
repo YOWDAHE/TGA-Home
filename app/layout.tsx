@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 	description:
 		"TGA Global Law Firm provides comprehensive legal services with expertise in corporate law, litigation, and legal consulting. Trust our experienced attorneys for your legal needs.",
 	keywords: [
-		"TGA Law Group",
+		"TGA Global Law Firm",
 		"TGA Global Law Firm",
 		"International law",
 		"legal services",
@@ -40,10 +40,35 @@ export const metadata: Metadata = {
 		"ethiopian law news",
 		"ethiopian legal news",
 		"ethiopian legal news",
+		"#1 Law Firm in Ethiopia",
+		"TGA Law Group",
+		"International Law Firm Ethiopia",
+		"Corporate Lawyers Ethiopia",
+		"Business Law Firm Addis Ababa",
+		"Real Estate Lawyers Ethiopia",
+		"Legal Services for Diaspora Ethiopians",
+		"Top African Lawyers",
+		"Pan African Lawyers Union President Law Firm",
+		"Ethiopian Bar Association President Law Firm",
+		"Corporate Law Ethiopia",
+		"Business Registration Ethiopia",
+		"Commercial Lawyers Ethiopia",
+		"Real Estate Law Ethiopia",
+		"Diaspora Property Lawyers Ethiopia",
+		"Cross-Border Legal Services Ethiopia",
+		"International Business Lawyers Ethiopia",
+		"Top Law Group Ethiopia",
+		"Africa's Leading Law Group Ethiopia",
+		"Global Legal Expertise Addis Ababa",
+		"Trusted Ethiopian Law Firm",
+		"Ethiopian Diaspora Legal Help",
+		"Real Estate Lawyers Ethiopia Diaspora",
+		"Ethiopia International Business Lawyers",
+		"Global Legal Services",
 	],
-	authors: [{ name: "TGA Law Group" }],
-	creator: "TGA Law Group",
-	publisher: "TGA Law Group",
+	authors: [{ name: "TGA Global Law Firm" }],
+	creator: "TGA Global Law Firm",
+	publisher: "TGA Global Law Firm",
 	formatDetection: {
 		email: false,
 		address: false,
@@ -57,25 +82,25 @@ export const metadata: Metadata = {
 		type: "website",
 		locale: "en_US",
 		url: "https://tgalawgroup.com", //TODO: Replace with your actual domain
-		siteName: "TGA Law Group",
-		title: "TGA Law Group - Professional Legal Services",
+		siteName: "TGA Global Law Firm",
+		title: "TGA Global Law Firm - Professional Legal Services",
 		description:
-			"TGA Law Group provides comprehensive legal services with expertise in corporate law, litigation, and legal consulting. Trust our experienced attorneys for your legal needs.",
+			"TGA provides comprehensive legal services with expertise in corporate law, litigation, and legal consulting. Trust our experienced attorneys for your legal needs.",
 		images: [
 			{
-				url: "/Images/logo/TGA_LOGO.svg", //TODO: Replace with your actual logo path
+				url: "/loader/loader-1.svg",
 				width: 1200,
 				height: 630,
-				alt: "TGA Law Group Logo",
+				alt: "TGA Global Law Firm Logo",
 			},
 		],
 	},
 	twitter: {
 		card: "summary_large_image",
-		title: "TGA Law Group - Professional Legal Services",
+		title: "TGA Global Law Firm - Professional Legal Services",
 		description:
-			"TGA Law Group provides comprehensive legal services with expertise in corporate law, litigation, and legal consulting.",
-		images: ["/Images/logo/TGA_LOGO.svg"],
+			"TGA provides comprehensive legal services with expertise in corporate law, litigation, and legal consulting.",
+		images: ["/loader/loader-1.svg"],
 		creator: "@tgalawgroup", //TODO: Replace with your actual Twitter handle
 		site: "@tgalawgroup", //TODO: Replace with your actual Twitter handle
 	},
@@ -102,8 +127,8 @@ export const metadata: Metadata = {
 		"theme-color": "#0D9488",
 		"apple-mobile-web-app-capable": "yes",
 		"apple-mobile-web-app-status-bar-style": "default",
-		"apple-mobile-web-app-title": "TGA Law Group",
-		"application-name": "TGA Law Group",
+		"apple-mobile-web-app-title": "TGA Global Law Firm",
+		"application-name": "TGA Global Law Firm",
 		"mobile-web-app-capable": "yes",
 	},
 };
@@ -124,8 +149,8 @@ export default function RootLayout({
 					<meta name="theme-color" content="#0D9488" />
 					<meta name="apple-mobile-web-app-capable" content="yes" />
 					<meta name="apple-mobile-web-app-status-bar-style" content="default" />
-					<meta name="apple-mobile-web-app-title" content="TGA Law Group" />
-					<meta name="application-name" content="TGA Law Group" />
+					<meta name="apple-mobile-web-app-title" content="TGA Global Law Firm" />
+					<meta name="application-name" content="TGA Global Law Firm" />
 					<meta name="mobile-web-app-capable" content="yes" />
 
 					{/* Structured Data for Organization */}

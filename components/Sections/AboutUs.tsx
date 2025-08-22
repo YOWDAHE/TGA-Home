@@ -202,32 +202,34 @@ const AboutUs: React.FC = () => {
 							comprehensive legal solutions.
 						</p>
 
-						<div className="grid md:grid-cols-2 gap-12">
-							<div className="space-y-6">
+						<div className="grid md:grid-cols-7 gap-12">
+							<div className="space-y-6 md:col-span-4">
 								<div className="flex items-center mb-6">
 									<div className="w-12 h-12 bg-gradient-to-r from-teal-500 to-emerald-500 rounded-xl flex items-center justify-center mr-4">
 										<User className="w-6 h-6 text-white" />
 									</div>
 									<h3 className="text-xl md:text-2xl font-bold text-gray-900">
-										Leadership & Expertise
+										Leadership & International Recognition
 									</h3>
 								</div>
 								<div className="space-y-4">
 									{[
-										"Executive Board member of The Ethiopian Lawyers' Association",
-										"Head of Publication and International Relations Committee",
-										"Advisor to the Committee of Intelligence for Security Services of Africa CISSA",
-										"Board member of the State Infrastructure Transparency Initiative",
+										"President of the Pan-African Lawyers Union, the continent’s premier legal organ for lawyers and law Associations of Africa",
+										"Council member of the Belt and Road International Legal Services Association (BRILSA), the first African to join this governance structure",
+										"President, Ethiopian Federal Bar Association, overseeing thousands of lawyers and law firms",
+										"Governing Council member of the East African Law Society (EALS)—a leading regional bloc for leading law firms in the sub-region",
+										"Chairman of the Board of the State Infrastructure Transparency Initiative (COST International), which is made up of the top organizations in the construction industry",
+										"A member and chair of several domestic and international board structures",
 									].map((item, index) => (
 										<div key={index} className="flex items-start group">
-											<div className="w-2 h-2 bg-teal-500 rounded-full mt-2 mr-4 group-hover:scale-150 transition-transform"></div>
+											<div className=" bg-teal-500 rounded-full mt-2 mr-4 p-1 group-hover:scale-150 transition-transform"></div>
 											<span className="text-gray-700 leading-relaxed">{item}</span>
 										</div>
 									))}
 								</div>
 							</div>
 
-							<div className="space-y-6">
+							<div className="space-y-6 md:col-span-3">
 								<div className="flex items-center mb-6">
 									<div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-xl flex items-center justify-center mr-4">
 										<Award className="w-6 h-6 text-white" />
@@ -238,13 +240,14 @@ const AboutUs: React.FC = () => {
 								</div>
 								<div className="space-y-4">
 									{[
-										"Member of Advisory Council for the Federal Supreme Court of Ethiopia",
-										"Member of the Board for Law & Justice Institute of Ethiopia",
-										"Council member of Joined-up Justice High level forum",
-										"Certified Trademark Agent by the Ethiopian Intellectual Property Office",
+										"Life member of the African Lawyers Union, membership of 54 countries",
+										"Member of Belt and Road International Legal Services Association, membership of 153 countries",
+										"Member of EALS, Leading Law firms forum, 8 countries",
+										"Member of the Ethiopian Federal Bar Association",
+										"Affiliated with IBA, ABA, and many other International lawyers associations",
 									].map((item, index) => (
 										<div key={index} className="flex items-start group">
-											<div className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-4 group-hover:scale-150 transition-transform"></div>
+											<div className="p-1 bg-blue-500 rounded-full mt-2 mr-4 group-hover:scale-150 transition-transform"></div>
 											<span className="text-gray-700 leading-relaxed">{item}</span>
 										</div>
 									))}
@@ -327,8 +330,11 @@ const AboutUs: React.FC = () => {
 							Tewodros Getachew Tulu is a prominent Ethiopian lawyer and continental
 							legal leader. He is the Co-founder & Managing Partner of TGA Global Law
 							Group. Tewodros is the first East African to be elected to the most
-							prestigious position in Africa, President of the Pan African Lawyers
-							Union (PALU). He is the Founding President of the Ethiopian Federal Bar
+							prestigious position in Africa,{" "}
+							<a href="https://www.lawyersofafrica.org/about/executive-committee/" className="text-blue-500 hover:underline" target="_blank">
+								President of the Pan African Lawyers Union
+							</a>{" "}
+							(PALU). He is the Founding President of the Ethiopian Federal Bar
 							Association, currently leading Ethiopia's first ever statutory Bar
 							Association. <br /> <br />
 							He's an advisor to the African Union CISSA on national and international

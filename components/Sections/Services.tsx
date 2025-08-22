@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import Link from "next/link";
 
 export class Services extends Component {
 	render() {
@@ -22,46 +23,57 @@ export class Services extends Component {
 					<div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
 						{[
 							{
-								title: "REPRESENTATION",
+								title: "CORPORATE LAW ETHIOPIA",
 								content:
-									"We have the best litigation lawyers in the Ethiopian Legal Landscape in minefield areas of the law including taxation, Contracts, Investment disputes, Construction Issues and Criminal Law.",
-								icon: "⚖️",
-							},
-							{
-								title: "RETENTION AND ONGOING LEGAL SUPPORT",
-								content:
-									"We have been successful in being able to retain huge national and multi-national corporations as retentions clients by offering a quality ongoing legal support, including International organizations as we combine Seasoned lawyers in various fields of Law.",
-								icon: "🛡️",
-							},
-							{
-								title: "CONSULTING AND ADVISORY",
-								content:
-									"As a trusted advisor and considerable role in transactional matters, we have been helping corporations and business individuals navigate various aspects business transactions including Merger and Acquisitions, Due diligence, Contract Negotiation and Drafting, and Compliance.",
+									"Leading corporate lawyers Ethiopia providing business law services including business registration, commercial law, and corporate governance. #1 law firm in Ethiopia.",
 								icon: "💼",
+								link: "/corporate-law-ethiopia",
 							},
 							{
-								title: "CONTRACT MANAGEMENT AND ARBITRATION",
+								title: "REAL ESTATE LAW ETHIOPIA",
 								content:
-									"As a trusted advisor our office has been consulting and representing plentiful number of corporations and business entities in their contractual matters with 3rd Parties with a view to enable them have a robust contract management scheme.",
-								icon: "📋",
+									"Expert real estate lawyers Ethiopia specializing in property transactions, land law, and real estate development. Comprehensive legal services for local and diaspora clients.",
+								icon: "🏠",
+								link: "/real-estate-law-ethiopia",
 							},
 							{
-								title: "ADR AND ARBITRATION",
+								title: "DIASPORA LEGAL SERVICES",
 								content:
-									"The Law Group through its Managing Partner and Senior Associates frequently represents in International Commercial Arbitration under the auspices of various regional and ad hoc centers. We also offer a full scheme ADR mechanisms.",
+									"Legal services for diaspora Ethiopians including property management, investment advisory, and cross-border legal services. Ethiopian diaspora legal help worldwide.",
+								icon: "🌍",
+								link: "/diaspora-legal-services",
+							},
+							{
+								title: "INTERNATIONAL BUSINESS LAW",
+								content:
+									"International law firm Ethiopia providing cross-border legal services, international trade law, and foreign investment advisory for global businesses.",
+								icon: "🌐",
+								link: "#",
+							},
+							{
+								title: "ARBITRATION & ADR",
+								content:
+									"Expert arbitration lawyers Ethiopia representing in international commercial arbitration and offering comprehensive ADR mechanisms for dispute resolution.",
 								icon: "🤝",
+								link: "#",
 							},
 						].map((service, index) => (
-							<div
+							<Link
 								key={index}
-								className={`bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20 hover:bg-white/20 transition-all duration-300 transform hover:scale-105 ${
+								href={service.link}
+								className={`bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20 hover:bg-white/20 transition-all duration-300 transform hover:scale-105 cursor-pointer ${
 									index === 0 ? "lg:col-span-2" : ""
 								}`}
 							>
 								<div className="text-4xl mb-4">{service.icon}</div>
 								<h3 className="text-xl md:text-2xl font-bold mb-6">{service.title}</h3>
 								<p className="leading-relaxed text-white/90">{service.content}</p>
-							</div>
+								{service.link !== "#" && (
+									<div className="mt-4 text-sm text-white/70 hover:text-white transition-colors">
+										Learn More →
+									</div>
+								)}
+							</Link>
 						))}
 					</div>
 				</div>

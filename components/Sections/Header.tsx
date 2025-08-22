@@ -88,127 +88,129 @@ export default function Header({
 
 	return (
 		<>
-			{!isMobileMenuOpen && <header
-				className={`bg-white shadow-sm fixed top-0 left-0 right-0 z-50 transition-transform duration-300 ease-in-out ${
-					isVisible ? "translate-y-0" : "-translate-y-full"
-				}`}
-			>
-				<div className="container mx-auto px-4 py-1">
-					<nav className="flex items-center justify-between">
-						<img src="/loader/loader-1.svg" alt="Logo" width={100} height={100} />
+			{!isMobileMenuOpen && (
+				<header
+					className={`bg-white text-sm shadow-sm fixed top-0 left-0 right-0 z-50 transition-transform duration-300 ease-in-out ${
+						isVisible ? "translate-y-0" : "-translate-y-full"
+					}`}
+				>
+					<div className="container mx-auto px-4 py-1">
+						<nav className="flex items-center justify-between">
+							<img src="/loader/loader-1.svg" alt="Logo" width={100} height={100} />
 
-						{/* Desktop Navigation */}
-						<div className="hidden md:flex items-center space-x-8">
-							<Link
-								href="/"
-								className={`font-medium hover:text-teal-500 ${
-									currentPage === "home" ? "text-teal-500" : "text-gray-700"
-								}`}
-							>
-								Home
-							</Link>
-							<Link
-								href="/about-us"
-								className={`font-medium hover:text-teal-500 ${
-									currentPage === "about-us" ? "text-teal-500" : "text-gray-700"
-								}`}
-							>
-								About
-							</Link>
-							<Link
-								href="/#services"
-								scroll={true}
-								className={`font-medium hover:text-teal-500 ${
-									currentPage === "services" ? "text-teal-500" : "text-gray-700"
-								}`}
-							>
-								Our service
-							</Link>
-							<Link
-								href="/resources"
-								className={`font-medium hover:text-teal-500 ${
-									currentPage === "resources" ? "text-teal-500" : "text-gray-700"
-								}`}
-							>
-								Resources
-							</Link>
-							<Link
-								href="/news"
-								className={`font-medium hover:text-teal-500 ${
-									currentPage === "news" ? "text-teal-500" : "text-gray-700"
-								}`}
-							>
-								News
-							</Link>
+							{/* Desktop Navigation */}
+							<div className="hidden md:flex items-center space-x-8">
+								<Link
+									href="/"
+									className={`font-medium hover:text-teal-500 ${
+										currentPage === "home" ? "text-teal-500" : "text-gray-700"
+									}`}
+								>
+									Home
+								</Link>
+								<Link
+									href="/about-us"
+									className={`font-medium hover:text-teal-500 ${
+										currentPage === "about-us" ? "text-teal-500" : "text-gray-700"
+									}`}
+								>
+									About
+								</Link>
+								<Link
+									href="/#services"
+									scroll={true}
+									className={`font-medium hover:text-teal-500 ${
+										currentPage === "services" ? "text-teal-500" : "text-gray-700"
+									}`}
+								>
+									Our service
+								</Link>
+								<Link
+									href="/resources"
+									className={`font-medium hover:text-teal-500 ${
+										currentPage === "resources" ? "text-teal-500" : "text-gray-700"
+									}`}
+								>
+									Resources
+								</Link>
+								<Link
+									href="/news"
+									className={`font-medium hover:text-teal-500 ${
+										currentPage === "news" ? "text-teal-500" : "text-gray-700"
+									}`}
+								>
+									News
+								</Link>
 
-							{/* Auth Section */}
-							<div className="flex items-center space-x-4 ml-4">
-								{user ? (
-									<DropdownMenu>
-										<DropdownMenuTrigger asChild>
-											<Button
-												variant="ghost"
-												className="flex items-center space-x-2 p-2 h-auto"
-											>
-												<Avatar className="h-8 w-8">
-													<AvatarImage src="/placeholder-user.jpg" />
-													<AvatarFallback>
-														{user.username.charAt(0).toUpperCase()}
-													</AvatarFallback>
-												</Avatar>
-												<span className="text-sm font-medium text-gray-700">
-													{user.username}
-												</span>
-												<ChevronDown className="h-4 w-4 text-gray-500" />
-											</Button>
-										</DropdownMenuTrigger>
-										<DropdownMenuContent align="end" className="w-56">
-											<div className="px-3 py-2">
-												<p className="text-sm font-medium">{user.username}</p>
-												<p className="text-xs text-gray-500">{user.email}</p>
-											</div>
-											<DropdownMenuSeparator />
-											<DropdownMenuItem onClick={logout} className="text-red-600">
-												<LogOut className="w-4 h-4 mr-2" />
-												Logout
-											</DropdownMenuItem>
-										</DropdownMenuContent>
-									</DropdownMenu>
-								) : loading ? (
-									<Loader className="animate-spin" />
-								) : (
-									<div className="flex items-center space-x-2">
-										<Link href="/login">
-											<Button variant="outline" size="sm">
-												<User className="w-4 h-4 mr-1" />
-												Login
-											</Button>
-										</Link>
-										<Link href="/signup">
-											<Button size="sm" className="bg-teal-600 hover:bg-teal-700">
-												Sign Up
-											</Button>
-										</Link>
-									</div>
-								)}
+								{/* Auth Section */}
+								<div className="flex items-center space-x-4 ml-4">
+									{user ? (
+										<DropdownMenu>
+											<DropdownMenuTrigger asChild>
+												<Button
+													variant="ghost"
+													className="flex items-center space-x-2 p-2 h-auto"
+												>
+													<Avatar className="h-8 w-8">
+														<AvatarImage src="/placeholder-user.jpg" />
+														<AvatarFallback>
+															{user.username.charAt(0).toUpperCase()}
+														</AvatarFallback>
+													</Avatar>
+													<span className="text-sm font-medium text-gray-700">
+														{user.username}
+													</span>
+													<ChevronDown className="h-4 w-4 text-gray-500" />
+												</Button>
+											</DropdownMenuTrigger>
+											<DropdownMenuContent align="end" className="w-56">
+												<div className="px-3 py-2">
+													<p className="text-sm font-medium">{user.username}</p>
+													<p className="text-xs text-gray-500">{user.email}</p>
+												</div>
+												<DropdownMenuSeparator />
+												<DropdownMenuItem onClick={logout} className="text-red-600">
+													<LogOut className="w-4 h-4 mr-2" />
+													Logout
+												</DropdownMenuItem>
+											</DropdownMenuContent>
+										</DropdownMenu>
+									) : loading ? (
+										<Loader className="animate-spin" />
+									) : (
+										<div className="flex items-center space-x-2">
+											<Link href="/login">
+												<Button variant="outline" size="sm">
+													<User className="w-4 h-4 mr-1" />
+													Login
+												</Button>
+											</Link>
+											<Link href="/signup">
+												<Button size="sm" className="bg-teal-600 hover:bg-teal-700">
+													Sign Up
+												</Button>
+											</Link>
+										</div>
+									)}
+								</div>
 							</div>
-						</div>
 
-						{/* Mobile Menu Button */}
-						<button
-							onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-							className="md:hidden p-2 rounded-md hover:bg-gray-100 transition-colors"
-							aria-label="Toggle mobile menu"
-						>
-							{isMobileMenuOpen ? (
-								<X className="w-6 h-6 text-gray-700" />
-							) : (
-								<Menu className="w-6 h-6 text-gray-700" />
-							)}
-						</button>
-					</nav>
-				</div>
-			</header>}
+							{/* Mobile Menu Button */}
+							<button
+								onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+								className="md:hidden p-2 rounded-md hover:bg-gray-100 transition-colors"
+								aria-label="Toggle mobile menu"
+							>
+								{isMobileMenuOpen ? (
+									<X className="w-6 h-6 text-gray-700" />
+								) : (
+									<Menu className="w-6 h-6 text-gray-700" />
+								)}
+							</button>
+						</nav>
+					</div>
+				</header>
+			)}
 
 			{/* Mobile Sidebar */}
 			<div
@@ -233,12 +235,7 @@ export default function Header({
 					<div className="flex flex-col h-full">
 						{/* Header */}
 						<div className="flex items-center justify-between p-6 border-b">
-							<img
-								src="/Images/logo/TGA_LOGO.svg"
-								alt="Logo"
-								width={80}
-								height={80}
-							/>
+							<img src="/Images/logo/TGA_LOGO.svg" alt="Logo" width={80} height={80} />
 							<button
 								onClick={() => setIsMobileMenuOpen(false)}
 								className="p-2 rounded-md hover:bg-gray-100 transition-colors"
