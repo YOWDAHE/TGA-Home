@@ -24,11 +24,11 @@ import AuthRequiredModal from "@/components/auth/AuthRequiredModal";
 import Header from "./Header";
 import { convertToApiUrl } from "@/lib/utils";
 import { Document, Page, pdfjs } from "react-pdf";
-// import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
-// import 'react-pdf/dist/esm/Page/TextLayer.css';
+import IframePdfViewer from "./IframePdfViewer";
+import "@/styles/pdf-viewer.css";
 
-// Set up PDF.js worker
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
+// Set up PDF.js worker with a working CDN URL
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
 interface DocumentDetailPageProps {
 	resource: Resource;
@@ -40,6 +40,10 @@ export default function DocumentDetailPage({
 	const [isLoading, setIsLoading] = useState(true);
 	const [showAuthModal, setShowAuthModal] = useState(false);
 	const [isDownloading, setIsDownloading] = useState(false);
+	const [pdfError, setPdfError] = useState(false);
+	const [viewerType, setViewerType] = useState<
+		"react-pdf" | "simple" | "iframe"
+	>("react-pdf");
 	const { user } = useAuth();
 	const { toast } = useToast();
 
@@ -159,71 +163,12 @@ export default function DocumentDetailPage({
 				<div className="grid lg:grid-cols-4 gap-6">
 					{/* Main Content - PDF Viewer */}
 					<div className="lg:col-span-3">
-						<Card className="shadow-lg rounded-lg overflow-hidden">
-							<CardContent className="p-0">
-								{/* PDF Viewer Header */}
-								<div className="bg-gradient-to-r from-teal-500 to-teal-600 p-4 text-white">
-									<div className="flex flex-col md:flex-row items-center justify-between">
-										<div className="flex md:items-center items-start space-x-3">
-											<div className="bg-white/20 backdrop-blur-sm rounded-lg p-2 gap-4 md:gap-0 hidden md:flex">
-												<FileText className="w-6 h-6" />
-											</div>
-											<div className="flex-1">
-												<h1 className="text-xl font-bold">{resource.title}</h1>
-												<p className="text-teal-100 text-sm hidden md:block">PDF Document</p>
-											</div>
-										</div>
-										<div className="flex md:items-center items-start space-x-2 mt-4 md:mt-0">
-											<Button
-												onClick={handleDownload}
-												disabled={isDownloading}
-												variant="outline"
-												size="sm"
-												className="bg-white/20 hover:bg-white/30 border-white/30 text-white"
-											>
-												{isDownloading ? (
-													<Loader2 className="w-4 h-4 mr-2 animate-spin" />
-												) : (
-													<Download className="w-4 h-4 mr-1" />
-												)}
-												{isDownloading ? "Downloading..." : "Download"}
-											</Button>
-											<Button
-												onClick={handleShare}
-												variant="outline"
-												size="sm"
-												className="bg-white/20 hover:bg-white/30 border-white/30 text-white"
-											>
-												<Share2 className="w-4 h-4 mr-1" />
-												Share
-											</Button>
-										</div>
-									</div>
-								</div>
-
-								{/* PDF Embed */}
-								<div
-									className="relative w-full"
-									style={{ height: "calc(100vh - 200px)" }}
-								>
-									{isLoading && (
-										<div className="absolute inset-0 flex items-center justify-center bg-gray-100 z-10">
-											<div className="text-center">
-												<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-500 mx-auto mb-2"></div>
-												<p className="text-gray-600">Loading PDF...</p>
-											</div>
-										</div>
-									)}
-									<Document
-										file={convertToApiUrl(resource.file_url)}
-										onLoadSuccess={() => setIsLoading(false)}
-										onLoadError={() => setIsLoading(false)}
-									>
-										<Page pageNumber={1} />
-									</Document>
-								</div>
-							</CardContent>
-						</Card>
+						<IframePdfViewer
+								resource={resource}
+								onDownload={handleDownload}
+								onShare={handleShare}
+								isDownloading={isDownloading}
+							/>
 					</div>
 
 					{/* Sidebar - Document Info */}
@@ -251,9 +196,7 @@ export default function DocumentDetailPage({
 											<User className="w-4 h-4 text-gray-400" />
 											<div>
 												<p className="text-xs text-gray-500">Author</p>
-												<p className="text-sm font-medium text-gray-900">
-													TGA Law Group
-												</p>
+												<p className="text-sm font-medium text-gray-900">TGA Law Group</p>
 											</div>
 										</div>
 
@@ -290,11 +233,33 @@ export default function DocumentDetailPage({
 								</CardContent>
 							</Card>
 
-							{/* Additional Actions */}
+							{/* Viewer Options */}
 							<Card className="shadow-lg">
 								<CardContent className="p-4">
-									<h2 className="text-lg font-bold text-gray-900 mb-3">Actions</h2>
+									<h2 className="text-lg font-bold text-gray-900 mb-3">
+										Viewer Options
+									</h2>
 									<div className="space-y-2">
+										<Button
+											onClick={() =>
+												setViewerType(
+													viewerType === "react-pdf"
+														? "simple"
+														: viewerType === "simple"
+														? "iframe"
+														: "react-pdf"
+												)
+											}
+											variant="outline"
+											size="sm"
+											className="w-full"
+										>
+											{viewerType === "react-pdf"
+												? "Use Simple Viewer"
+												: viewerType === "simple"
+												? "Use Iframe Viewer"
+												: "Use React PDF"}
+										</Button>
 										<Button
 											onClick={() => window.open(resource.file_url, "_blank")}
 											variant="outline"
