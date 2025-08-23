@@ -196,7 +196,7 @@ const AboutUs: React.FC = () => {
 					{/* Intro Text */}
 					<div className="bg-white/70 backdrop-blur-md rounded-3xl shadow-2xl p-8 md:p-12 border border-gray-100">
 						<p className="text-base md:text-xl text-gray-700 mb-8 leading-relaxed text-center max-w-4xl mx-auto">
-							TG&A Law Group is a premier legal practice committed to excellence in
+							TGA Global Law Firm LL.P is a premier legal practice committed to excellence in
 							serving our clients across Ethiopia and Africa. Our experienced team
 							combines deep local knowledge with international expertise to deliver
 							comprehensive legal solutions.
@@ -320,7 +320,7 @@ const AboutUs: React.FC = () => {
 					</div>
 
 					{/* Tewodros Bio Section */}
-					<div className="bg-white/70 backdrop-blur-md rounded-3xl shadow-2xl p-8 md:p-12 border border-gray-100 flex flex-col lg:flex-row gap-10 mt-16 lg:h-[400px] h-auto">
+					<div className="bg-white/70 backdrop-blur-md rounded-3xl shadow-2xl p-8 md:p-12 border border-gray-100 flex flex-col lg:flex-row gap-10 mt-16 lg:h-[450px] h-auto">
 						<img
 							src="/Images/aboutUs/Tewodros.jpg"
 							alt="Tewodros Getachew Tulu"
@@ -328,24 +328,54 @@ const AboutUs: React.FC = () => {
 						/>
 						<p className="lg:text-md text-base text-gray-700 leading-relaxed text-start max-w-4xl mx-auto flex-1">
 							Tewodros Getachew Tulu is a prominent Ethiopian lawyer and continental
-							legal leader. He is the Co-founder & Managing Partner of TGA Global Law
-							Group. Tewodros is the first East African to be elected to the most
+							legal leader. He is the managing partner and co-founder of TGA Global Law
+							Firm, which was formerly known as Tewodros Getachew Tulu and Associates
+							Law Group, Tewodros is the first East African to be elected to the most
 							prestigious position in Africa,{" "}
-							<a href="https://www.lawyersofafrica.org/about/executive-committee/" className="text-blue-500 hover:underline" target="_blank">
+							<a
+								href="https://www.lawyersofafrica.org/about/executive-committee/"
+								className="text-blue-500 hover:underline"
+								target="_blank"
+							>
 								President of the Pan African Lawyers Union
+							</a>
+							. <br />
+							He is the Founding President of the Ethiopian Federal Bar Association,
+							currently leading Ethiopia's first ever statutory Bar Association.
+							Through its managing partner, our law firm is the first African member of
+							the{" "}
+							<a
+								href="http://www.brilanet.org.cn/en"
+								className="text-blue-500 hover:underline"
+								target="_blank"
+							>
+								Belt and Road International Legal Services Association (BRILSA)
 							</a>{" "}
-							(PALU). He is the Founding President of the Ethiopian Federal Bar
-							Association, currently leading Ethiopia's first ever statutory Bar
-							Association. <br /> <br />
-							He's an advisor to the African Union CISSA on national and international
-							laws, and holds various roles in legal reform structures. He is an
-							international arbitrator under the auspices of various international
-							centers including CIETAC. He chairs various board structures, including
-							COST International, the highest board in the construction sector. <br />{" "}
-							<br />
-							Tewodros Getachew is reshaping Africa's legal landscape, promoting
-							justice throughout the continent, fostering a strong investment climate,
-							and advancing cross-border legal practice.
+							to be appointed to the Council.
+							<br /> Our managing partner is currently joined the governing council of{" "}
+							<a
+								href="https://ealawsociety.org/council-members/"
+								className="text-blue-500 hover:underline"
+								target="_blank"
+							>
+								East Africa Law Society.
+							</a>{" "}
+							He's an advisor to the African Union CISSA on matters of national and
+							international laws, and holds various roles in legal reform structures.
+							He is an international arbitrator under the auspices of various
+							international centers including CIETAC. He chairs various board
+							structures, including{" "}
+							<a
+								href="https://infrastructuretransparency.org/"
+								className="text-blue-500 hover:underline"
+								target="_blank"
+							>
+								COST International
+							</a>
+							, the highest board in the construction sector. Tewodros Getachew is
+							reshaping Africa's legal landscape, promoting justice throughout the
+							continent, fostering a strong investment climate, and advancing
+							cross-border legal practice.
 						</p>
 					</div>
 				</div>

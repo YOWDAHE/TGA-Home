@@ -196,7 +196,7 @@ export default function DocumentDetailPage({
 											<User className="w-4 h-4 text-gray-400" />
 											<div>
 												<p className="text-xs text-gray-500">Author</p>
-												<p className="text-sm font-medium text-gray-900">TGA Law Group</p>
+												<p className="text-sm font-medium text-gray-900">TGA Global Law Firm LL.P</p>
 											</div>
 										</div>
 
@@ -240,26 +240,6 @@ export default function DocumentDetailPage({
 										Viewer Options
 									</h2>
 									<div className="space-y-2">
-										<Button
-											onClick={() =>
-												setViewerType(
-													viewerType === "react-pdf"
-														? "simple"
-														: viewerType === "simple"
-														? "iframe"
-														: "react-pdf"
-												)
-											}
-											variant="outline"
-											size="sm"
-											className="w-full"
-										>
-											{viewerType === "react-pdf"
-												? "Use Simple Viewer"
-												: viewerType === "simple"
-												? "Use Iframe Viewer"
-												: "Use React PDF"}
-										</Button>
 										<Button
 											onClick={() => window.open(resource.file_url, "_blank")}
 											variant="outline"

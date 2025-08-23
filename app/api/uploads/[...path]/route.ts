@@ -8,6 +8,10 @@ export async function GET(
   request: NextRequest,
   { params }: { params: { path: string[] } }
 ) {
+  console.log('=== UPLOADS API ROUTE CALLED ===');
+  console.log('Request URL:', request.url);
+  console.log('Params:', params);
+  
   try {
     const path = (await params).path.join('/');
     const backendUrl = `${PUBLIC_API_URL}/uploads/${path}`;

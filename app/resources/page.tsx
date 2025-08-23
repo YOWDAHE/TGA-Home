@@ -6,7 +6,7 @@ import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Legal Resources & Documents',
-  description: 'Access comprehensive legal resources, documents, and materials from TGA Law Group. Download legal guides, templates, and expert legal content.',
+  description: 'Access comprehensive legal resources, documents, and materials from TGA Global Law Firm LL.P. Download legal guides, templates, and expert legal content.',
   keywords: [
     'legal resources',
     'legal documents',
@@ -18,8 +18,8 @@ export const metadata: Metadata = {
     'legal materials'
   ],
   openGraph: {
-    title: 'Legal Resources & Documents | TGA Law Group',
-    description: 'Access comprehensive legal resources, documents, and materials from TGA Law Group. Download legal guides, templates, and expert legal content.',
+    title: 'Legal Resources & Documents | TGA Global Law Firm LL.P',
+    description: 'Access comprehensive legal resources, documents, and materials from TGA Global Law Firm LL.P. Download legal guides, templates, and expert legal content.',
     url: '/resources',
     type: 'website',
     images: [
@@ -27,14 +27,14 @@ export const metadata: Metadata = {
         url: '/Images/logo/TGA_LOGO.svg',
         width: 1200,
         height: 630,
-        alt: 'TGA Law Group Resources',
+        alt: 'TGA Global Law Firm LL.P Resources',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Legal Resources & Documents | TGA Law Group',
-    description: 'Access comprehensive legal resources, documents, and materials from TGA Law Group.',
+    title: 'Legal Resources & Documents | TGA Global Law Firm LL.P',
+    description: 'Access comprehensive legal resources, documents, and materials from TGA Global Law Firm LL.P.',
     images: ['/Images/logo/TGA_LOGO.svg'],
   },
   alternates: {

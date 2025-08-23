@@ -351,7 +351,7 @@ export default function NewsPage({
 																	{article.content}
 																</p>
 																<div className="flex items-center justify-between text-xs text-gray-500">
-																	<span>TGA Law Group</span>
+																	<span>TGA Global Law Firm LL.P</span>
 																	<span>{formatDate(article.published_date)}</span>
 																</div>
 															</CardContent>
@@ -509,7 +509,7 @@ export default function NewsPage({
 											<div className="flex flex-col md:flex-row md:items-center space-y-1 md:space-y-0 md:space-x-3">
 												<span className="flex items-center">
 													<User className="w-3 h-3 mr-1" />
-													TGA Law Group
+													TGA Global Law Firm LL.P
 												</span>
 												<span className="flex items-center">
 													<Calendar className="w-3 h-3 mr-1" />
@@ -590,7 +590,7 @@ export default function NewsPage({
 														{article.title}
 													</h3>
 													<div className="flex flex-col md:flex-row md:items-center text-xs text-gray-500 space-y-1 md:space-y-0 md:space-x-3">
-														<span>TGA Law Group</span>
+														<span>TGA Global Law Firm LL.P</span>
 														<span>{formatDate(article.published_date)}</span>
 														<span>{getReadTime(article.read_minutes)}</span>
 													</div>
@@ -832,7 +832,7 @@ export default function NewsPage({
 												{article.content}
 											</p>
 											<div className="flex flex-col md:flex-row md:items-center md:justify-between text-xs text-gray-500 space-y-1 md:space-y-0">
-												<span>TGA Law Group</span>
+												<span>TGA Global Law Firm LL.P</span>
 												<span>{formatDate(article.published_date)}</span>
 											</div>
 										</CardContent>

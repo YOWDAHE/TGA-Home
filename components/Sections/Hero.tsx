@@ -35,46 +35,49 @@ export class Hero extends Component<{}, HeroState> {
 
 	texts = [
 		<div>
+			COMMITTED TO A{" "}
 			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">
-				#1 LAW FIRM IN ETHIOPIA
+				ROBUST BUSINESS AND INVESTMENT
 			</span>{" "}
-			- COMMITTED TO A ROBUST BUSINESS AND INVESTMENT ENVIRONMENT
+			ENVIRONMENT
 			<br />
 			IN ETHIOPIA AND AFRICA
 		</div>,
 		<div>
+			A{" "}
 			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">
-				INTERNATIONAL LAW FIRM ETHIOPIA
+				globally renowned legal firm
 			</span>{" "}
-			- A globally renowned legal firm with a distinct presence and forged partnerships in over{" "}
+			with a distinct presence and forged partnerships in over{" "}
 			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">
 				52 jurisdictions and nations
 			</span>{" "}
 			across four continents
 		</div>,
 		<div>
+			The first and only African law firm chosen to the governing council of the{" "}
 			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">
-				TOP AFRICAN LAWYERS
-			</span>{" "}
-			- The first and only African law firm chosen to the governing council of the{" "}
-			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">
+				{" "}
 				BRILSA/Belt and Road International Legal Services Association
 			</span>
 			, which is estimated to contribute{" "}
 			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">
+				{" "}
 				$7.1 trillion to the global GDP
 			</span>{" "}
 			annually and has{" "}
 			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">
+				{" "}
 				153 member countries worldwide
 			</span>
 			.
 		</div>,
 		<div className="">
+			The managing partner of this{" "}
 			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">
-				PAN AFRICAN LAWYERS UNION PRESIDENT LAW FIRM
+				premier
 			</span>{" "}
-			- The managing partner of this premier law company holds a number of prestigious positions and has garnered{" "}
+			law company holds a number of prestigious positions and has garnered{" "}
 			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">
 				international recognition
 			</span>
@@ -88,7 +91,7 @@ export class Hero extends Component<{}, HeroState> {
 			</span>{" "}
 			and{" "}
 			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">
-				President of the Ethiopian Federal Bar Association
+				President of the Ethiopian Federal Bar Association
 			</span>
 			.
 		</div>,
@@ -114,28 +117,16 @@ export class Hero extends Component<{}, HeroState> {
 				className="relative min-h-[700px] bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 text-white py-32 overflow-hidden max-h-[calc(100vh-90px)] flex items-center justify-center"
 			>
 				<div className="flex justify-evenly absolute top-10 gap-6 z-20 md:hidden">
-					<Link
-						href="/about-us"
-						className={`font-medium hover:text-teal-500`}
-					>
+					<Link href="/about-us" className={`font-medium hover:text-teal-500`}>
 						About
 					</Link>
-					<Link
-						href="#services"
-						className={`font-medium hover:text-teal-500`}
-					>
+					<Link href="#services" className={`font-medium hover:text-teal-500`}>
 						service
 					</Link>
-					<Link
-						href="/resources"
-						className={`font-medium hover:text-teal-500`}
-					>
+					<Link href="/resources" className={`font-medium hover:text-teal-500`}>
 						Resources
 					</Link>
-					<Link
-						href="/news"
-						className={`font-medium hover:text-teal-500`}
-					>
+					<Link href="/news" className={`font-medium hover:text-teal-500`}>
 						News
 					</Link>
 				</div>

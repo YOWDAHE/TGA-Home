@@ -13,14 +13,20 @@ export function convertToApiUrl(url: string): string {
   try {
     const urlObj = new URL(url);
     const pathname = urlObj.pathname;
-    if (pathname.startsWith('/api-backend/uploads/')) return `/api${pathname.replace('/api-backend', '')}`;
+    if (pathname.startsWith('/api-backend/uploads/')) {
+      console.log(`The file: /api${pathname.replace('/api-backend', '')}`, )
+      return `/api${pathname.replace('/api-backend', '')}`;
+    }
     if (pathname.startsWith('/uploads/')) return `/api${pathname}`;
   } catch {
     // Not a valid absolute URL; fall through
   }
   
   // Relative URLs: normalize backend upload paths to our API proxy
-  if (url.startsWith('/api-backend/uploads/')) return `/api${url.replace('/api-backend', '')}`;
+  if (url.startsWith('/api-backend/uploads/')) {
+    console.log(`The file: /api${url.replace('/api-backend', '')}`, )
+    return `/api${url.replace('/api-backend', '')}`;
+  }
   if (url.startsWith('/uploads/')) return `/api${url}`;
   
   // If it's already a relative URL (non-uploads), return as is

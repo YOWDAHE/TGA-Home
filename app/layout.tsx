@@ -41,7 +41,7 @@ export const metadata: Metadata = {
 		"ethiopian legal news",
 		"ethiopian legal news",
 		"#1 Law Firm in Ethiopia",
-		"TGA Law Group",
+		"TGA Global Law Firm LL.P",
 		"International Law Firm Ethiopia",
 		"Corporate Lawyers Ethiopia",
 		"Business Law Firm Addis Ababa",
