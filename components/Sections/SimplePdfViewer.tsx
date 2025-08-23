@@ -24,6 +24,12 @@ export default function SimplePdfViewer({
 	const [isLoading, setIsLoading] = useState(true);
 	const { toast } = useToast();
 
+	// For Google Docs Viewer, we need the full absolute URL
+	// Use environment variable for production domain, fallback to window.location.origin
+	const pdfUrl = convertToApiUrl(resource.file_url);
+	const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || window.location.origin;
+	const fullPdfUrl = pdfUrl.startsWith('http') ? pdfUrl : `${baseUrl}${pdfUrl}`;
+
 	const handleIframeError = () => {
 		setIsLoading(false);
 		toast({
@@ -93,7 +99,7 @@ export default function SimplePdfViewer({
 					)}
 					
 					<iframe
-						src={`https://docs.google.com/gview?url=${encodeURIComponent(convertToApiUrl(resource.file_url))}&embedded=true`}
+						src={`https://docs.google.com/gview?url=${fullPdfUrl}&embedded=true`}
 						className="w-full h-full border-0"
 						title={resource.title}
 						onLoad={() => setIsLoading(false)}

@@ -33,8 +33,14 @@ export default function IframePdfViewer({
 
 	// Debug logging
 	const pdfUrl = convertToApiUrl(resource.file_url);
-	console.log('IframePdfViewer - resource.file_url:', resource.file_url);
-	console.log('IframePdfViewer - converted URL:', pdfUrl);
+	// const pdfUrl = convertToApiUrl(resource.file_url);
+	// For Google Docs Viewer, we need the full absolute URL
+	const fullPdfUrl = pdfUrl.startsWith("http")
+		? pdfUrl
+		: `${window.location.origin}${pdfUrl}`;
+	console.log("IframePdfViewer - resource.file_url:", resource.file_url);
+	console.log("IframePdfViewer - converted URL:", pdfUrl);
+	console.log("IframePdfViewer - full URL for Google Docs:", fullPdfUrl);
 
 	const handleReload = () => {
 		setIsLoading(true);
@@ -121,15 +127,15 @@ export default function IframePdfViewer({
 
 					<iframe
 						key={iframeKey}
-						src={`https://docs.google.com/gview?url=${encodeURIComponent(pdfUrl)}&embedded=true`}
+						src={`https://docs.google.com/gview?url=${resource.file_url}&embedded=true`}
 						className="w-full h-full border-0"
 						title={resource.title}
 						onLoad={() => {
-							console.log('Google Docs Viewer loaded successfully');
+							console.log("Google Docs Viewer loaded successfully");
 							setIsLoading(false);
 						}}
 						onError={(e) => {
-							console.error('Google Docs Viewer error:', e);
+							console.error("Google Docs Viewer error:", e);
 							handleIframeError();
 						}}
 						allowFullScreen
