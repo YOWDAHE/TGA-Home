@@ -93,7 +93,7 @@ export default function SimplePdfViewer({
 					)}
 					
 					<iframe
-						src={`${convertToApiUrl(resource.file_url)}#toolbar=1&navpanes=1&scrollbar=1`}
+						src={`https://docs.google.com/gview?url=${encodeURIComponent(convertToApiUrl(resource.file_url))}&embedded=true`}
 						className="w-full h-full border-0"
 						title={resource.title}
 						onLoad={() => setIsLoading(false)}

@@ -121,15 +121,15 @@ export default function IframePdfViewer({
 
 					<iframe
 						key={iframeKey}
-						src={`${pdfUrl}#toolbar=1&navpanes=1&scrollbar=1&view=FitH`}
+						src={`https://docs.google.com/gview?url=${encodeURIComponent(pdfUrl)}&embedded=true`}
 						className="w-full h-full border-0"
 						title={resource.title}
 						onLoad={() => {
-							console.log('Iframe loaded successfully');
+							console.log('Google Docs Viewer loaded successfully');
 							setIsLoading(false);
 						}}
 						onError={(e) => {
-							console.error('Iframe error:', e);
+							console.error('Google Docs Viewer error:', e);
 							handleIframeError();
 						}}
 						allowFullScreen
