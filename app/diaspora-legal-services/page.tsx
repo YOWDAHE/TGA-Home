@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'Legal Services for Diaspora Ethiopians | Ethiopian Diaspora Legal Help | TGA Global Law Firm LL.P',
+  title: 'Legal Services for Diaspora Ethiopians | Ethiopian Diaspora Legal Help | TGA Global Law Firm LL.P LL.P',
   description: 'Legal services for diaspora Ethiopians. Ethiopian diaspora legal help including property management, investment advisory, and cross-border legal services. #1 law firm in Ethiopia.',
   keywords: 'Legal Services for Diaspora Ethiopians, Ethiopian Diaspora Legal Help, Diaspora Property Lawyers Ethiopia, Ethiopian Diaspora Legal Services, Cross-Border Legal Services Ethiopia, Diaspora Legal Help Ethiopia',
   openGraph: {
@@ -186,7 +186,7 @@ export default function DiasporaLegalServices() {
 					<div className="container mx-auto px-4">
 						<div className="max-w-4xl mx-auto text-center">
 							<h2 className="text-3xl font-bold mb-8">
-								Why Choose TGA Global Law Firm LL.P for Diaspora Legal Services?
+								Why Choose TGA Global Law Firm LL.P LL.P for Diaspora Legal Services?
 							</h2>
 
 							<div className="grid md:grid-cols-2 gap-8 text-left">
@@ -245,7 +245,7 @@ export default function DiasporaLegalServices() {
 							<div className="grid md:grid-cols-2 gap-8">
 								<div className="bg-gray-50 p-6 rounded-lg">
 									<p className="text-gray-600 mb-4 italic">
-										"TGA Global Law Firm LL.P provided excellent legal services for my property
+										"TGA Global Law Firm LL.P LL.P provided excellent legal services for my property
 										investment in Ethiopia. Their diaspora legal help was invaluable."
 									</p>
 									<p className="font-semibold text-teal-600">
@@ -272,7 +272,7 @@ export default function DiasporaLegalServices() {
 							Need Legal Services for Diaspora Ethiopians?
 						</h2>
 						<p className="text-xl mb-8">
-							Contact TGA Global Law Firm LL.P for comprehensive Ethiopian diaspora legal help
+							Contact TGA Global Law Firm LL.P LL.P for comprehensive Ethiopian diaspora legal help
 						</p>
 						<button className="bg-white text-teal-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
 							Contact Our Diaspora Legal Team

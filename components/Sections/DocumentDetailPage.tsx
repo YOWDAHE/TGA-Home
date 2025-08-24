@@ -164,11 +164,11 @@ export default function DocumentDetailPage({
 					{/* Main Content - PDF Viewer */}
 					<div className="lg:col-span-3">
 						<IframePdfViewer
-								resource={resource}
-								onDownload={handleDownload}
-								onShare={handleShare}
-								isDownloading={isDownloading}
-							/>
+							resource={resource}
+							onDownload={handleDownload}
+							onShare={handleShare}
+							isDownloading={isDownloading}
+						/>
 					</div>
 
 					{/* Sidebar - Document Info */}
@@ -196,7 +196,9 @@ export default function DocumentDetailPage({
 											<User className="w-4 h-4 text-gray-400" />
 											<div>
 												<p className="text-xs text-gray-500">Author</p>
-												<p className="text-sm font-medium text-gray-900">TGA Global Law Firm LL.P</p>
+												<p className="text-sm font-medium text-gray-900">
+													TGA Global Law Firm LL.P LL.P
+												</p>
 											</div>
 										</div>
 
@@ -215,7 +217,7 @@ export default function DocumentDetailPage({
 											<div>
 												<p className="text-xs text-gray-500">Views</p>
 												<p className="text-sm font-medium text-gray-900">
-													{resource.view_count.toLocaleString()}
+													{Math.floor(resource.view_count / 2).toLocaleString()}
 												</p>
 											</div>
 										</div>

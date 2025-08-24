@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: DocumentPageProps): Promise<M
 
 		return {
 			title: title,
-			description: description || `Download ${title} - Legal document from TGA Global Law Firm. File size: ${formatFileSize(file_size)}`,
+			description: description || `Download ${title} - Legal document from TGA Global Law Firm LL.P. File size: ${formatFileSize(file_size)}`,
 			keywords: [
 				'legal document',
 				'legal resource',
@@ -43,8 +43,8 @@ export async function generateMetadata({ params }: DocumentPageProps): Promise<M
 				...description?.toLowerCase().split(' ').slice(0, 5) || []
 			],
 			openGraph: {
-				title: `${title} | TGA Global Law Firm`,
-				description: description || `Download ${title} - Legal document from TGA Global Law Firm`,
+				title: `${title} | TGA Global Law Firm LL.P`,
+				description: description || `Download ${title} - Legal document from TGA Global Law Firm LL.P`,
 				url: `/resources/${params.id}`,
 				type: 'website',
 				images: [
@@ -52,14 +52,14 @@ export async function generateMetadata({ params }: DocumentPageProps): Promise<M
 						url: '/Images/logo/TGA_LOGO.svg',
 						width: 1200,
 						height: 630,
-						alt: `${title} - TGA Global Law Firm`,
+						alt: `${title} - TGA Global Law Firm LL.P`,
 					}
 				],
 			},
 			twitter: {
 				card: 'summary_large_image',
-				title: `${title} | TGA Global Law Firm`,
-				description: description || `Download ${title} - Legal document from TGA Global Law Firm`,
+				title: `${title} | TGA Global Law Firm LL.P`,
+				description: description || `Download ${title} - Legal document from TGA Global Law Firm LL.P`,
 				images: ['/Images/logo/TGA_LOGO.svg'],
 			},
 			alternates: {

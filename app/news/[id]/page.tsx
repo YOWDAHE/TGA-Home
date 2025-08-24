@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: NewsPageProps): Promise<Metad
 			description: description,
 			keywords: hashtags ? hashtags.split(",").map((tag) => tag.trim()) : [],
 			openGraph: {
-				title: `${title} | TGA Global Law Firm`,
+				title: `${title} | TGA Global Law Firm LL.P`,
 				description: description,
 				url: `/news/${id}`,
 				type: "article",
@@ -54,15 +54,15 @@ export async function generateMetadata({ params }: NewsPageProps): Promise<Metad
 								url: "/Images/logo/TGA_LOGO.svg",
 								width: 1200,
 								height: 630,
-								alt: "TGA Global Law Firm News",
+								alt: "TGA Global Law Firm LL.P News",
 							},
 					  ],
-				authors: ["TGA Global Law Firm"],
+				authors: ["TGA Global Law Firm LL.P"],
 				section: "Legal News",
 			},
 			twitter: {
 				card: "summary_large_image",
-				title: `${title} | TGA Global Law Firm`,
+				title: `${title} | TGA Global Law Firm LL.P`,
 				description: description,
 				images: imageUrl ? [imageUrl] : ["/Images/logo/TGA_LOGO.svg"],
 			},
@@ -71,7 +71,7 @@ export async function generateMetadata({ params }: NewsPageProps): Promise<Metad
 			},
 			other: {
 				"article:published_time": published_date.toString(),
-				"article:author": "TGA Global Law Firm",
+				"article:author": "TGA Global Law Firm LL.P",
 				"article:section": "Legal News",
 			},
 		};

@@ -355,7 +355,7 @@ export default function Header({
 
 						{/* Footer */}
 						<div className="p-6 border-t">
-							<p className="text-sm text-gray-500 text-center">TGA Global Law Firm LL.P</p>
+							<p className="text-sm text-gray-500 text-center">TGA Global Law Firm LL.P LL.P</p>
 						</div>
 					</div>
 				</div>

@@ -238,7 +238,7 @@ export default function ResourcesPage({ resources, topViewedResources, categorie
 
 	return (
 		<div className="min-h-screen bg-white">
-			<Header currentPage="resources"/>
+			<Header currentPage="resources" />
 
 			<div className="container mx-auto px-4 py-8 mt-16">
 				<div className="grid lg:grid-cols-4 gap-8">
@@ -368,7 +368,9 @@ export default function ResourcesPage({ resources, topViewedResources, categorie
 
 													<div className="flex items-center text-sm text-gray-500 mb-4">
 														<Eye className="w-4 h-4 mr-1" />
-														<span>{resource.view_count.toLocaleString()} views</span>
+														<span>
+															{Math.floor(resource.view_count / 2).toLocaleString()} views
+														</span>
 													</div>
 
 													{/* Action Buttons - Always at bottom */}
@@ -493,7 +495,7 @@ export default function ResourcesPage({ resources, topViewedResources, categorie
 															</div>
 															<div className="flex items-center text-xs text-gray-500">
 																<Eye className="w-3 h-3 mr-1" />
-																{resource.view_count}
+																{Math.floor(resource.view_count / 2)}
 															</div>
 														</div>
 

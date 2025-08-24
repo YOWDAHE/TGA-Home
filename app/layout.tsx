@@ -5,17 +5,17 @@ import { AuthProvider } from '@/contexts/AuthContext'
 
 export const metadata: Metadata = {
 	title: {
-		default: "TGA Global Law Firm",
-		template: "%s | TGA Global Law Firm",
+		default: "TGA Global Law Firm LL.P",
+		template: "%s | TGA Global Law Firm LL.P",
 	},
 	icons: {
 		icon: "/favicon.ico",
 	},
 	description:
-		"TGA Global Law Firm provides comprehensive legal services with expertise in corporate law, litigation, and legal consulting. Trust our experienced attorneys for your legal needs.",
+		"TGA Global Law Firm LL.P provides comprehensive legal services with expertise in corporate law, litigation, and legal consulting. Trust our experienced attorneys for your legal needs.",
 	keywords: [
-		"TGA Global Law Firm",
-		"TGA Global Law Firm",
+		"TGA Global Law Firm LL.P",
+		"TGA Global Law Firm LL.P",
 		"International law",
 		"legal services",
 		"law firm",
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
 		"ethiopian legal news",
 		"ethiopian legal news",
 		"#1 Law Firm in Ethiopia",
-		"TGA Global Law Firm LL.P",
+		"TGA Global Law Firm LL.P LL.P",
 		"International Law Firm Ethiopia",
 		"Corporate Lawyers Ethiopia",
 		"Business Law Firm Addis Ababa",
@@ -66,9 +66,9 @@ export const metadata: Metadata = {
 		"Ethiopia International Business Lawyers",
 		"Global Legal Services",
 	],
-	authors: [{ name: "TGA Global Law Firm" }],
-	creator: "TGA Global Law Firm",
-	publisher: "TGA Global Law Firm",
+	authors: [{ name: "TGA Global Law Firm LL.P" }],
+	creator: "TGA Global Law Firm LL.P",
+	publisher: "TGA Global Law Firm LL.P",
 	formatDetection: {
 		email: false,
 		address: false,
@@ -82,8 +82,8 @@ export const metadata: Metadata = {
 		type: "website",
 		locale: "en_US",
 		url: "https://tgalawgroup.com", //TODO: Replace with your actual domain
-		siteName: "TGA Global Law Firm",
-		title: "TGA Global Law Firm - Professional Legal Services",
+		siteName: "TGA Global Law Firm LL.P",
+		title: "TGA Global Law Firm LL.P - Professional Legal Services",
 		description:
 			"TGA provides comprehensive legal services with expertise in corporate law, litigation, and legal consulting. Trust our experienced attorneys for your legal needs.",
 		images: [
@@ -91,13 +91,13 @@ export const metadata: Metadata = {
 				url: "/loader/loader-1.svg",
 				width: 1200,
 				height: 630,
-				alt: "TGA Global Law Firm Logo",
+				alt: "TGA Global Law Firm LL.P Logo",
 			},
 		],
 	},
 	twitter: {
 		card: "summary_large_image",
-		title: "TGA Global Law Firm - Professional Legal Services",
+		title: "TGA Global Law Firm LL.P - Professional Legal Services",
 		description:
 			"TGA provides comprehensive legal services with expertise in corporate law, litigation, and legal consulting.",
 		images: ["/loader/loader-1.svg"],
@@ -127,8 +127,8 @@ export const metadata: Metadata = {
 		"theme-color": "#0D9488",
 		"apple-mobile-web-app-capable": "yes",
 		"apple-mobile-web-app-status-bar-style": "default",
-		"apple-mobile-web-app-title": "TGA Global Law Firm",
-		"application-name": "TGA Global Law Firm",
+		"apple-mobile-web-app-title": "TGA Global Law Firm LL.P",
+		"application-name": "TGA Global Law Firm LL.P",
 		"mobile-web-app-capable": "yes",
 	},
 };
@@ -149,8 +149,8 @@ export default function RootLayout({
 					<meta name="theme-color" content="#0D9488" />
 					<meta name="apple-mobile-web-app-capable" content="yes" />
 					<meta name="apple-mobile-web-app-status-bar-style" content="default" />
-					<meta name="apple-mobile-web-app-title" content="TGA Global Law Firm" />
-					<meta name="application-name" content="TGA Global Law Firm" />
+					<meta name="apple-mobile-web-app-title" content="TGA Global Law Firm LL.P" />
+					<meta name="application-name" content="TGA Global Law Firm LL.P" />
 					<meta name="mobile-web-app-capable" content="yes" />
 
 					{/* Structured Data for Organization */}
@@ -160,7 +160,7 @@ export default function RootLayout({
 							__html: JSON.stringify({
 								"@context": "https://schema.org",
 								"@type": "LegalService",
-								name: "TGA Global Law Firm",
+								name: "TGA Global Law Firm LL.P",
 								description:
 									"Professional legal services with expertise in corporate law, litigation, and legal consulting",
 								url: "https://tgalawgroup.com",

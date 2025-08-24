@@ -103,7 +103,7 @@ const aboutUsSlides: AboutUsSlide[] = [
 				<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
 					strategic partners
 				</span>{" "}
-				of TGA Global Law Firm.
+				of TGA Global Law Firm LL.P.
 			</div>
 		),
 	},
@@ -196,10 +196,13 @@ const AboutUs: React.FC = () => {
 					{/* Intro Text */}
 					<div className="bg-white/70 backdrop-blur-md rounded-3xl shadow-2xl p-8 md:p-12 border border-gray-100">
 						<p className="text-base md:text-xl text-gray-700 mb-8 leading-relaxed text-center max-w-4xl mx-auto">
-							TGA Global Law Firm LL.P is a premier legal practice committed to excellence in
-							serving our clients across Ethiopia and Africa. Our experienced team
-							combines deep local knowledge with international expertise to deliver
-							comprehensive legal solutions.
+							TGA Global Law Firm LL.P LL.P is a leading law firm delivering a high quality
+							and advanced legal services to clients across Ethiopia, Africa and
+							beyond. Our skilled team combines deep local knowledge with international
+							expertise to deliver comprehensive and creative legal solutions.
+							<br />
+							TGA's extensive international presence will benefit our
+							clients even more.
 						</p>
 
 						<div className="grid md:grid-cols-7 gap-12">

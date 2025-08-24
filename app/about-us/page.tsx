@@ -120,7 +120,7 @@ function page() {
 						</Carousel>
 					</div>
 					<div className="md:w-[80%] flex flex-col justify-center items-center mx-auto">
-						Tewodros Getachew Tulu and Associates Law Group (TGA Global Law Firm LL.P) is a
+						Tewodros Getachew Tulu and Associates Law Group (TGA Global Law Firm LL.P LL.P) is a
 						leading law office in Ethiopia specialized in diversified area of
 						expertise, providing a quality legal service with creative solutions.
 						Prominent practice areas, among others include Cross - border Trade &
@@ -150,11 +150,11 @@ function page() {
 						Board which is the premier structure in the construction sector which is
 						comprised of various key sector Ministries, Agencies and Authorities.
 						<br />
-						TGA Global Law Firm LL.P boasts a unique and robust presence across all five regions
+						TGA Global Law Firm LL.P LL.P boasts a unique and robust presence across all five regions
 						of the African continent. The firm has formed partnerships with number of
 						the world's leading law firms.
 						<br />
-						TGA Global Law Firm LL.P is the official partner for Africa of YINGKE LAW FIRM, which
+						TGA Global Law Firm LL.P LL.P is the official partner for Africa of YINGKE LAW FIRM, which
 						is recognized as the world's biggest law firm.
 						<br />
 					</div>
@@ -262,15 +262,15 @@ function page() {
 					</div>
 					<div>
 						<p>
-							© 2025 TGA Global Law Firm. All rights reserved.{" "}
+							© 2025 TGA Global Law Firm LL.P. All rights reserved.{" "}
 							<strong>Attorney Advertising.</strong>
 						</p>
 						<p>
-							TGA Global Law Firm is a global law firm operating through various
+							TGA Global Law Firm LL.P is a global law firm operating through various
 							separate and distinct legal entities. Through its affiliates and partner
 							companies, TGA Global is an international legal practice offering
 							full-fledged client services. With a wealth of diverse experience and
-							outstanding expertise, TGA Global Law Firm is a prominent Ethiopian law
+							outstanding expertise, TGA Global Law Firm LL.P is a prominent Ethiopian law
 							practice that offers top-notch legal services throughout Ethiopia and
 							Africa.
 						</p>

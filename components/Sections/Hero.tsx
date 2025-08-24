@@ -121,7 +121,7 @@ export class Hero extends Component<{}, HeroState> {
 						About
 					</Link>
 					<Link href="#services" className={`font-medium hover:text-teal-500`}>
-						service
+						Service
 					</Link>
 					<Link href="/resources" className={`font-medium hover:text-teal-500`}>
 						Resources
