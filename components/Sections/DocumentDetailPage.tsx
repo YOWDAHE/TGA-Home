@@ -197,7 +197,7 @@ export default function DocumentDetailPage({
 											<div>
 												<p className="text-xs text-gray-500">Author</p>
 												<p className="text-sm font-medium text-gray-900">
-													TGA Global Law Firm LL.P LL.P
+													TGA Global Law Firm LL.P
 												</p>
 											</div>
 										</div>

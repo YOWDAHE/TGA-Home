@@ -6,7 +6,7 @@ import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'News & Updates',
-  description: 'Stay updated with the latest legal news, industry insights, and updates from TGA Global Law Firm LL.P LL.P. Read our expert analysis and legal perspectives.',
+  description: 'Stay updated with the latest legal news, industry insights, and updates from TGA Global Law Firm LL.P. Read our expert analysis and legal perspectives.',
   keywords: [
     'legal news',
     'law firm news',
@@ -18,8 +18,8 @@ export const metadata: Metadata = {
     'attorney news'
   ],
   openGraph: {
-    title: 'News & Updates | TGA Global Law Firm LL.P LL.P',
-    description: 'Stay updated with the latest legal news, industry insights, and updates from TGA Global Law Firm LL.P LL.P. Read our expert analysis and legal perspectives.',
+    title: 'News & Updates | TGA Global Law Firm LL.P',
+    description: 'Stay updated with the latest legal news, industry insights, and updates from TGA Global Law Firm LL.P. Read our expert analysis and legal perspectives.',
     url: '/news',
     type: 'website',
     images: [
@@ -27,14 +27,14 @@ export const metadata: Metadata = {
         url: '/Images/logo/TGA_LOGO.svg',
         width: 1200,
         height: 630,
-        alt: 'TGA Global Law Firm LL.P LL.P News',
+        alt: 'TGA Global Law Firm LL.P News',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'News & Updates | TGA Global Law Firm LL.P LL.P',
-    description: 'Stay updated with the latest legal news, industry insights, and updates from TGA Global Law Firm LL.P LL.P.',
+    title: 'News & Updates | TGA Global Law Firm LL.P',
+    description: 'Stay updated with the latest legal news, industry insights, and updates from TGA Global Law Firm LL.P.',
     images: ['/Images/logo/TGA_LOGO.svg'],
   },
   alternates: {

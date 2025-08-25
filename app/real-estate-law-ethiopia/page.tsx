@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'Real Estate Lawyers Ethiopia | Real Estate Law Ethiopia | TGA Global Law Firm LL.P LL.P',
+  title: 'Real Estate Lawyers Ethiopia | Real Estate Law Ethiopia | TGA Global Law Firm LL.P',
   description: 'Expert real estate lawyers Ethiopia. Real estate law Ethiopia services including property transactions, land disputes, and real estate legal advice. #1 law firm in Ethiopia.',
   keywords: 'Real Estate Lawyers Ethiopia, Real Estate Law Ethiopia, Real Estate Lawyers Ethiopia Diaspora, Property Law Ethiopia, Land Law Ethiopia, Real Estate Legal Services Ethiopia',
   openGraph: {
@@ -161,7 +161,7 @@ export default function RealEstateLawEthiopia() {
 					<div className="container mx-auto px-4">
 						<div className="max-w-4xl mx-auto text-center">
 							<h2 className="text-3xl font-bold mb-8">
-								Why Choose TGA Global Law Firm LL.P LL.P for Real Estate Law Ethiopia?
+								Why Choose TGA Global Law Firm LL.P for Real Estate Law Ethiopia?
 							</h2>
 
 							<div className="grid md:grid-cols-2 gap-8 text-left">
@@ -216,7 +216,7 @@ export default function RealEstateLawEthiopia() {
 							Need Expert Real Estate Lawyers Ethiopia?
 						</h2>
 						<p className="text-xl mb-8">
-							Contact TGA Global Law Firm LL.P LL.P for comprehensive real estate legal services in
+							Contact TGA Global Law Firm LL.P for comprehensive real estate legal services in
 							Ethiopia
 						</p>
 						<button className="bg-white text-teal-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">

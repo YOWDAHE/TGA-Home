@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export const metadata: Metadata = {
 	title:
-		"Corporate Lawyers Ethiopia | Business Law Firm Addis Ababa | TGA Global Law Firm LL.P LL.P",
+		"Corporate Lawyers Ethiopia | Business Law Firm Addis Ababa | TGA Global Law Firm LL.P",
 	description:
 		"Leading corporate lawyers Ethiopia. Business law firm Addis Ababa specializing in corporate law, business registration, and commercial legal services. #1 law firm in Ethiopia.",
 	keywords:
@@ -127,7 +127,7 @@ export default function CorporateLawEthiopia() {
 				<div className="container mx-auto px-4">
 					<div className="max-w-4xl mx-auto text-center">
 						<h2 className="text-3xl font-bold mb-8">
-							Why Choose TGA Global Law Firm LL.P LL.P for Corporate Law Ethiopia?
+							Why Choose TGA Global Law Firm LL.P for Corporate Law Ethiopia?
 						</h2>
 
 						<div className="grid md:grid-cols-2 gap-8 text-left">
@@ -182,7 +182,7 @@ export default function CorporateLawEthiopia() {
 						Ready to Work with Leading Corporate Lawyers Ethiopia?
 					</h2>
 					<p className="text-xl mb-8">
-						Contact TGA Global Law Firm LL.P LL.P for expert corporate legal services in Ethiopia
+						Contact TGA Global Law Firm LL.P for expert corporate legal services in Ethiopia
 					</p>
 					<button className="bg-white text-teal-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
 						Contact Our Corporate Lawyers

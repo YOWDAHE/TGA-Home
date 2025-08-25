@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next'
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'TGA Global Law Firm LL.P LL.P',
+    name: 'TGA Global Law Firm LL.P',
     short_name: 'TGA Law',
     description: 'Professional legal services with expertise in corporate law, litigation, and legal consulting',
     start_url: '/',

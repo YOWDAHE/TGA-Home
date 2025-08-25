@@ -196,7 +196,7 @@ const AboutUs: React.FC = () => {
 					{/* Intro Text */}
 					<div className="bg-white/70 backdrop-blur-md rounded-3xl shadow-2xl p-8 md:p-12 border border-gray-100">
 						<p className="text-base md:text-xl text-gray-700 mb-8 leading-relaxed text-center max-w-4xl mx-auto">
-							TGA Global Law Firm LL.P LL.P is a leading law firm delivering a high quality
+							TGA Global Law Firm LL.P is a leading law firm delivering a high quality
 							and advanced legal services to clients across Ethiopia, Africa and
 							beyond. Our skilled team combines deep local knowledge with international
 							expertise to deliver comprehensive and creative legal solutions.

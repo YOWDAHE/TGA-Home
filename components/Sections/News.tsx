@@ -77,7 +77,7 @@ export default function News({ news, resources }: NewsProps) {
 													<div className="flex items-center text-xs text-gray-500 md:space-x-4 space-x-0">
 														<span className="items-center hidden md:flex">
 															<User className="w-3 h-3 mr-1" />
-															TGA Global Law Firm LL.P LL.P
+															TGA Global Law Firm LL.P
 														</span>
 														<span className="flex items-center">
 															<Calendar className="w-3 h-3 mr-1" />
@@ -139,7 +139,7 @@ export default function News({ news, resources }: NewsProps) {
 														<div className="flex items-center text-xs text-white/60 mt-2 space-x-3">
 															<span className="flex items-center">
 																<User className="w-3 h-3 mr-1" />
-																TGA Global Law Firm LL.P LL.P
+																TGA Global Law Firm LL.P
 															</span>
 															<span className="flex items-center">
 																<Calendar className="w-3 h-3 mr-1" />
