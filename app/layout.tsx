@@ -5,8 +5,8 @@ import { AuthProvider } from '@/contexts/AuthContext'
 
 export const metadata: Metadata = {
 	title: {
-		default: "TGA Global Law Firm LL.P",
-		template: "%s | TGA Global Law Firm LL.P",
+		default: "TGA Global Law Firm LL.P — Ethiopia's Most Reputable and Leading Law Firm",
+		template: "%s | TGA Global Law Firm LL.P—Ethiopia's most reputable and top-ranked legal firm",
 	},
 	icons: {
 		icon: "/favicon.ico",
@@ -83,7 +83,7 @@ export const metadata: Metadata = {
 		locale: "en_US",
 		url: "https://tgalawgroup.com", //TODO: Replace with your actual domain
 		siteName: "TGA Global Law Firm LL.P",
-		title: "TGA Global Law Firm LL.P - Professional Legal Services",
+		title: "TGA Global Law Firm LL.P—Ethiopia's most reputable and top-ranked legal firm",
 		description:
 			"TGA provides comprehensive legal services with expertise in corporate law, litigation, and legal consulting. Trust our experienced attorneys for your legal needs.",
 		images: [
@@ -97,7 +97,7 @@ export const metadata: Metadata = {
 	},
 	twitter: {
 		card: "summary_large_image",
-		title: "TGA Global Law Firm LL.P - Professional Legal Services",
+		title: "TGA Global Law Firm LL.P—Ethiopia's most reputable and top-ranked legal firm",
 		description:
 			"TGA provides comprehensive legal services with expertise in corporate law, litigation, and legal consulting.",
 		images: ["/loader/loader-1.svg"],
