@@ -45,7 +45,7 @@ const ResourceCardSkeleton = () => (
 	<Card className="group hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] border-0 shadow-lg bg-white rounded-2xl overflow-hidden flex flex-col h-full">
 		<CardContent className="p-0 flex flex-col h-full">
 			{/* Header skeleton */}
-			<div className="bg-gradient-to-br from-red-500 to-red-600 p-6 text-white relative overflow-hidden">
+			<div className="bg-gradient-to-br from-gray-500 to-gray-700 p-6 text-white relative overflow-hidden">
 				<Skeleton className="w-12 h-12 bg-white/20 rounded-2xl mx-auto" />
 			</div>
 
@@ -128,7 +128,9 @@ export default function ResourcesPage({ resources, topViewedResources, categorie
 	const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || "All");
 	const [showAuthModal, setShowAuthModal] = useState(false);
 	const [isIncrementingView, setIsIncrementingView] = useState(false);
+	const [showSearchText, setSHowSearchText] = useState(true);
 	const [currentPage, setCurrentPage] = useState(pagination?.currentPage || 1);
+	const [isPageChanging, setIsPageChanging] = useState(false);
 
 	// const filteredResources = useMemo(() => {
 	// 	if (!resources || resources.length === 0) {
@@ -214,24 +216,38 @@ export default function ResourcesPage({ resources, topViewedResources, categorie
 
 	// Handle page change
 	const handlePageChange = (page: number) => {
+		setIsPageChanging(true);
 		setCurrentPage(page);
 		updateURL(searchTerm, selectedCategory, page);
 	};
 
 	// Handle search input change
 	const handleSearchChange = (value: string) => {
+		setSHowSearchText(false);
 		setSearchTerm(value);
 	};
 
 	// Handle search on Enter key press
 	const handleSearchKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
 		if (e.key === 'Enter') {
+			setIsPageChanging(true);
 			updateURL(searchTerm, selectedCategory, 1); // Reset to page 1 when searching
 		}
 	};
 
+	// Turn off page-changing loader once navigation finishes (URL params updated)
+	useEffect(() => {
+		setIsPageChanging(false);
+		const pageFromUrl = Number(searchParams.get('page') || '1');
+		if (!Number.isNaN(pageFromUrl) && pageFromUrl !== currentPage) {
+			setCurrentPage(pageFromUrl);
+		}
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [searchParams.toString()]);
+
 	// Handle category selection
 	const handleCategorySelect = (category: string) => {
+		setIsPageChanging(true);
 		setSelectedCategory(category);
 		updateURL(searchTerm, category, 1); // Reset to page 1 when changing category
 	};
@@ -261,7 +277,7 @@ export default function ResourcesPage({ resources, topViewedResources, categorie
 									/>
 									<Button
 										size="sm"
-										onClick={() => updateURL(searchTerm, selectedCategory)}
+										onClick={() => { setIsPageChanging(true); updateURL(searchTerm, selectedCategory); }}
 										className="absolute right-1 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white border-0 h-8 w-8 p-0"
 									>
 										<Search className="w-4 h-4" />
@@ -326,7 +342,7 @@ export default function ResourcesPage({ resources, topViewedResources, categorie
 					{/* Main Content */}
 					<div className="lg:col-span-3 flex gap-8 md:flex-col flex-col-reverse">
 						{/* Most Visited Section */}
-						{isLoading ? (
+						{(isLoading || isPageChanging) ? (
 							<MostVisitedSkeleton />
 						) : (
 							<div className="mb-8">
@@ -419,10 +435,10 @@ export default function ResourcesPage({ resources, topViewedResources, categorie
 						<div>
 							<div className="flex items-center justify-between mb-6">
 								<h2 className="text-xl font-bold text-gray-900">
-									Results {searchTerm && `for "${searchTerm}"`}
+									Results {(!isLoading && !isPageChanging && searchTerm && showSearchText) && `for "${searchTerm}"`}
 								</h2>
 								<div className="text-sm text-gray-500">
-									{isLoading
+									{(isLoading || isPageChanging)
 										? "Loading..."
 										: `${resources.length} resource${
 												resources.length !== 1 ? "s" : ""
@@ -430,9 +446,9 @@ export default function ResourcesPage({ resources, topViewedResources, categorie
 								</div>
 							</div>
 
-							{isLoading ? (
+							{(isLoading || isPageChanging) ? (
 								<div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-									{Array.from({ length: 9 }).map((_, index) => (
+									{Array.from({ length: 6 }).map((_, index) => (
 										<ResourceCardSkeleton key={index} />
 									))}
 								</div>
@@ -565,6 +581,7 @@ export default function ResourcesPage({ resources, topViewedResources, categorie
 											</Button>
 
 											<span className="text-sm text-gray-600">
+												{isPageChanging && <Loader2 className="w-4 h-4 inline-block mr-2 animate-spin text-gray-500" />}
 												Page {pagination.currentPage} of {pagination.totalPages}
 											</span>
 

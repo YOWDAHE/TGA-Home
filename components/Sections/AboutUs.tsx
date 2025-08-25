@@ -218,22 +218,57 @@ const AboutUs: React.FC = () => {
 								<div className="space-y-4">
 									{[
 										<div className="text-gray-700 leading-relaxed">
-											<span className="font-semibold text-emerald-600">President</span> of the <span className="font-semibold text-emerald-600">Pan-African Lawyers Union</span>, the continent’s premier legal organ for lawyers and law Associations of Africa
+											<span className="font-semibold text-emerald-600">President</span> of
+											the{" "}
+											<span className="font-semibold text-emerald-600">
+												Pan-African Lawyers Union
+											</span>
+											, the continent’s premier legal organ for lawyers and law
+											Associations of Africa
 										</div>,
 										<div className="text-gray-700 leading-relaxed">
-											<span className="font-semibold text-emerald-600">Council member</span> of the <span className="font-semibold text-emerald-600">Belt and Road International Legal Services Association (BRILSA)</span>, the first African to join this governance structure
+											<span className="font-semibold text-emerald-600">
+												Council member
+											</span>{" "}
+											of the{" "}
+											<span className="font-semibold text-emerald-600">
+												Belt and Road International Legal Services Association (BRILSA)
+											</span>
+											, the first African to join this governance structure
 										</div>,
 										<div className="text-gray-700 leading-relaxed">
-											<span className="font-semibold text-emerald-600">President</span>, <span className="font-semibold text-emerald-600">Ethiopian Federal Bar Association</span>, overseeing thousands of lawyers and law firms
+											<span className="font-semibold text-emerald-600">President</span>,{" "}
+											<span className="font-semibold text-emerald-600">
+												Ethiopian Federal Bar Association
+											</span>
+											, overseeing thousands of lawyers and law firms
 										</div>,
 										<div className="text-gray-700 leading-relaxed">
-											<span className="font-semibold text-emerald-600">Governing Council member</span> of the <span className="font-semibold text-emerald-600">East African Law Society (EALS)</span> — a leading regional bloc for leading law firms in the sub-region
+											<span className="font-semibold text-emerald-600">
+												Governing Council member
+											</span>{" "}
+											of the{" "}
+											<span className="font-semibold text-emerald-600">
+												East African Law Society (EALS)
+											</span>{" "}
+											— a leading regional bloc for leading law firms in the sub-region
 										</div>,
 										<div className="text-gray-700 leading-relaxed">
-											<span className="font-semibold text-emerald-600">Chairman of the Board</span> of the <span className="font-semibold text-emerald-600">State Infrastructure Transparency Initiative (COST International)</span>, which is made up of the top organizations in the construction industry
+											<span className="font-semibold text-emerald-600">
+												Chairman of the Board
+											</span>{" "}
+											of the{" "}
+											<span className="font-semibold text-emerald-600">
+												State Infrastructure Transparency Initiative (COST International)
+											</span>
+											, which is made up of the top organizations in the construction
+											industry
 										</div>,
 										<div className="text-gray-700 leading-relaxed">
-											A member and chair of several domestic and international <span className="font-semibold text-emerald-600">board structures</span>
+											A member and chair of several domestic and international{" "}
+											<span className="font-semibold text-emerald-600">
+												board structures
+											</span>
 										</div>,
 									].map((item, index) => (
 										<div key={index} className="flex items-start group">
@@ -256,19 +291,34 @@ const AboutUs: React.FC = () => {
 								<div className="space-y-4">
 									{[
 										<div className="text-gray-700 leading-relaxed">
-											<span className="font-semibold text-indigo-600">Life member</span> of the <span className="font-semibold text-indigo-600">African Lawyers Union</span>, membership of 54 countries
+											<span className="font-semibold ">Life member</span> of the{" "}
+											<span className="font-semibold ">African Lawyers Union</span>,
+											membership of 54 countries
 										</div>,
 										<div className="text-gray-700 leading-relaxed">
-											<span className="font-semibold text-indigo-600">Member</span> of <span className="font-semibold text-indigo-600">Belt and Road International Legal Services Association</span>, membership of 153 countries
+											<span className="font-semibold ">Member</span> of{" "}
+											<span className="font-semibold ">
+												Belt and Road International Legal Services Association
+											</span>
+											, membership of 153 countries
 										</div>,
 										<div className="text-gray-700 leading-relaxed">
-											<span className="font-semibold text-indigo-600">Member</span> of <span className="font-semibold text-indigo-600">EALS (East Africa Law Society)</span>, Leading Law firms forum, 8 countries
+											<span className="font-semibold ">Member</span> of{" "}
+											<span className="font-semibold ">
+												EALS (East Africa Law Society)
+											</span>
+											, Leading Law firms forum, 8 countries
 										</div>,
 										<div className="text-gray-700 leading-relaxed">
-											<span className="font-semibold text-indigo-600">Member</span> of the <span className="font-semibold text-indigo-600">Ethiopian Federal Bar Association</span>
+											<span className="font-semibold ">Member</span> of the{" "}
+											<span className="font-semibold ">
+												Ethiopian Federal Bar Association
+											</span>
 										</div>,
 										<div className="text-gray-700 leading-relaxed">
-											Affiliated with <span className="font-semibold text-indigo-600">IBA</span>, <span className="font-semibold text-indigo-600">ABA</span>, and many other International lawyers associations
+											Affiliated with <span className="font-semibold ">IBA</span>,{" "}
+											<span className="font-semibold ">ABA</span>, and many other
+											International lawyers associations
 										</div>,
 									].map((item, index) => (
 										<div key={index} className="flex items-start group">
@@ -345,7 +395,7 @@ const AboutUs: React.FC = () => {
 					</div>
 
 					{/* Tewodros Bio Section */}
-					<div className="bg-white/70 backdrop-blur-md rounded-3xl shadow-2xl p-8 md:p-12 border border-gray-100 flex flex-col lg:flex-row gap-10 mt-16 lg:h-[450px] h-auto">
+					<div className="bg-white/70 backdrop-blur-md rounded-3xl shadow-2xl p-8 md:p-12 border border-gray-100 flex flex-col lg:flex-row gap-10 mt-16 lg:h-[480px] h-auto">
 						<img
 							src="/Images/aboutUs/Tewodros.jpg"
 							alt="Tewodros Getachew Tulu"
@@ -365,6 +415,7 @@ const AboutUs: React.FC = () => {
 								President of the Pan African Lawyers Union
 							</a>
 							. <br />
+							<br />
 							He is the Founding President of the Ethiopian Federal Bar Association,
 							currently leading Ethiopia's first ever statutory Bar Association.
 							Through its managing partner, our law firm is the first African member of
@@ -377,6 +428,7 @@ const AboutUs: React.FC = () => {
 								Belt and Road International Legal Services Association (BRILSA)
 							</a>{" "}
 							to be appointed to the Council.
+							<br />
 							<br /> Our managing partner is currently joined the governing council of{" "}
 							<a
 								href="https://ealawsociety.org/council-members/"

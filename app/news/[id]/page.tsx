@@ -7,6 +7,59 @@ interface NewsPageProps {
   params: Promise<{ id: string }>;
 }
 
+const generateApproximateKeywords = (title: string, content?: string) => {
+    if (!title) return [];
+    
+    const baseKeywords = [
+      'legal news', 'law firm news', 'legal updates', 'legal insights', 
+      'TGA Global Law Firm', 'Ethiopia legal news', 'legal analysis',
+      'law industry news', 'legal blog', 'attorney news', 'legal developments'
+    ];
+    
+    // Extract main words from title
+    const titleWords = title.toLowerCase()
+      .split(' ')
+      .filter(word => word.length > 3) // Filter out short words
+      .slice(0, 5); // Limit to 5 words
+    
+    // Extract words from content if available (strip HTML first)
+    let contentWords: string[] = [];
+    if (content) {
+      const plainTextContent = content.replace(/<[^>]*>/g, '');
+      contentWords = plainTextContent.toLowerCase()
+        .split(' ')
+        .filter(word => word.length > 4)
+        .slice(0, 3);
+    }
+    
+    // Add common alternatives and related terms
+    const relatedTerms: string[] = [];
+    titleWords.forEach(word => {
+      if (word.includes('contract')) {
+        relatedTerms.push('agreement', 'legal contract', 'document');
+      } else if (word.includes('law')) {
+        relatedTerms.push('legal', 'regulation', 'statute');
+      } else if (word.includes('rights')) {
+        relatedTerms.push('legal rights', 'entitlements', 'privileges');
+      } else if (word.includes('business')) {
+        relatedTerms.push('corporate', 'commercial', 'enterprise');
+      } else if (word.includes('property')) {
+        relatedTerms.push('real estate', 'land', 'ownership');
+      } else if (word.includes('employment')) {
+        relatedTerms.push('labor', 'work', 'job');
+      } else if (word.includes('tax')) {
+        relatedTerms.push('taxation', 'revenue', 'financial');
+      } else if (word.includes('court')) {
+        relatedTerms.push('judicial', 'litigation', 'legal proceedings');
+      } else if (word.includes('regulation')) {
+        relatedTerms.push('compliance', 'legal requirements', 'rules');
+      }
+    });
+    
+    // Combine all keywords and remove duplicates
+    return [...new Set([...baseKeywords, ...titleWords, ...contentWords, ...relatedTerms])];
+  };
+
 export async function generateMetadata({ params }: NewsPageProps): Promise<Metadata> {
   const id = (await params).id;
   const news = await getNewsById(id);
@@ -30,10 +83,17 @@ export async function generateMetadata({ params }: NewsPageProps): Promise<Metad
   const imageUrl = visual_content && visual_content.length > 0 ? visual_content[0] : null;
   console.log(published_date);
 
+  // Generate SEO keywords
+  const seoKeywords = generateApproximateKeywords(title, content);
+  
+  // Combine generated keywords with hashtags
+  const hashtagKeywords = hashtags ? hashtags.split(",").map((tag) => tag.trim()) : [];
+  const allKeywords = [...new Set([...seoKeywords, ...hashtagKeywords, title.toLocaleLowerCase()])];
+
   return {
 			title: title,
 			description: description,
-			keywords: hashtags ? hashtags.split(",").map((tag) => tag.trim()) : [],
+			keywords: allKeywords,
 			openGraph: {
 				title: `${title} | TGA Global Law Firm LL.P`,
 				description: description,

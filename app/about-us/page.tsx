@@ -120,43 +120,52 @@ function page() {
 						</Carousel>
 					</div>
 					<div className="md:w-[80%] flex flex-col justify-center items-center mx-auto">
-						Tewodros Getachew Tulu and Associates Law Group (TGA Global Law Firm LL.P) is a
-						leading law office in Ethiopia specialized in diversified area of
-						expertise, providing a quality legal service with creative solutions.
-						Prominent practice areas, among others include Cross - border Trade &
-						Investment, Corporate Law, Tax laws, Construction Law, Compliance, IP and
-						Arbitration. <br />
+						TGA Global Law Firm LL.P, formerly known as, Tewodros Getachew Tulu and
+						Associates law office, is a leading law firm in Ethiopia specialized in
+						diversified area of expertise, providing a quality legal service with
+						creative solutions.
+						<br />
+						<br />
+						Prominent practice areas, among others include Corporate Law, Tax laws,
+						Construction Law, Compliance, IP, Cross - border Trade & Investment, and
+						Arbitration.
+						<br />
+						<br />
 						Throughout its nearly two - decade of experience the law firm has been
-						working with both domestic and foreign clients including leading national
+						working with huge domestic and foreign clients including leading national
 						and multinational corporations as a trusted advisor and partner in various
 						board structures, drafting legal documents and contract agreements,
 						conducting negotiations, closing deals, regulatory & compliance
 						guidelines.
 						<br />
-						TGA’s with vibrant lawyers both in Ethiopia and throughout the continent,
-						has been taking a foremost role in the national and continental legal
-						reform process. We were highly involved in the promulgation of various law
-						reforms and drafting including the Ethiopian revised commercial code, the
-						revised tax-laws, CSO law, the federal courts proclamations, ADR Rules,
-						criminal procedure & evidence law, the newly promulgated Immigration Law.
 						<br />
-						The Law Group represents the African Union AU CISSA on matters of national
-						and international law. The Law Group also works in different capacities
-						with the continent’s enormous commercial court, the COMESA Court of
-						Justice (CCJ) which entertains cases involving national, continental and
-						cross border commercial disputes among multi-national corporations and
-						individuals. TGA’s involvement in construction law is also paramount,
-						currently the managing partner is the Chairman for COST International
-						Board which is the premier structure in the construction sector which is
-						comprised of various key sector Ministries, Agencies and Authorities.
+						TGA’s with vibrant lawyers both in Ethiopia and abroad, has been taking a
+						foremost role in the national and continental legal reform process. We
+						were highly involved in the promulgation of various law reforms and
+						drafting including the Ethiopian revised commercial code, the revised
+						tax-laws, CSO law, the federal courts proclamations, ADR Rules, criminal
+						procedure & evidence law, the newly promulgated Immigration Law.
 						<br />
-						TGA Global Law Firm LL.P boasts a unique and robust presence across all five regions
-						of the African continent. The firm has formed partnerships with number of
-						the world's leading law firms.
 						<br />
-						TGA Global Law Firm LL.P is the official partner for Africa of YINGKE LAW FIRM, which
-						is recognized as the world's biggest law firm.
+						The Law Firm also handles national and international legal matters for the
+						African Union AU CISSA and other multinational enterprises and corporate
+						entities. The Law Firm also works in different capacities with the
+						continent’s enormous commercial court, the COMESA Court of Justice (CCJ)
+						which entertains cases involving national, continental and cross border
+						commercial disputes among multi-national corporations and individuals.
 						<br />
+						<br />
+						TGA’s involvement in construction law is also paramount, currently the
+						managing partner is the Chairman for COST International Board which is the
+						premier structure in the construction sector which is comprised of various
+						key sector Ministries, Agencies and Authorities.
+						<br />
+						<br />
+						TGA Global Law Firm LL.P has a strong and distinctive presence in each of
+						the five African areas. The firm has formed partnerships with number of
+						the world's leading law firms. TGA Global Law Firm LL.P is the official
+						partner for Africa of YINGKE LAW FIRM, which is recognized as the world's
+						biggest law firm.
 					</div>
 				</div>
 				<div className="md:p-10 p-4 bg-gradient-to-br from-teal-500 via-teal-600 to-emerald-600 mt-14 w-full rounded-lg flex flex-col gap-4 justify-center items-center">
@@ -270,8 +279,8 @@ function page() {
 							separate and distinct legal entities. Through its affiliates and partner
 							companies, TGA Global is an international legal practice offering
 							full-fledged client services. With a wealth of diverse experience and
-							outstanding expertise, TGA Global Law Firm LL.P is a prominent Ethiopian law
-							practice that offers top-notch legal services throughout Ethiopia and
+							outstanding expertise, TGA Global Law Firm LL.P is a prominent Ethiopian
+							law practice that offers top-notch legal services throughout Ethiopia and
 							Africa.
 						</p>
 					</div>

@@ -153,6 +153,10 @@ export default function RootLayout({
 					<meta name="application-name" content="TGA Global Law Firm LL.P" />
 					<meta name="mobile-web-app-capable" content="yes" />
 
+					{/* Preload critical assets */}
+					<link rel="preload" href="/loader/loader-1.svg" as="image" type="image/svg+xml" />
+					<link rel="preload" href="/loader/loader-3.svg" as="image" type="image/svg+xml" />
+
 					{/* Structured Data for Organization */}
 					<script
 						type="application/ld+json"

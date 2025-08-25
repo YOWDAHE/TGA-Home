@@ -9,6 +9,54 @@ interface DocumentPageProps {
 	};
 }
 
+const generateApproximateKeywords = (title: string, description?: string) => {
+    if (!title) return [];
+    
+    const baseKeywords = [
+      'legal document', 'legal resource', 'download', 'law firm', 
+      'TGA Global Law Firm', 'legal advice', 'law document', 'Ethiopia legal',
+      'Ethiopian law firm', 'legal services', 'document download'
+    ];
+    
+    // Extract main words from title
+    const titleWords = title.toLowerCase()
+      .split(' ')
+      .filter(word => word.length > 3) // Filter out short words
+      .slice(0, 5); // Limit to 5 words
+    
+    // Extract words from description if available
+    let descriptionWords: string[] = [];
+    if (description) {
+      descriptionWords = description.toLowerCase()
+        .split(' ')
+        .filter(word => word.length > 4)
+        .slice(0, 3);
+    }
+    
+    // Add common alternatives and related terms
+    const relatedTerms: string[] = [];
+    titleWords.forEach(word => {
+      if (word.includes('contract')) {
+        relatedTerms.push('agreement', 'legal contract', 'document');
+      } else if (word.includes('law')) {
+        relatedTerms.push('legal', 'regulation', 'statute');
+      } else if (word.includes('rights')) {
+        relatedTerms.push('legal rights', 'entitlements', 'privileges');
+      } else if (word.includes('business')) {
+        relatedTerms.push('corporate', 'commercial', 'enterprise');
+      } else if (word.includes('property')) {
+        relatedTerms.push('real estate', 'land', 'ownership');
+      } else if (word.includes('employment')) {
+        relatedTerms.push('labor', 'work', 'job');
+      } else if (word.includes('tax')) {
+        relatedTerms.push('taxation', 'revenue', 'financial');
+      }
+    });
+    
+    // Combine all keywords and remove duplicates
+    return [...new Set([...baseKeywords, ...titleWords, ...descriptionWords, ...relatedTerms])];
+  };
+
 export async function generateMetadata({ params }: DocumentPageProps): Promise<Metadata> {
 	try {
 		const resource = await getResourceById(params.id);
@@ -31,17 +79,13 @@ export async function generateMetadata({ params }: DocumentPageProps): Promise<M
 			return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
 		};
 
+		// Generate SEO keywords
+		const seoKeywords = generateApproximateKeywords(title, description);
+
 		return {
 			title: title,
 			description: description || `Download ${title} - Legal document from TGA Global Law Firm LL.P. File size: ${formatFileSize(file_size)}`,
-			keywords: [
-				'legal document',
-				'legal resource',
-				'download',
-				'law firm document',
-				title.toLowerCase(),
-				...description?.toLowerCase().split(' ').slice(0, 5) || []
-			],
+			keywords: [...seoKeywords, title.toLocaleLowerCase()],
 			openGraph: {
 				title: `${title} | TGA Global Law Firm LL.P`,
 				description: description || `Download ${title} - Legal document from TGA Global Law Firm LL.P`,
