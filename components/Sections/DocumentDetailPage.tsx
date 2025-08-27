@@ -49,10 +49,10 @@ export default function DocumentDetailPage({
 
 	const handleDownload = async () => {
 		// Check if user is authenticated
-		if (!user) {
-			setShowAuthModal(true);
-			return;
-		}
+		// if (!user) {
+		// 	setShowAuthModal(true);
+		// 	return;
+		// }
 
 		try {
 			setIsDownloading(true);

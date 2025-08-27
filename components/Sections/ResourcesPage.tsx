@@ -269,7 +269,7 @@ export default function ResourcesPage({ resources, topViewedResources, categorie
 									<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-teal-200 w-4 h-4" />
 									<Input
 										type="text"
-										placeholder="Search resources... (Press Enter to search)"
+										placeholder="Search resources..."
 										value={searchTerm}
 										onChange={(e) => handleSearchChange(e.target.value)}
 										onKeyPress={handleSearchKeyPress}
@@ -277,7 +277,10 @@ export default function ResourcesPage({ resources, topViewedResources, categorie
 									/>
 									<Button
 										size="sm"
-										onClick={() => { setIsPageChanging(true); updateURL(searchTerm, selectedCategory); }}
+										onClick={() => {
+											setIsPageChanging(true);
+											updateURL(searchTerm, selectedCategory);
+										}}
 										className="absolute right-1 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white border-0 h-8 w-8 p-0"
 									>
 										<Search className="w-4 h-4" />
@@ -307,7 +310,7 @@ export default function ResourcesPage({ resources, topViewedResources, categorie
 											variant="secondary"
 											className="ml-auto bg-white/20 text-teal-100 text-xs"
 										>
-											{isLoading ? "..." : resources.length}
+											{isLoading ? "..." : pagination?.totalItems}
 										</Badge>
 									</button>
 
@@ -342,7 +345,7 @@ export default function ResourcesPage({ resources, topViewedResources, categorie
 					{/* Main Content */}
 					<div className="lg:col-span-3 flex gap-8 md:flex-col flex-col-reverse">
 						{/* Most Visited Section */}
-						{(isLoading || isPageChanging) ? (
+						{isLoading || isPageChanging ? (
 							<MostVisitedSkeleton />
 						) : (
 							<div className="mb-8">
@@ -435,10 +438,15 @@ export default function ResourcesPage({ resources, topViewedResources, categorie
 						<div>
 							<div className="flex items-center justify-between mb-6">
 								<h2 className="text-xl font-bold text-gray-900">
-									Results {(!isLoading && !isPageChanging && searchTerm && showSearchText) && `for "${searchTerm}"`}
+									Results{" "}
+									{!isLoading &&
+										!isPageChanging &&
+										searchTerm &&
+										showSearchText &&
+										`for "${searchTerm}"`}
 								</h2>
 								<div className="text-sm text-gray-500">
-									{(isLoading || isPageChanging)
+									{isLoading || isPageChanging
 										? "Loading..."
 										: `${resources.length} resource${
 												resources.length !== 1 ? "s" : ""
@@ -446,7 +454,7 @@ export default function ResourcesPage({ resources, topViewedResources, categorie
 								</div>
 							</div>
 
-							{(isLoading || isPageChanging) ? (
+							{isLoading || isPageChanging ? (
 								<div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
 									{Array.from({ length: 6 }).map((_, index) => (
 										<ResourceCardSkeleton key={index} />
@@ -581,7 +589,9 @@ export default function ResourcesPage({ resources, topViewedResources, categorie
 											</Button>
 
 											<span className="text-sm text-gray-600">
-												{isPageChanging && <Loader2 className="w-4 h-4 inline-block mr-2 animate-spin text-gray-500" />}
+												{isPageChanging && (
+													<Loader2 className="w-4 h-4 inline-block mr-2 animate-spin text-gray-500" />
+												)}
 												Page {pagination.currentPage} of {pagination.totalPages}
 											</span>
 
