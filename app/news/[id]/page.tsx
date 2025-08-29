@@ -71,7 +71,7 @@ export async function generateMetadata({ params }: NewsPageProps): Promise<Metad
     };
   }
 
-  const { title, content, visual_content, hashtags, published_date } = news.data;
+  const { title, content, visual_content, hashtags, published_date, seo_keywords } = news.data as any;
   
   // Strip HTML tags from content for description
   const plainTextContent = content?.replace(/<[^>]*>/g, '') || '';
@@ -83,12 +83,15 @@ export async function generateMetadata({ params }: NewsPageProps): Promise<Metad
   const imageUrl = visual_content && visual_content.length > 0 ? visual_content[0] : null;
   console.log(published_date);
 
-  // Generate SEO keywords
-  const seoKeywords = generateApproximateKeywords(title, content);
-  
-  // Combine generated keywords with hashtags
-  const hashtagKeywords = hashtags ? hashtags.split(",").map((tag) => tag.trim()) : [];
-  const allKeywords = [...new Set([...seoKeywords, ...hashtagKeywords, title.toLocaleLowerCase()])];
+  // Prefer explicit seo_keywords (comma-separated). Fallback to generated + hashtags + title
+  const explicitKeywords = typeof seo_keywords === 'string' && seo_keywords.trim().length > 0
+    ? seo_keywords.split(",").map((k: string) => k.trim()).filter((k: string) => k.length > 0)
+    : null;
+  const generatedKeywords = generateApproximateKeywords(title, content);
+  const hashtagKeywords = hashtags ? hashtags.split(",").map((tag: string) => tag.trim()) : [];
+  const allKeywords = explicitKeywords && explicitKeywords.length > 0
+    ? explicitKeywords
+    : [...new Set([...generatedKeywords, ...hashtagKeywords, title.toLocaleLowerCase()])];
 
   return {
 			title: title,

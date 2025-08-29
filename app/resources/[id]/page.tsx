@@ -68,7 +68,7 @@ export async function generateMetadata({ params }: DocumentPageProps): Promise<M
 			};
 		}
 
-		const { title, description, file_url, file_size, view_count, createdAt } = resource;
+		const { title, description, file_url, file_size, view_count, createdAt, seo_keywords } = resource as any;
 		
 		// Format file size for display
 		const formatFileSize = (bytes: number) => {
@@ -79,13 +79,16 @@ export async function generateMetadata({ params }: DocumentPageProps): Promise<M
 			return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
 		};
 
-		// Generate SEO keywords
-		const seoKeywords = generateApproximateKeywords(title, description);
+		// Prefer explicit seo_keywords (comma-separated). Fallback to generated + title
+		const explicitKeywords = typeof seo_keywords === 'string' && seo_keywords.trim().length > 0
+			? seo_keywords.split(',').map((k: string) => k.trim()).filter((k: string) => k.length > 0)
+			: null;
+		const generatedKeywords = generateApproximateKeywords(title, description);
 
 		return {
 			title: title,
 			description: description || `Download ${title} - Legal document from TGA Global Law Firm LL.P. File size: ${formatFileSize(file_size)}`,
-			keywords: [...seoKeywords, title.toLocaleLowerCase()],
+			keywords: explicitKeywords && explicitKeywords.length > 0 ? explicitKeywords : [...generatedKeywords, title.toLocaleLowerCase()],
 			openGraph: {
 				title: `${title} | TGA Global Law Firm LL.P`,
 				description: description || `Download ${title} - Legal document from TGA Global Law Firm LL.P`,
