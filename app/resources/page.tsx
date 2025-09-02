@@ -87,6 +87,7 @@ export default async function page({ searchParams }: PageProps) {
           topViewedResources={topViewedResponse} 
           categories={categoriesResponse.data.categories}
           pagination={resourcesResponse.data.pagination}
+          categoryCounts={resourcesResponse.data.categoryCounts}
           isLoading={false}
         />
       </Suspense>

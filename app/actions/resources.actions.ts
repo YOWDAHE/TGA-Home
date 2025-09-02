@@ -29,6 +29,7 @@ export interface ResourcesResponse {
 			totalItems: string;
 			itemsPerPage: number;
 		};
+		categoryCounts?: Record<number, number>;
 	};
 }
 

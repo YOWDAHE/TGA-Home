@@ -31,6 +31,7 @@ interface ResourcesPageProps {
 	resources: Resource[];
 	topViewedResources: Resource[];
 	categories: Category[];
+	categoryCounts?: Record<number, number>;
 	pagination?: {
 		currentPage: number;
 		totalPages: number;
@@ -117,7 +118,7 @@ const MostVisitedSkeleton = () => (
 	</div>
 );
 
-export default function ResourcesPage({ resources, topViewedResources, categories, pagination, isLoading = false }: ResourcesPageProps) {
+export default function ResourcesPage({ resources, topViewedResources, categories, categoryCounts, pagination, isLoading = false }: ResourcesPageProps) {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const { user } = useAuth();
@@ -131,6 +132,20 @@ export default function ResourcesPage({ resources, topViewedResources, categorie
 	const [showSearchText, setSHowSearchText] = useState(true);
 	const [currentPage, setCurrentPage] = useState(pagination?.currentPage || 1);
 	const [isPageChanging, setIsPageChanging] = useState(false);
+
+	const showCountsFromFetched = Boolean(searchTerm) || (selectedCategory !== "All");
+
+	const countsFromFetched = useMemo(() => {
+		const counts: Record<number, number> = {};
+		for (const resource of resources) {
+			counts[resource.category_id] = (counts[resource.category_id] || 0) + 1;
+		}
+		return counts;
+	}, [resources]);
+
+	const countsToShow: Record<number, number> = showCountsFromFetched
+		? countsFromFetched
+		: (categoryCounts || {});
 
 	// const filteredResources = useMemo(() => {
 	// 	if (!resources || resources.length === 0) {
@@ -249,7 +264,12 @@ export default function ResourcesPage({ resources, topViewedResources, categorie
 	const handleCategorySelect = (category: string) => {
 		setIsPageChanging(true);
 		setSelectedCategory(category);
-		updateURL(searchTerm, category, 1); // Reset to page 1 when changing category
+		if (category === "All") {
+			setSearchTerm("");
+			updateURL("", category, 1);
+		} else {
+			updateURL(searchTerm, category, 1); // Reset to page 1 when changing category
+		}
 	};
 
 	return (
@@ -333,7 +353,7 @@ export default function ResourcesPage({ resources, topViewedResources, categorie
 											>
 												{isLoading
 													? "..."
-													: resources.filter((r) => r.category_id === category.id).length}
+													: (countsToShow[category.id] ?? 0)}
 											</Badge>
 										</button>
 									))}
