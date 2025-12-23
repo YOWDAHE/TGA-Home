@@ -1,4 +1,4 @@
-FROM node:22-alpine AS builder
+FROM node:20-alpine AS builder
 WORKDIR /app
 
 # Copy package files and install dependencies in builder stage if needed
@@ -9,7 +9,7 @@ COPY . .
 
 # Build this externally because there is a prefetch done while building
 
-FROM node:22-alpine AS runner
+FROM node:20-alpine AS runner
 WORKDIR /app
 
 # Copy build output and node_modules, package.json etc. from builder or host
