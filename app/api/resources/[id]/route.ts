@@ -4,10 +4,10 @@ const API_BASE_URL = process.env.BACKEND_URL || 'http://localhost:3000';
 
 export async function GET(
 	request: NextRequest,
-	{ params }: { params: { id: string } }
+	{ params }: { params: Promise<{ id: string }> }
 ) {
 	try {
-		const backendUrl = `${API_BASE_URL}/api/public/documents/${params.id}`;
+		const backendUrl = `${API_BASE_URL}/api/public/documents/${(await params).id}`;
 		
 		const response = await fetch(backendUrl, {
 			method: 'GET',

@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
     try {
         console.log('Fetching resources');
         const { searchParams } = new URL(request.url);
-        const backendUrl = `${API_BASE_URL}/api/public/documents?${searchParams.toString()}`;
+        const backendUrl = `${API_BASE_URL}/api/public/documents?${(await searchParams).toString()}`;
 
         const response = await axios.get(backendUrl);
 

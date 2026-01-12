@@ -4,9 +4,9 @@ import { notFound } from 'next/navigation';
 import type { Metadata } from 'next'
 
 interface DocumentPageProps {
-	params: {
+	params: Promise<{
 		id: string;
-	};
+	}>;
 }
 
 const generateApproximateKeywords = (title: string, description?: string) => {
@@ -59,7 +59,7 @@ const generateApproximateKeywords = (title: string, description?: string) => {
 
 export async function generateMetadata({ params }: DocumentPageProps): Promise<Metadata> {
 	try {
-		const resource = await getResourceById(params.id);
+		const resource = await getResourceById((await params).id);
 		
 		if (!resource) {
 			return {
@@ -87,36 +87,47 @@ export async function generateMetadata({ params }: DocumentPageProps): Promise<M
 
 		return {
 			title: title,
-			description: description || `Download ${title} - Legal document from TGA Global Law Firm LL.P. File size: ${formatFileSize(file_size)}`,
-			keywords: explicitKeywords && explicitKeywords.length > 0 ? explicitKeywords : [...generatedKeywords, title.toLocaleLowerCase()],
+			description:
+				description ||
+				`Download ${title} - Legal document from TGA Global Law Firm LL.P. File size: ${formatFileSize(
+					file_size
+				)}`,
+			keywords:
+				explicitKeywords && explicitKeywords.length > 0
+					? explicitKeywords
+					: [...generatedKeywords, title.toLocaleLowerCase()],
 			openGraph: {
 				title: `${title} | TGA Global Law Firm LL.P`,
-				description: description || `Download ${title} - Legal document from TGA Global Law Firm LL.P`,
-				url: `/resources/${params.id}`,
-				type: 'website',
+				description:
+					description ||
+					`Download ${title} - Legal document from TGA Global Law Firm LL.P`,
+				url: `/resources/${(await params).id}`,
+				type: "website",
 				images: [
 					{
-						url: '/Images/logo/TGA_LOGO.svg',
+						url: "/Images/logo/TGA_LOGO.svg",
 						width: 1200,
 						height: 630,
 						alt: `${title} - TGA Global Law Firm LL.P`,
-					}
+					},
 				],
 			},
 			twitter: {
-				card: 'summary_large_image',
+				card: "summary_large_image",
 				title: `${title} | TGA Global Law Firm LL.P`,
-				description: description || `Download ${title} - Legal document from TGA Global Law Firm LL.P`,
-				images: ['/Images/logo/TGA_LOGO.svg'],
+				description:
+					description ||
+					`Download ${title} - Legal document from TGA Global Law Firm LL.P`,
+				images: ["/Images/logo/TGA_LOGO.svg"],
 			},
 			alternates: {
-				canonical: `/resources/${params.id}`,
+				canonical: `/resources/${(await params).id}`,
 			},
 			other: {
-				'file:size': formatFileSize(file_size),
-				'file:type': 'document',
-				'view:count': view_count.toString(),
-				'published:date': createdAt,
+				"file:size": formatFileSize(file_size),
+				"file:type": "document",
+				"view:count": view_count.toString(),
+				"published:date": createdAt,
 			},
 		};
 	} catch (error) {
@@ -129,7 +140,7 @@ export async function generateMetadata({ params }: DocumentPageProps): Promise<M
 
 export default async function DocumentPage({ params }: DocumentPageProps) {
 	try {
-		const resource = await getResourceById(params.id);
+		const resource = await getResourceById((await params).id);
 		console.log("Resource2", resource);
 		// if (!resource) {
 		// 	notFound();

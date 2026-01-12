@@ -6,7 +6,7 @@ const API_BASE_URL = process.env.BACKEND_URL || 'http://localhost:3000';
 export async function GET(request: NextRequest) {
 	try {
 		const { searchParams } = new URL(request.url);
-		const backendUrl = `${API_BASE_URL}/api/public/documents/top-viewed?${searchParams.toString()}`;
+		const backendUrl = `${API_BASE_URL}/api/public/documents/top-viewed?${(await searchParams).toString()}`;
 		
 		const response = await axios.get(backendUrl);
 

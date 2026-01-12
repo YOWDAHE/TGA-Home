@@ -5,8 +5,10 @@ import { AuthProvider } from '@/contexts/AuthContext'
 
 export const metadata: Metadata = {
 	title: {
-		default: "TGA Global Law Firm LL.P — Ethiopia's Most Reputable and Leading Law Firm",
-		template: "%s | TGA Global Law Firm LL.P—Ethiopia's most reputable and top-ranked legal firm",
+		default:
+			"TGA Global Law Firm LL.P — Ethiopia's Most Reputable and Leading Law Firm",
+		template:
+			"%s | TGA Global Law Firm LL.P—Ethiopia's most reputable and top-ranked legal firm",
 	},
 	icons: {
 		icon: "/favicon.ico",
@@ -74,16 +76,17 @@ export const metadata: Metadata = {
 		address: false,
 		telephone: false,
 	},
-	metadataBase: new URL("https://tgalawgroup.com"), //TODO: To be replaced with actual domain
+	metadataBase: new URL("https://tgagloballawfirm.com"), //TODO: To be replaced with actual domain
 	alternates: {
 		canonical: "/",
 	},
 	openGraph: {
 		type: "website",
 		locale: "en_US",
-		url: "https://tgalawgroup.com", //TODO: Replace with your actual domain
+		url: "https://tgagloballawfirm.com", //TODO: Replace with your actual domain
 		siteName: "TGA Global Law Firm LL.P",
-		title: "TGA Global Law Firm LL.P—Ethiopia's most reputable and top-ranked legal firm",
+		title:
+			"TGA Global Law Firm LL.P—Ethiopia's most reputable and top-ranked legal firm",
 		description:
 			"TGA provides comprehensive legal services with expertise in corporate law, litigation, and legal consulting. Trust our experienced attorneys for your legal needs.",
 		images: [
@@ -97,7 +100,8 @@ export const metadata: Metadata = {
 	},
 	twitter: {
 		card: "summary_large_image",
-		title: "TGA Global Law Firm LL.P—Ethiopia's most reputable and top-ranked legal firm",
+		title:
+			"TGA Global Law Firm LL.P—Ethiopia's most reputable and top-ranked legal firm",
 		description:
 			"TGA provides comprehensive legal services with expertise in corporate law, litigation, and legal consulting.",
 		images: ["/loader/loader-1.svg"],
@@ -149,13 +153,26 @@ export default function RootLayout({
 					<meta name="theme-color" content="#0D9488" />
 					<meta name="apple-mobile-web-app-capable" content="yes" />
 					<meta name="apple-mobile-web-app-status-bar-style" content="default" />
-					<meta name="apple-mobile-web-app-title" content="TGA Global Law Firm LL.P" />
+					<meta
+						name="apple-mobile-web-app-title"
+						content="TGA Global Law Firm LL.P"
+					/>
 					<meta name="application-name" content="TGA Global Law Firm LL.P" />
 					<meta name="mobile-web-app-capable" content="yes" />
 
 					{/* Preload critical assets */}
-					<link rel="preload" href="/loader/loader-1.svg" as="image" type="image/svg+xml" />
-					<link rel="preload" href="/loader/loader-3.svg" as="image" type="image/svg+xml" />
+					<link
+						rel="preload"
+						href="/loader/loader-1.svg"
+						as="image"
+						type="image/svg+xml"
+					/>
+					<link
+						rel="preload"
+						href="/loader/loader-3.svg"
+						as="image"
+						type="image/svg+xml"
+					/>
 
 					{/* Structured Data for Organization */}
 					<script
@@ -167,11 +184,11 @@ export default function RootLayout({
 								name: "TGA Global Law Firm LL.P",
 								description:
 									"Professional legal services with expertise in corporate law, litigation, and legal consulting",
-								url: "https://tgalawgroup.com",
-								logo: "https://tgalawgroup.com/Images/logo/TGA_LOGO.svg",
-								image: "https://tgalawgroup.com/Images/logo/TGA_LOGO.svg",
-								telephone: "+251115517942", // Replace with actual phone number
-								email: "info@tgalawgroup.com", // Replace with actual email
+								url: "https://tgagloballawfirm.com",
+								logo: "https://tgagloballawfirm.com/Images/logo/TGA_LOGO.svg",
+								image: "https://tgagloballawfirm.com/Images/logo/TGA_LOGO.svg",
+								telephone: "+251115517942", // TODO: Replace with actual phone number
+								email: "info@tgagloballawfirm.com",
 								address: {
 									"@type": "PostalAddress",
 									streetAddress: "Dembel",
@@ -182,8 +199,8 @@ export default function RootLayout({
 								},
 								geo: {
 									"@type": "GeoCoordinates",
-									latitude: "YOUR_LATITUDE", // Replace with actual coordinates
-									longitude: "YOUR_LONGITUDE", // Replace with actual coordinates
+									latitude: "YOUR_LATITUDE", // TODO: Replace with actual coordinates
+									longitude: "YOUR_LONGITUDE", // TODO: Replace with actual coordinates
 								},
 								openingHours: "Mo-Fr 02:00-13:00",
 								priceRange: "$$",

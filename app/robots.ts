@@ -13,6 +13,6 @@ export default function robots(): MetadataRoute.Robots {
         '/private/',
       ],
     },
-    sitemap: 'https://tgalawgroup.com/sitemap.xml', //TODO: Replace with your actual domain
+    sitemap: 'https://tgagloballawfirm.com/sitemap.xml', //TODO: Replace with your actual domain
   }
 } 
