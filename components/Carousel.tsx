@@ -225,6 +225,7 @@ export default function Carousel<T>({
 			<div className="flex items-center space-x-4">
 				<button
 					onClick={prevCard}
+					name="scroll left"
 					className="text-white text-3xl font-bold px-4 py-2 rounded transition absolute left-20 z-20"
 				>
 					<ArrowLeft color="black" />
@@ -280,6 +281,7 @@ export default function Carousel<T>({
 				</div>
 				<button
 					onClick={nextCard}
+					name="scroll right"
 					className="text-white text-3xl font-bold px-4 py-2 rounded transition absolute right-20 z-20"
 				>
 					<ArrowRight color="black" />

@@ -101,11 +101,11 @@ export async function generateMetadata({ params }: DocumentPageProps): Promise<M
 				description:
 					description ||
 					`Download ${title} - Legal document from TGA Global Law Firm LL.P`,
-				url: `/resources/${(await params).id}`,
+				url: `https://tgagloballawfirm.com/resources/${(await params).id}`,
 				type: "website",
 				images: [
 					{
-						url: "/Images/logo/TGA_LOGO.svg",
+						url: "/Images/logo/TGA_LOGO_IMG.png",
 						width: 1200,
 						height: 630,
 						alt: `${title} - TGA Global Law Firm LL.P`,
@@ -121,13 +121,21 @@ export async function generateMetadata({ params }: DocumentPageProps): Promise<M
 				images: ["/Images/logo/TGA_LOGO.svg"],
 			},
 			alternates: {
-				canonical: `/resources/${(await params).id}`,
+				canonical: `https://tgagloballawfirm.com/resources/${(await params).id}`,
 			},
 			other: {
 				"file:size": formatFileSize(file_size),
 				"file:type": "document",
 				"view:count": view_count.toString(),
 				"published:date": createdAt,
+			},
+			robots: {
+				index: true,
+				follow: true,
+				googleBot: {
+					index: true,
+					follow: true,
+				},
 			},
 		};
 	} catch (error) {
@@ -142,9 +150,9 @@ export default async function DocumentPage({ params }: DocumentPageProps) {
 	try {
 		const resource = await getResourceById((await params).id);
 		console.log("Resource2", resource);
-		// if (!resource) {
-		// 	notFound();
-		// }
+		if (!resource) {
+			notFound();
+		}
 
 		return <DocumentDetailPage resource={resource} />;
 	} catch (error) {

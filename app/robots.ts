@@ -10,7 +10,7 @@ export default function robots(): MetadataRoute.Robots {
         '/signup',
         '/api/',
         '/admin/',
-        '/private/',
+        '/office/',
       ],
     },
     sitemap: 'https://tgagloballawfirm.com/sitemap.xml', //TODO: Replace with your actual domain

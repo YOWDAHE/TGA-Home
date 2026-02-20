@@ -97,7 +97,8 @@ export default function Footer({ contactUs }: FooterProps) {
 						<h3 className="font-semibold mb-4">Contact</h3>
 						<div className="space-y-2 text-gray-400">
 							<p>Addis Ababa, Ethiopia</p>
-							<p>{getContactInfo("email")}</p>
+							{/* <p>{getContactInfo("email")}</p> */}
+							<p>info@tgagloballawfirm.com</p>
 							<p>{getContactInfo("phone")}</p>
 						</div>
 					</div>
