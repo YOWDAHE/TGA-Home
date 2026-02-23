@@ -151,8 +151,8 @@ export default function ContactUs({ contactUs }: ContactUsProps) {
 									onChange={(e) => handleInputChange("email", e.target.value)}
 									placeholder="your.email@example.com"
 									className={`w-full px-4 py-4 border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-300 ${errors.email
-											? "border-red-300 focus:ring-red-500"
-											: "border-gray-200"
+										? "border-red-300 focus:ring-red-500"
+										: "border-gray-200"
 										}`}
 								/>
 								{errors.email && (
@@ -174,8 +174,8 @@ export default function ContactUs({ contactUs }: ContactUsProps) {
 									placeholder="Tell us about your legal needs..."
 									rows={5}
 									className={`w-full px-4 py-4 border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-300 resize-none ${errors.content
-											? "border-red-300 focus:ring-red-500"
-											: "border-gray-200"
+										? "border-red-300 focus:ring-red-500"
+										: "border-gray-200"
 										}`}
 								></textarea>
 								{errors.content && (
@@ -232,7 +232,7 @@ export default function ContactUs({ contactUs }: ContactUsProps) {
 											{contact.medium}
 										</h3>
 										<p className="text-gray-900 font-bold">
-											{contact.email || contact.phone_number || "-"}
+											{(contact.email ?? "info@tgagloballawfirm.com") || contact.phone_number || "-"}
 										</p>
 									</div>
 								);
