@@ -24,6 +24,15 @@ const office_images = Array.from(
 	(_, i) => `/aboutUs/offices/office${(i + 1).toString()}.jpg`
 );
 
+const employees = [
+	{ name: "Enas Mubarek Sherif", role: "Managing Partner", image: "/aboutUs/employees/enas.jpeg" },
+	{ name: "Caleb Mesfin Seleshi", role: "Senior Associate", image: "/aboutUs/employees/caleb.jpeg" },
+	{ name: "Mihret Wondimu", role: "Corporate Law Specialist", image: "/aboutUs/employees/mihiret.jpeg" },
+	{ name: "Tinbite Ermias", role: "Tax Law Expert", image: "/aboutUs/employees/tinbite.jpeg" },
+	// { name: "Yodahe Ketema", role: "Construction Law Attorney", image: "/aboutUs/employees/employee5.jpeg" },
+	// { name: "Lisa Anderson", role: "IP & Compliance Lawyer", image: "/aboutUs/employees/employee6.jpeg" },
+];
+
 function page() {
 	const pathname = usePathname();
 	const [hash, setHash] = useState("");
@@ -213,6 +222,49 @@ function page() {
 								BRILSA, the first African lawyer to join this board
 							</p>
 						</div>
+					</div>
+				</div>
+
+				{/* Employees seciton */}
+				<div className="mt-16 flex flex-col items-center">
+					<div className="text-center mb-16">
+						<h2 className="text-2xl md:text-4xl font-bold mb-4">OUR EMPLOYEES</h2>
+						<div className="w-24 h-1 bg-black/50 mx-auto rounded-full"></div>
+					</div>
+
+					<div className="max-w-4xl text-center mb-16">
+						Our team consists of highly qualified legal professionals with diverse
+						expertise and extensive experience. Meet the talented individuals who
+						make TGA Global Law Firm LL.P a leader in legal services.
+					</div>
+
+					<div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-8 w-full max-w-6xl">
+						{employees.map((employee, index) => (
+							<div
+								key={index}
+								className="bg-white rounded-xl overflow-hidden transition-all duration-300"
+							>
+								<div className="relative h-64 w-auto bg-blue-200">
+									{/* <div className="absolute inset-0 z-10 shadow-[inset_0_0_60px_rgba(255,255,255,1)] pointer-events-none"></div> */}
+									{/* <div className="absolute bottom-0 w-full z-20 bg-gradient-to-t from-white to-transparent h-24 pointer-events-none"></div> */}
+									<Image
+										src={employee.image}
+										alt={employee.name}
+										fill={true}
+										className="object-cover"
+										onError={(e) => {
+											(e.target as HTMLImageElement).src = "/aboutUs/employees/placeholder.jpg";
+										}}
+									/>
+								</div>
+								<div className="p-6 text-center">
+									<h3 className="text-gray-800 mb-2">
+										{employee.name}
+									</h3>
+									{/* <p className="text-teal-600 font-medium">{employee.role}</p> */}
+								</div>
+							</div>
+						))}
 					</div>
 				</div>
 
