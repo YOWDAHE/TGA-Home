@@ -226,7 +226,7 @@ function page() {
 				</div>
 
 				{/* Employees seciton */}
-				<div className="mt-16 flex flex-col items-center">
+				{/* <div className="mt-16 flex flex-col items-center">
 					<div className="text-center mb-16">
 						<h2 className="text-2xl md:text-4xl font-bold mb-4">OUR EMPLOYEES</h2>
 						<div className="w-24 h-1 bg-black/50 mx-auto rounded-full"></div>
@@ -245,8 +245,6 @@ function page() {
 								className="bg-white rounded-xl overflow-hidden transition-all duration-300"
 							>
 								<div className="relative h-64 w-auto bg-blue-200">
-									{/* <div className="absolute inset-0 z-10 shadow-[inset_0_0_60px_rgba(255,255,255,1)] pointer-events-none"></div> */}
-									{/* <div className="absolute bottom-0 w-full z-20 bg-gradient-to-t from-white to-transparent h-24 pointer-events-none"></div> */}
 									<Image
 										src={employee.image}
 										alt={employee.name}
@@ -261,12 +259,11 @@ function page() {
 									<h3 className="text-gray-800 mb-2">
 										{employee.name}
 									</h3>
-									{/* <p className="text-teal-600 font-medium">{employee.role}</p> */}
 								</div>
 							</div>
 						))}
 					</div>
-				</div>
+				</div> */}
 
 				<div className="mt-16 flex flex-col items-center">
 					<div className="text-center mb-16">
