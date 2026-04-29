@@ -65,7 +65,6 @@ export default function NewsPage({
 	newsQuery,
 	categories: catData,
 }: NewsPageProps) {
-	console.log(news);
 	const { toast } = useToast();
 	const router = useRouter();
 	const searchParams = useSearchParams();

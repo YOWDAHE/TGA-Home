@@ -70,6 +70,16 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'tgagloballawfirm.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.tgagloballawfirm.com',
+        pathname: '/**',
+      },
     ],
     // Add image optimization settings
     formats: ['image/webp', 'image/avif',],

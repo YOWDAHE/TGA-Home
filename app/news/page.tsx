@@ -53,8 +53,6 @@ export default async function page() {
     order: 'desc'
   });
 
-  console.dir(categories, { depth: null });
-  
   return (
     <NewsPage news={news} newsQuery={newsQuery} categories={categories} />
   )
