@@ -4,6 +4,8 @@ import { getLandingPageData } from "./actions/landing.actions";
 import { getNewsByQuery } from "./actions/news.actions";
 import { getResources } from "./actions/resources.actions";
 
+export const dynamic = "force-dynamic";
+
 export default async function page() {
 	try {
 		// const [landingData, newsResponse, resourcesResponse] = await Promise.all([

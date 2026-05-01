@@ -75,14 +75,8 @@ export default function NewsPage({
 		null
 	);
 	const [isLoading, setIsLoading] = useState(false);
-	const [isSearchMode, setIsSearchMode] = useState(false);
 	const [carouselApi, setCarouselApi] = useState<any>(null);
 	const [isNavigating, setIsNavigating] = useState(false);
-
-	// Keep input in sync with URL
-	useEffect(() => {
-		setSearchInput(searchParams.get("q") || "");
-	}, [searchParams]);
 
 	const { featured, latest, trending, hot, others } = news.data;
 	const categories = catData.data.categories.map((category) => {
@@ -105,32 +99,46 @@ export default function NewsPage({
 		return new Date(dateString).toLocaleDateString();
 	};
 
+	/** Browse grid & search: show publication date when set, else created date */
+	const formatNewsMetaDate = (article: News) => {
+		const primary = article.published_date;
+		if (primary != null && String(primary).trim() !== "") {
+			const d = new Date(primary as string | Date);
+			if (!Number.isNaN(d.getTime())) return d.toLocaleDateString();
+		}
+		return formatDate(article.createdAt);
+	};
+
 	// Helper function to get read time
 	const getReadTime = (minutes: number | null) => {
 		return minutes ? `${minutes} min read` : "5 min read";
 	};
 
-	// Fetch news by query for Browse by Category section
-	const fetchNewsByQuery = async (page: number = 1, categoryId?: number) => {
-		setIsLoading(true);
+	// Fetch news by query for Browse by Category section (matches SSR: limit 10, pub. date desc)
+	const fetchNewsByQuery = async (
+		page: number = 1,
+		categoryId?: number,
+		opts?: { silent?: boolean; q?: string }
+	) => {
+		if (!opts?.silent) setIsLoading(true);
 		try {
-			const params: any = {
-				page,
-				limit: 6,
+			const qVal =
+				opts?.q !== undefined ? opts.q.trim() : searchInput.trim();
+			const params: Record<string, string> = {
+				page: String(page),
+				limit: "10",
 				sortBy: "published_date",
 				order: "desc",
 			};
 
-			if (searchInput.trim()) {
-				params.q = searchInput.trim();
+			if (qVal) {
+				params.q = qVal;
 			}
 
-			// Use the passed categoryId or fall back to selectedCategory
-			if (categoryId) {
-				params.category = categoryId;
+			if (categoryId !== undefined && categoryId !== null) {
+				params.category = String(categoryId);
 			}
 
-			// Build query string for API route
 			const queryString = new URLSearchParams(params).toString();
 			const response = await fetch(`/api/news?${queryString}`);
 
@@ -144,37 +152,33 @@ export default function NewsPage({
 		} catch (error) {
 			console.error("Error fetching news:", error);
 		} finally {
-			setIsLoading(false);
+			if (!opts?.silent) setIsLoading(false);
 		}
 	};
 
+	const categoryIdForSelection = () =>
+		selectedCategory === "All"
+			? undefined
+			: categories.find((c) => c.name === selectedCategory)?.id;
+
 	// Handle search for Browse by Category section
 	const handleSearch = () => {
-		if (searchInput.trim() || selectedCategory !== "All") {
-			setIsSearchMode(true);
-			fetchNewsByQuery(1);
-		} else {
-			setIsSearchMode(false);
-			setQueryResults(null);
-		}
+		fetchNewsByQuery(1, categoryIdForSelection(), { q: searchInput });
 	};
 
 	// Handle category change for Browse by Category section
 	const handleCategoryChange = (categoryName: string) => {
 		setSelectedCategory(categoryName);
-		let catId = categories.find((cat) => cat.name === categoryName)?.id;
-		if (categoryName !== "All" || searchInput.trim()) {
-			setIsSearchMode(true);
-			fetchNewsByQuery(1, catId);
-		} else {
-			setIsSearchMode(false);
-			setQueryResults(null);
-		}
+		const catId =
+			categoryName === "All"
+				? undefined
+				: categories.find((cat) => cat.name === categoryName)?.id;
+		fetchNewsByQuery(1, catId, { q: searchInput });
 	};
 
 	// Handle page change for Browse by Category section
 	const handlePageChange = (page: number) => {
-		fetchNewsByQuery(page);
+		fetchNewsByQuery(page, categoryIdForSelection(), { q: searchInput });
 	};
 
 	// Handle search input change
@@ -196,21 +200,27 @@ export default function NewsPage({
 			?.scrollIntoView({ behavior: "smooth" });
 	};
 
+	const browseData = queryResults ?? newsQuery;
+
 	// Get current news items to display in Browse by Category section
-	const getCurrentNewsItems = () => {
-		if (isSearchMode && queryResults) {
-			return queryResults.data.news;
-		}
-		return newsQuery.data.news;
-	};
+	const getCurrentNewsItems = () => browseData.data.news;
 
 	// Get pagination info for Browse by Category section
-	const getPaginationInfo = () => {
-		if (isSearchMode && queryResults) {
-			return queryResults.data.pagination;
-		}
-		return newsQuery.data.pagination;
-	};
+	const getPaginationInfo = () => browseData.data.pagination;
+
+	const showFilterReset =
+		searchInput.trim().length > 0 || selectedCategory !== "All";
+
+	// Keep browse list in sync with the URL query and refresh after navigation
+	useEffect(() => {
+		const q = searchParams.get("q") || "";
+		setSearchInput(q);
+		void fetchNewsByQuery(1, categoryIdForSelection(), {
+			silent: true,
+			q: q.trim(),
+		});
+		// eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: refetch when URL search changes only
+	}, [searchParams]);
 
 	// Auto-play carousel functionality
 	useEffect(() => {
@@ -301,7 +311,7 @@ export default function NewsPage({
 															</h4>
 															<div className="flex items-center text-xs text-gray-500 space-x-1 md:space-x-2">
 																<span className="text-xs">
-																	{formatDate(article.published_date)}
+																	{formatDate(article.createdAt)}
 																</span>
 																<span className="flex items-center">
 																	<Eye className="w-3 h-3 mr-1" />
@@ -315,6 +325,9 @@ export default function NewsPage({
 										</Link>
 									))}
 								</div>
+								<p className="text-[10px] text-gray-500 mt-2 md:mt-3">
+									Sorted by date added on the site
+								</p>
 							</div>
 						</div>
 
@@ -375,7 +388,7 @@ export default function NewsPage({
 											value="latest"
 											className="data-[state=active]:text-white data-[state=active]:bg-[#69b2a4] text-xs md:text-sm"
 										>
-											Latest
+											Recent
 										</TabsTrigger>
 										<TabsTrigger
 											value="trending"
@@ -410,7 +423,7 @@ export default function NewsPage({
 																</h4>
 																<div className="flex items-center text-xs text-gray-500 space-x-1 md:space-x-2">
 																	<span className="text-xs">
-																		{formatDate(article.published_date)}
+																		{formatDate(article.createdAt)}
 																	</span>
 																	<span className="flex items-center">
 																		<Eye className="w-3 h-3 mr-1" />
@@ -557,7 +570,7 @@ export default function NewsPage({
 					<div className="lg:col-span-2">
 						<div className="flex items-center justify-between mb-6">
 							<h2 className="text-xl md:text-2xl font-semibold text-gray-900">
-								LATEST
+								RECENTLY ADDED
 							</h2>
 							{/* <Button
 								variant="outline"
@@ -590,7 +603,7 @@ export default function NewsPage({
 													</h3>
 													<div className="flex flex-col md:flex-row md:items-center text-xs text-gray-500 space-y-1 md:space-y-0 md:space-x-3">
 														<span>TGA Global Law Firm LL.P</span>
-														<span>{formatDate(article.published_date)}</span>
+														<span>{formatDate(article.createdAt)}</span>
 														<span>{getReadTime(article.read_minutes)}</span>
 													</div>
 												</div>
@@ -600,6 +613,9 @@ export default function NewsPage({
 								</Link>
 							))}
 						</div>
+						<p className="text-xs text-gray-500 mt-3">
+							Newest by date added on the site (not by publication date).
+						</p>
 					</div>
 
 					{/* Top Articles Sidebar */}
@@ -730,9 +746,13 @@ export default function NewsPage({
 
 				{/* Browse by Category Section */}
 				<section id="browse-news-section" className="mt-16">
-					<h2 className="text-xl md:text-2xl font-semibold text-gray-900 mb-6">
+					<h2 className="text-xl md:text-2xl font-semibold text-gray-900 mb-2">
 						Browse News
 					</h2>
+					<p className="text-sm text-gray-600 mb-6 max-w-2xl">
+						All categories: newest first by publication date (falls back to date added if no
+						publication date). Use filters to narrow by category or search.
+					</p>
 
 					{/* Search and Filter Section */}
 					<div className="mb-8">
@@ -780,21 +800,23 @@ export default function NewsPage({
 									{category.name}
 								</Button>
 							))}
-							{isSearchMode && (
+							{showFilterReset && (
 								<Button
 									key="Cancel"
-									variant={selectedCategory === "All" ? "default" : "outline"}
+									variant="outline"
 									onClick={() => {
 										setSearchInput("");
-										setIsSearchMode(false);
-										setQueryResults(null);
+										setSelectedCategory("All");
+										if (searchParams.get("q")) {
+											router.replace("/news");
+										} else {
+											void fetchNewsByQuery(1, undefined, { q: "" });
+										}
 									}}
-									className={`text-xs md:text-sm ${
-										selectedCategory === "All" ? "bg-red-500 hover:bg-red-600" : ""
-									}`}
+									className="text-xs md:text-sm bg-red-500 hover:bg-red-600 text-white border-0"
 								>
 									<X className="w-4 h-4 mr-1" />
-									Cancel Search
+									Reset filters
 								</Button>
 							)}
 						</div>
@@ -832,7 +854,7 @@ export default function NewsPage({
 											</p>
 											<div className="flex flex-col md:flex-row md:items-center md:justify-between text-xs text-gray-500 space-y-1 md:space-y-0">
 												<span>TGA Global Law Firm LL.P</span>
-												<span>{formatDate(article.published_date)}</span>
+												<span>{formatNewsMetaDate(article)}</span>
 											</div>
 										</CardContent>
 									</Card>

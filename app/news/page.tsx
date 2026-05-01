@@ -42,6 +42,8 @@ export const metadata: Metadata = {
   },
 }
 
+export const dynamic = 'force-dynamic'
+
 export default async function page() {
   // Fetch data for the sections above Browse by Category
   const news = await getNews();

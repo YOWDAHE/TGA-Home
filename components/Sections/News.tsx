@@ -19,6 +19,15 @@ const formatDate = (dateString: string | Date) => {
 	return new Date(dateString).toLocaleDateString();
 };
 
+const formatNewsCardDate = (item: News) => {
+	const primary = item.published_date;
+	if (primary != null && String(primary).trim() !== "") {
+		const d = new Date(primary as string | Date);
+		if (!Number.isNaN(d.getTime())) return d.toLocaleDateString();
+	}
+	return formatDate(item.createdAt);
+};
+
 // Helper function to get image URL
 const getImageUrl = (newsItem: News) => {
 	if (newsItem.visual_content && newsItem.visual_content.length > 0) {
@@ -40,6 +49,9 @@ export default function News({ news, resources }: NewsProps) {
 									LATEST NEWS
 								</h2>
 								<div className="w-16 h-1 bg-gradient-to-r from-teal-500 to-emerald-500 rounded-full"></div>
+								<p className="text-xs text-gray-500 mt-2 max-w-sm">
+									Newest by publication date (or date added if unset).
+								</p>
 							</div>
 							<Link href="/news">
 								<Button className="bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 rounded-xl text-sm md:text-base">
@@ -81,7 +93,7 @@ export default function News({ news, resources }: NewsProps) {
 														</span>
 														<span className="flex items-center">
 															<Calendar className="w-3 h-3 mr-1" />
-															{formatDate(item.published_date)}
+															{formatNewsCardDate(item)}
 														</span>
 													</div>
 												</div>
@@ -101,10 +113,13 @@ export default function News({ news, resources }: NewsProps) {
 						<div className="relative z-10">
 							<div className="flex items-center justify-between mb-8">
 								<div>
-									<h2 className="md:text-4xl text-2xl font-bold mb-2">RESOURCES</h2>
-									<div className="w-16 h-1 bg-white/50 rounded-full"></div>
-								</div>
-								<Link href="/resources">
+							<h2 className="md:text-4xl text-2xl font-bold mb-2">RESOURCES</h2>
+								<div className="w-16 h-1 bg-white/50 rounded-full"></div>
+								<p className="text-xs text-white/80 mt-2 max-w-sm">
+									Newest uploads first.
+								</p>
+							</div>
+							<Link href="/resources">
 									<Button className="bg-white/20 hover:bg-white/30 text-white border border-white/30 backdrop-blur-sm rounded-xl shadow-lg text-sm md:text-base">
 										See more
 									</Button>
