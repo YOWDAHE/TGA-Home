@@ -7,6 +7,20 @@ export function cn(...inputs: ClassValue[]) {
 
 const NEWS_IMAGES_FOLDER = '/news-images/';
 
+/** Legacy DB URLs use .../uploads/partners/:file or .../landing/uploads/partners/:file */
+function filenameFromPartnerUrl(input: string): string | null {
+  const q = input.indexOf('?');
+  const path = q === -1 ? input : input.slice(0, q);
+  for (const marker of ['/landing/uploads/partners/', '/uploads/partners/']) {
+    const idx = path.indexOf(marker);
+    if (idx === -1) continue;
+    const after = path.slice(idx + marker.length);
+    const filename = after.split('/')[0];
+    if (filename) return filename;
+  }
+  return null;
+}
+
 /** Legacy DB URLs use .../uploads/news-images/:file or .../api/uploads/news-images/:file */
 function filenameFromLegacyNewsImageUrl(input: string): string | null {
   const q = input.indexOf('?');
@@ -34,6 +48,13 @@ export function convertToApiUrl(url: string | { secure_url?: string }): string {
     if (pathname.startsWith('/api-backend/news/images/')) {
       return `${pathname}${urlObj.search}`;
     }
+    if (pathname.startsWith('/api-backend/landing/uploads/partners/')) {
+      return `${pathname}${urlObj.search}`;
+    }
+    const partnerFile = filenameFromPartnerUrl(pathname);
+    if (partnerFile) {
+      return `/api-backend/landing/uploads/partners/${partnerFile}`;
+    }
     const newsFile = filenameFromLegacyNewsImageUrl(pathname);
     if (newsFile) {
       return `/api-backend/news/images/${newsFile}`;
@@ -44,6 +65,11 @@ export function convertToApiUrl(url: string | { secure_url?: string }): string {
     if (pathname.startsWith('/uploads/')) return `/api${pathname}`;
   } catch {
     // Not a valid absolute URL; fall through
+  }
+
+  const legacyPartnerFile = filenameFromPartnerUrl(url);
+  if (legacyPartnerFile) {
+    return `/api-backend/landing/uploads/partners/${legacyPartnerFile}`;
   }
 
   const legacyNewsFile = filenameFromLegacyNewsImageUrl(url);

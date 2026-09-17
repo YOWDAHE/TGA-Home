@@ -325,9 +325,6 @@ export default function NewsPage({
 										</Link>
 									))}
 								</div>
-								<p className="text-[10px] text-gray-500 mt-2 md:mt-3">
-									Sorted by date added on the site
-								</p>
 							</div>
 						</div>
 
@@ -388,7 +385,7 @@ export default function NewsPage({
 											value="latest"
 											className="data-[state=active]:text-white data-[state=active]:bg-[#69b2a4] text-xs md:text-sm"
 										>
-											Recent
+											Latest
 										</TabsTrigger>
 										<TabsTrigger
 											value="trending"
@@ -570,7 +567,7 @@ export default function NewsPage({
 					<div className="lg:col-span-2">
 						<div className="flex items-center justify-between mb-6">
 							<h2 className="text-xl md:text-2xl font-semibold text-gray-900">
-								RECENTLY ADDED
+								LATEST
 							</h2>
 							{/* <Button
 								variant="outline"
@@ -613,9 +610,6 @@ export default function NewsPage({
 								</Link>
 							))}
 						</div>
-						<p className="text-xs text-gray-500 mt-3">
-							Newest by date added on the site (not by publication date).
-						</p>
 					</div>
 
 					{/* Top Articles Sidebar */}
@@ -749,10 +743,6 @@ export default function NewsPage({
 					<h2 className="text-xl md:text-2xl font-semibold text-gray-900 mb-2">
 						Browse News
 					</h2>
-					<p className="text-sm text-gray-600 mb-6 max-w-2xl">
-						All categories: newest first by publication date (falls back to date added if no
-						publication date). Use filters to narrow by category or search.
-					</p>
 
 					{/* Search and Filter Section */}
 					<div className="mb-8">

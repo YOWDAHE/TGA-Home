@@ -197,11 +197,38 @@ function page() {
 						</div>
 						<div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20 hover:bg-white/20 transition-all duration-300 transform hover:scale-105">
 							<p className="text-xl md:text-2xl font-bold mb-6">
-								President of the Ethiopian Federal Bar Association
+								Founding Former President of the Ethiopian Federal Bar Association
 							</p>
 							<p className="flex-1 flex items-center justify-center leading-relaxed text-white/90">
-								Holds the prestigious position of the President of the Ethiopian Federal
-								Bar Association leading and overseeing thousands of lawyers
+								Held the prestigious position of the Founding Former President of the
+								Ethiopian Federal Bar Association leading and overseeing thousands of
+								lawyers
+							</p>
+						</div>
+						<div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20 hover:bg-white/20 transition-all duration-300 transform hover:scale-105">
+							<p className="text-xl md:text-2xl font-bold mb-6">
+								Judge of the COMESA Court of Justice (CCJ)
+							</p>
+							<p className="flex-1 flex items-center justify-center leading-relaxed text-white/90">
+								Entertaining major continental and cross-border commercial claims
+							</p>
+						</div>
+						<div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20 hover:bg-white/20 transition-all duration-300 transform hover:scale-105">
+							<p className="text-xl md:text-2xl font-bold mb-6">
+								International Commercial Arbitrator – CIETAC
+							</p>
+							<p className="flex-1 flex items-center justify-center leading-relaxed text-white/90">
+								International Commercial Arbitrator empanelled with the China
+								International Economic and Trade Arbitration Commission (CIETAC)
+							</p>
+						</div>
+						<div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20 hover:bg-white/20 transition-all duration-300 transform hover:scale-105">
+							<p className="text-xl md:text-2xl font-bold mb-6">
+								International Commercial Arbitrator – SHIAC
+							</p>
+							<p className="flex-1 flex items-center justify-center leading-relaxed text-white/90">
+								International Commercial Arbitrator empanelled with the Shanghai
+								International Economic and Trade Arbitration Commission (SHIAC)
 							</p>
 						</div>
 						<div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20 hover:bg-white/20 transition-all duration-300 transform hover:scale-105">
@@ -320,7 +347,7 @@ function page() {
 					</div>
 					<div>
 						<p>
-							© 2025 TGA Global Law Firm LL.P. All rights reserved.{" "}
+							© {new Date().getFullYear()} TGA Global Law Firm LL.P. All rights reserved.{" "}
 							<strong>Attorney Advertising.</strong>
 						</p>
 						<p>

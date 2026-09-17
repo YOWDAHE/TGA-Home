@@ -91,7 +91,7 @@ export class Hero extends Component<{}, HeroState> {
 			</span>{" "}
 			and{" "}
 			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">
-				President of the Ethiopian Federal Bar Association
+				Founding Former President of the Ethiopian Federal Bar Association
 			</span>
 			.
 		</div>,
@@ -128,6 +128,9 @@ export class Hero extends Component<{}, HeroState> {
 					</Link>
 					<Link href="/news" className={`font-medium hover:text-teal-500`}>
 						News
+					</Link>
+					<Link href="/legal-updates" className={`font-medium hover:text-teal-500`}>
+						Legal Updates
 					</Link>
 				</div>
 				{/* Rotating hero images background carousel */}
@@ -170,6 +173,7 @@ export class Hero extends Component<{}, HeroState> {
 					<Link href="#services">Services</Link>
 					<Link href="/resources">Resources</Link>
 					<Link href="/news">News</Link>
+					<Link href="/legal-updates">Legal Updates</Link>
 					<Link href="#contact">Contact</Link>
 				</div>
 				<div className="container mx-auto px-4 text-center relative z-10 flex flex-col items-center justify-center gap-10 mt-4">

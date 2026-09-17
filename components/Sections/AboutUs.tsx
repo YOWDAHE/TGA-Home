@@ -80,7 +80,7 @@ const aboutUsSlides: AboutUsSlide[] = [
 				</span>{" "}
 				and{" "}
 				<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
-					President of the Ethiopian Federal Bar Association
+					Founding Former President of the Ethiopian Federal Bar Association
 				</span>
 				.
 			</div>
@@ -171,7 +171,7 @@ const AboutUs: React.FC = () => {
 	return (
 		<section
 			id="about"
-			className="py-20 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden min-h-[900px] md:max-h-[2000px]"
+			className="py-20 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden min-h-[900px] md:max-h-[2400px]"
 		>
 			{/* Background image */}
 			<img
@@ -237,11 +237,34 @@ const AboutUs: React.FC = () => {
 											, the first African to join this governance structure
 										</div>,
 										<div className="text-gray-700 leading-relaxed">
-											<span className="font-semibold text-emerald-600">President</span>,{" "}
+											<span className="font-semibold text-emerald-600">
+												Founding Former President
+											</span>
+											,{" "}
 											<span className="font-semibold text-emerald-600">
 												Ethiopian Federal Bar Association
 											</span>
 											, overseeing thousands of lawyers and law firms
+										</div>,
+										<div className="text-gray-700 leading-relaxed">
+											<span className="font-semibold text-emerald-600">
+												Judge of the COMESA Court of Justice (CCJ)
+											</span>{" "}
+											– Entertaining major continental and cross-border commercial claims
+										</div>,
+										<div className="text-gray-700 leading-relaxed">
+											International Commercial Arbitrator empanelled with the{" "}
+											<span className="font-semibold text-emerald-600">
+												China International Economic and Trade Arbitration Commission
+												(CIETAC)
+											</span>
+										</div>,
+										<div className="text-gray-700 leading-relaxed">
+											International Commercial Arbitrator empanelled with the{" "}
+											<span className="font-semibold text-emerald-600">
+												Shanghai International Economic and Trade Arbitration Commission
+												(SHIAC)
+											</span>
 										</div>,
 										<div className="text-gray-700 leading-relaxed">
 											<span className="font-semibold text-emerald-600">
@@ -416,8 +439,8 @@ const AboutUs: React.FC = () => {
 							</a>
 							. <br />
 							<br />
-							He is the Founding President of the Ethiopian Federal Bar Association,
-							currently leading Ethiopia's first ever statutory Bar Association.
+							He is the Founding Former President of the Ethiopian Federal Bar Association,
+							who lead Ethiopia&apos;s first ever statutory Bar Association.
 							Through its managing partner, our law firm is the first African member of
 							the{" "}
 							<a

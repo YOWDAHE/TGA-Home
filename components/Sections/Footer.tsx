@@ -86,6 +86,11 @@ export default function Footer({ contactUs }: FooterProps) {
 								</Link>
 							</li>
 							<li>
+								<Link href="/legal-updates" className="hover:text-white">
+									Legal Updates
+								</Link>
+							</li>
+							<li>
 								<Link href="/resources" className="hover:text-white">
 									Resources
 								</Link>
@@ -106,7 +111,7 @@ export default function Footer({ contactUs }: FooterProps) {
 
 				<div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
 					<p>
-						&copy; 2024 TGA Global Law Firm LL.P. All rights reserved. |{" "}
+						&copy; {new Date().getFullYear()} TGA Global Law Firm LL.P. All rights reserved. |{" "}
 						<a href="/about-us#disclosure">Attorney Advertising</a>
 					</p>
 					{/* <p className="mt-6 text-sm opacity-60 group cursor-pointer">

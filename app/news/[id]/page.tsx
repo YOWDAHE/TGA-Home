@@ -3,6 +3,8 @@ import { getNewsById, getRelatedNews } from '@/app/actions/news.actions'
 import React from 'react'
 import type { Metadata } from 'next'
 
+export const dynamic = 'force-dynamic'
+
 interface NewsPageProps {
   params: Promise<{ id: string }>;
 }
@@ -62,6 +64,8 @@ const generateApproximateKeywords = (title: string, content?: string) => {
 
 export async function generateMetadata({ params }: NewsPageProps): Promise<Metadata> {
   const id = (await params).id;
+
+  try {
   const news = await getNewsById(id);
   
   if (!news?.data) {
@@ -138,6 +142,12 @@ export async function generateMetadata({ params }: NewsPageProps): Promise<Metad
 				"article:section": "Legal News",
 			},
 		};
+  } catch {
+    return {
+      title: 'Legal News | TGA Global Law Firm LL.P',
+      description: 'Read the latest legal news and insights from TGA Global Law Firm LL.P.',
+    };
+  }
 }
 
 async function page({ params }: { params: Promise<{ id: string }> }) {

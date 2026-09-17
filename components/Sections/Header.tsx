@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
@@ -18,7 +20,7 @@ export default function Header({
 	currentPage = "home",
 }: {
 	showHeader?: boolean;
-	currentPage?: "home" | "about-us" | "services" | "resources" | "news";
+	currentPage?: "home" | "about-us" | "services" | "resources" | "news" | "legal-updates";
 }) {
 	const [isVisible, setIsVisible] = useState(showHeader);
 	const [lastScrollY, setLastScrollY] = useState(0);
@@ -140,6 +142,14 @@ export default function Header({
 									}`}
 								>
 									News
+								</Link>
+								<Link
+									href="/legal-updates"
+									className={`font-medium hover:text-teal-500 ${
+										currentPage === "legal-updates" ? "text-teal-500" : "text-gray-700"
+									}`}
+								>
+									Legal Updates
 								</Link>
 
 								{/* Auth Section */}
@@ -301,6 +311,17 @@ export default function Header({
 									}`}
 								>
 									News
+								</Link>
+								<Link
+									href="/legal-updates"
+									onClick={handleNavClick}
+									className={`block py-3 px-4 font-medium transition-colors ${
+										currentPage === "legal-updates"
+											? "bg-teal-50 text-teal-600 border-l-4 border-teal-500"
+											: "text-gray-700 hover:bg-gray-50"
+									}`}
+								>
+									Legal Updates
 								</Link>
 							</div>
 

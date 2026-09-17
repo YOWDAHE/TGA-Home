@@ -48,7 +48,7 @@ export class Services extends Component {
 							{
 								title: "ADR AND ARBITRATION",
 								content:
-									"The Law Group through its Managing Partner and Senior Associates frequently represents in International Commercial Arbitration under the auspices of various regional and ad hoc centers. We also offer a full scheme ADR mechanisms.",
+									"The Law Firm through its Managing Partner and Senior Associates frequently represents in International Commercial Arbitration under the auspices of various regional and ad hoc centers. We also offer a full scheme ADR mechanisms.",
 								icon: "🤝",
 							},
 						].map((service, index) => (

@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import axios from 'axios';
 
-// Prefer PUBLIC_API_URL which can include path prefix like /api-backend
 const PUBLIC_API_URL = (process.env.PUBLIC_API_URL || process.env.BACKEND_URL || 'http://localhost:3000').replace(/\/$/, '');
+const BACKEND_URL = (process.env.BACKEND_URL || 'http://localhost:3000').replace(/\/$/, '');
 
 export async function GET(
   request: NextRequest,
@@ -13,8 +13,12 @@ export async function GET(
   console.log('Params:', params);
   
   try {
-    const path = (await params).path.join('/');
-    const backendUrl = `${PUBLIC_API_URL}/uploads/${path}`;
+    const pathSegments = (await params).path;
+    const path = pathSegments.join('/');
+    const backendUrl =
+      pathSegments[0] === 'partners' && pathSegments.length >= 2
+        ? `${BACKEND_URL}/api/landing/uploads/partners/${pathSegments[1]}`
+        : `${PUBLIC_API_URL}/uploads/${path}`;
     console.log('backendUrl:>>>', backendUrl);
     
     console.log('API route: Proxying upload request to:', backendUrl);

@@ -4,6 +4,8 @@ import { getResources, getTopViewedResources } from '../actions/resources.action
 import { getCategories } from '../actions/news.actions';
 import type { Metadata } from 'next'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: 'Legal Resources & Documents',
   description: 'Access comprehensive legal resources, documents, and materials from TGA Global Law Firm LL.P. Download legal guides, templates, and expert legal content.',

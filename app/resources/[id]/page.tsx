@@ -3,6 +3,8 @@ import { getResourceById } from '../../actions/resources.actions';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next'
 
+export const dynamic = 'force-dynamic'
+
 interface DocumentPageProps {
 	params: Promise<{
 		id: string;
