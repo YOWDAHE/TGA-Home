@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -31,16 +31,17 @@ export default function IframePdfViewer({
 	const [iframeKey, setIframeKey] = useState(0);
 	const { toast } = useToast();
 
-	// Debug logging
+	// Same-origin copy of the file, shown by the browser's own PDF viewer
 	const pdfUrl = convertToApiUrl(resource.file_url);
-	// const pdfUrl = convertToApiUrl(resource.file_url);
-	// For Google Docs Viewer, we need the full absolute URL
-	const fullPdfUrl = pdfUrl.startsWith("http")
-		? pdfUrl
-		: `${window.location.origin}${pdfUrl}`;
-	console.log("IframePdfViewer - resource.file_url:", resource.file_url);
-	console.log("IframePdfViewer - converted URL:", pdfUrl);
-	console.log("IframePdfViewer - full URL for Google Docs:", fullPdfUrl);
+	// Browsers without a built-in viewer (mostly Android) get Google's viewer, which
+	// has to fetch the file itself, so it needs this site's public URL
+	const [viewerSrc, setViewerSrc] = useState(`${pdfUrl}#view=FitH`);
+	useEffect(() => {
+		if (navigator.pdfViewerEnabled === false) {
+			const absolute = new URL(pdfUrl, window.location.origin).toString();
+			setViewerSrc(`https://docs.google.com/gview?url=${encodeURIComponent(absolute)}&embedded=true`);
+		}
+	}, [pdfUrl]);
 
 	const handleReload = () => {
 		setIsLoading(true);
@@ -127,17 +128,11 @@ export default function IframePdfViewer({
 
 					<iframe
 						key={iframeKey}
-						src={`https://docs.google.com/gview?url=${resource.file_url}&embedded=true`}
+						src={viewerSrc}
 						className="w-full h-full border-0"
 						title={resource.title}
-						onLoad={() => {
-							console.log("Google Docs Viewer loaded successfully");
-							setIsLoading(false);
-						}}
-						onError={(e) => {
-							console.error("Google Docs Viewer error:", e);
-							handleIframeError();
-						}}
+						onLoad={() => setIsLoading(false)}
+						onError={handleIframeError}
 						allowFullScreen
 					/>
 				</div>

@@ -44,10 +44,16 @@ export function convertToApiUrl(url: string | { secure_url?: string }): string {
   try {
     const urlObj = new URL(url);
     const pathname = urlObj.pathname;
+    // Documents always go through this site's proxy, whichever backend path the URL uses
+    const documentFile = pathname.split('/uploads/documents/')[1];
+    if (documentFile) return `/api/uploads/documents/${documentFile.split('/')[0]}`;
     // New canonical public URLs — keep same-origin path for Next/Image
     if (pathname.startsWith('/api-backend/news/images/')) {
       return `${pathname}${urlObj.search}`;
     }
+    // Direct backend URLs (local dev stores http://localhost:3000/api/news/images/:file)
+    const directNewsFile = pathname.split('/api/news/images/')[1];
+    if (directNewsFile) return `/api-backend/news/images/${directNewsFile.split('/')[0]}`;
     if (pathname.startsWith('/api-backend/landing/uploads/partners/')) {
       return `${pathname}${urlObj.search}`;
     }
