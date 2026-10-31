@@ -28,13 +28,14 @@ const aboutUsSlides: AboutUsSlide[] = [
 			<div>
 				A{" "}
 				<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
-					globally renowned legal firm
+					leading, full-service law firm
 				</span>{" "}
-				with a distinct presence and forged partnerships in over{" "}
+				with a powerful, active presence across{" "}
 				<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
-					52 jurisdictions and nations
-				</span>{" "}
-				across four continents
+					all five regions of Africa
+				</span>
+				, uniquely bridging the gap between local jurisdictions and international
+				commerce.
 			</div>
 		),
 	},
@@ -42,17 +43,13 @@ const aboutUsSlides: AboutUsSlide[] = [
 		images: [image2_1, image2_2],
 		description: (
 			<div>
-				The first and only African law firm chosen to the governing council of the{" "}
+				The{" "}
 				<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
-					BRILSA/Belt and Road International Legal Services Association
-				</span>
-				, which is estimated to contribute{" "}
-				<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
-					$7.1 trillion to the global GDP
+					first African law firm
 				</span>{" "}
-				annually and has{" "}
+				appointed as a council member of the{" "}
 				<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
-					153 member countries worldwide
+					Belt and Road International Lawyers Association (BRILSA)
 				</span>
 				.
 			</div>
@@ -62,27 +59,15 @@ const aboutUsSlides: AboutUsSlide[] = [
 		images: [image1_1, image1_2],
 		description: (
 			<div>
-				The managing partner of this{" "}
+				Our Managing Partner, Hon. Justice Tewodros Getachew Tulu, is a{" "}
 				<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
-					premier
-				</span>{" "}
-				law company holds a number of prestigious positions and has garnered{" "}
-				<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
-					international recognition
-				</span>
-				, including{" "}
-				<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
-					President
-				</span>{" "}
-				of the{" "}
-				<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
-					Pan African Lawyers Union (PALU)
+					Judge of the COMESA Court of Justice
 				</span>{" "}
 				and{" "}
 				<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
-					Founding Former President of the Ethiopian Federal Bar Association
+					President of the Pan African Lawyers Union (PALU)
 				</span>
-				.
+				, its first-ever president from East Africa.
 			</div>
 		),
 	},
@@ -90,20 +75,15 @@ const aboutUsSlides: AboutUsSlide[] = [
 		images: [image4_1],
 		description: (
 			<div>
-				The{" "}
+				The official partner for Africa of{" "}
 				<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
-					largest and most prominent law firm
-				</span>{" "}
-				in the world{" "}
+					YINGKE Law Firm
+				</span>
+				, recognized as the world&apos;s largest law firm, and a{" "}
 				<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
-					Yingke
+					strategic partner
 				</span>{" "}
-				as well as numerous other prestigious firms in their respective countries,
-				are{" "}
-				<span className="bg-gradient-to-r from-teal-400 to-emerald-400 font-bold bg-clip-text text-transparent">
-					strategic partners
-				</span>{" "}
-				of TGA Global Law Firm LL.P.
+				of Tian Yuan Law Firm, one of China&apos;s leading law firms.
 			</div>
 		),
 	},
@@ -196,13 +176,11 @@ const AboutUs: React.FC = () => {
 					{/* Intro Text */}
 					<div className="bg-white/70 backdrop-blur-md rounded-3xl shadow-2xl p-8 md:p-12 border border-gray-100">
 						<p className="text-base md:text-xl text-gray-700 mb-8 leading-relaxed text-center max-w-4xl mx-auto">
-							TGA Global Law Firm LL.P is a leading law firm delivering a high quality
-							and advanced legal services to clients across Ethiopia, Africa and
-							beyond. Our skilled team combines deep local knowledge with international
-							expertise to deliver comprehensive and creative legal solutions.
-							<br />
-							TGA's extensive international presence will benefit our
-							clients even more.
+							TGA Global Law Firm LLP (formerly Tewodros Getachew Tulu and Associates) is a
+							leading, full-service law firm headquartered in Ethiopia. For nearly two
+							decades, we have served as the trusted advisor and partner to top-tier
+							national and multinational corporations, providing elite legal services,
+							strategic counsel, and innovative solutions across the continent and beyond.
 						</p>
 
 						<div className="grid md:grid-cols-7 gap-12">
@@ -212,86 +190,53 @@ const AboutUs: React.FC = () => {
 										<User className="w-6 h-6 text-white" />
 									</div>
 									<h3 className="text-xl md:text-2xl font-bold text-gray-900">
-										Leadership & International Recognition
+										Continental Leadership & Influence
 									</h3>
 								</div>
 								<div className="space-y-4">
 									{[
 										<div className="text-gray-700 leading-relaxed">
-											<span className="font-semibold text-emerald-600">President</span> of
-											the{" "}
-											<span className="font-semibold text-emerald-600">
-												Pan-African Lawyers Union
-											</span>
-											, the continent’s premier legal organ for lawyers and law
-											Associations of Africa
-										</div>,
-										<div className="text-gray-700 leading-relaxed">
-											<span className="font-semibold text-emerald-600">
-												Council member
-											</span>{" "}
-											of the{" "}
-											<span className="font-semibold text-emerald-600">
-												Belt and Road International Legal Services Association (BRILSA)
-											</span>
-											, the first African to join this governance structure
-										</div>,
-										<div className="text-gray-700 leading-relaxed">
-											<span className="font-semibold text-emerald-600">
-												Founding Former President
-											</span>
-											,{" "}
-											<span className="font-semibold text-emerald-600">
-												Ethiopian Federal Bar Association
-											</span>
-											, overseeing thousands of lawyers and law firms
-										</div>,
-										<div className="text-gray-700 leading-relaxed">
 											<span className="font-semibold text-emerald-600">
 												Judge of the COMESA Court of Justice (CCJ)
 											</span>{" "}
-											– Entertaining major continental and cross-border commercial claims
+											– First Instance Division of the continent&apos;s largest regional
+											commercial court, with jurisdiction across 21 African nations
 										</div>,
 										<div className="text-gray-700 leading-relaxed">
-											International Commercial Arbitrator empanelled with the{" "}
+											<span className="font-semibold text-emerald-600">President</span> of
+											the{" "}
 											<span className="font-semibold text-emerald-600">
-												China International Economic and Trade Arbitration Commission
-												(CIETAC)
+												Pan African Lawyers Union (PALU)
 											</span>
-										</div>,
-										<div className="text-gray-700 leading-relaxed">
-											International Commercial Arbitrator empanelled with the{" "}
-											<span className="font-semibold text-emerald-600">
-												Shanghai International Economic and Trade Arbitration Commission
-												(SHIAC)
-											</span>
+											, the premier continental forum for African Bar Associations, and its
+											first-ever president from East Africa
 										</div>,
 										<div className="text-gray-700 leading-relaxed">
 											<span className="font-semibold text-emerald-600">
-												Governing Council member
+												Immediate Past President
 											</span>{" "}
 											of the{" "}
 											<span className="font-semibold text-emerald-600">
-												East African Law Society (EALS)
-											</span>{" "}
-											— a leading regional bloc for leading law firms in the sub-region
+												Ethiopian Federal Advocates Association (EFAA)
+											</span>
+											, the first statutory bar in Ethiopia&apos;s legal history
 										</div>,
 										<div className="text-gray-700 leading-relaxed">
 											<span className="font-semibold text-emerald-600">
-												Chairman of the Board
+												Former Member of the Governing Council
 											</span>{" "}
 											of the{" "}
 											<span className="font-semibold text-emerald-600">
-												State Infrastructure Transparency Initiative (COST International)
+												East Africa Law Society (EALS)
 											</span>
-											, which is made up of the top organizations in the construction
-											industry
 										</div>,
 										<div className="text-gray-700 leading-relaxed">
-											A member and chair of several domestic and international{" "}
+											<span className="font-semibold text-emerald-600">Chairman</span> of
+											the{" "}
 											<span className="font-semibold text-emerald-600">
-												board structures
+												CoST International Board
 											</span>
+											, uniting key infrastructure Ministries, Agencies, and Authorities
 										</div>,
 									].map((item, index) => (
 										<div key={index} className="flex items-start group">
@@ -308,40 +253,33 @@ const AboutUs: React.FC = () => {
 										<Award className="w-6 h-6 text-white" />
 									</div>
 									<h3 className="text-xl md:text-2xl font-bold text-gray-900">
-										Professional Affiliations
+										Global Footprint & Alliances
 									</h3>
 								</div>
 								<div className="space-y-4">
 									{[
 										<div className="text-gray-700 leading-relaxed">
-											<span className="font-semibold ">Life member</span> of the{" "}
-											<span className="font-semibold ">African Lawyers Union</span>,
-											membership of 54 countries
+											<span className="font-semibold ">Official partner for Africa</span> of{" "}
+											<span className="font-semibold ">YINGKE Law Firm</span>, recognized as
+											the world&apos;s largest law firm
 										</div>,
 										<div className="text-gray-700 leading-relaxed">
-											<span className="font-semibold ">Member</span> of{" "}
-											<span className="font-semibold ">
-												Belt and Road International Legal Services Association
-											</span>
-											, membership of 153 countries
+											<span className="font-semibold ">Strategic partner</span> of{" "}
+											<span className="font-semibold ">Tian Yuan Law Firm</span>, one of
+											China&apos;s leading law firms
 										</div>,
 										<div className="text-gray-700 leading-relaxed">
-											<span className="font-semibold ">Member</span> of{" "}
-											<span className="font-semibold ">
-												EALS (East Africa Law Society)
-											</span>
-											, Leading Law firms forum, 8 countries
+											The only Ethiopian law firm appointed as an international commercial
+											arbitrator for both <span className="font-semibold ">CIETAC</span>{" "}
+											and <span className="font-semibold ">SHIAC</span>
 										</div>,
 										<div className="text-gray-700 leading-relaxed">
-											<span className="font-semibold ">Member</span> of the{" "}
-											<span className="font-semibold ">
-												Ethiopian Federal Bar Association
-											</span>
+											The first African law firm appointed as a{" "}
+											<span className="font-semibold ">council member of BRILSA</span>
 										</div>,
 										<div className="text-gray-700 leading-relaxed">
-											Affiliated with <span className="font-semibold ">IBA</span>,{" "}
-											<span className="font-semibold ">ABA</span>, and many other
-											International lawyers associations
+											Manages high-level international legal matters for the{" "}
+											<span className="font-semibold ">African Union (AU) CISSA</span>
 										</div>,
 									].map((item, index) => (
 										<div key={index} className="flex items-start group">
@@ -425,11 +363,11 @@ const AboutUs: React.FC = () => {
 							className="object-cover rounded-lg h-full w-auto"
 						/>
 						<p className="lg:text-md text-base text-gray-700 leading-relaxed text-start max-w-4xl mx-auto flex-1">
-							Tewodros Getachew Tulu is a prominent Ethiopian lawyer and continental
-							legal leader. He is the managing partner and co-founder of TGA Global Law
-							Firm, which was formerly known as Tewodros Getachew Tulu and Associates
-							Law Group, Tewodros is the first East African to be elected to the most
-							prestigious position in Africa,{" "}
+							Hon. Justice Tewodros Getachew Tulu is a prominent Ethiopian lawyer and
+							continental legal leader. He is the Managing Partner and co-founder of TGA
+							Global Law Firm, formerly known as Tewodros Getachew Tulu and Associates. He
+							serves as a Judge at the First Instance Division of the COMESA Court of
+							Justice, and is the first East African to be elected{" "}
 							<a
 								href="https://www.lawyersofafrica.org/about/executive-committee/"
 								className="text-blue-500 hover:underline"
@@ -439,43 +377,38 @@ const AboutUs: React.FC = () => {
 							</a>
 							. <br />
 							<br />
-							He is the Founding Former President of the Ethiopian Federal Bar Association,
-							who lead Ethiopia&apos;s first ever statutory Bar Association.
-							Through its managing partner, our law firm is the first African member of
-							the{" "}
+							He is the Immediate Past President of the Ethiopian Federal Advocates
+							Association, Ethiopia&apos;s first statutory bar. Under his leadership, our
+							firm became the first African law firm appointed as a council member of the{" "}
 							<a
 								href="http://www.brilanet.org.cn/en"
 								className="text-blue-500 hover:underline"
 								target="_blank"
 							>
-								Belt and Road International Legal Services Association (BRILSA)
-							</a>{" "}
-							to be appointed to the Council.
+								Belt and Road International Lawyers Association (BRILSA)
+							</a>
+							.
 							<br />
-							<br /> Our managing partner is currently joined the governing council of{" "}
+							<br /> He is a former member of the governing council of the{" "}
 							<a
 								href="https://ealawsociety.org/council-members/"
 								className="text-blue-500 hover:underline"
 								target="_blank"
 							>
-								East Africa Law Society.
+								East Africa Law Society
 							</a>{" "}
-							He's an advisor to the African Union CISSA on matters of national and
-							international laws, and holds various roles in legal reform structures.
-							He is an international arbitrator under the auspices of various
-							international centers including CIETAC. He chairs various board
-							structures, including{" "}
+							and chairs the{" "}
 							<a
 								href="https://infrastructuretransparency.org/"
 								className="text-blue-500 hover:underline"
 								target="_blank"
 							>
-								COST International
-							</a>
-							, the highest board in the construction sector. Tewodros Getachew is
-							reshaping Africa's legal landscape, promoting justice throughout the
-							continent, fostering a strong investment climate, and advancing
-							cross-border legal practice.
+								CoST International
+							</a>{" "}
+							Board, the premier structure in the construction sector. Tewodros Getachew
+							is reshaping Africa&apos;s legal landscape, promoting justice throughout the
+							continent, fostering a strong investment climate, and advancing cross-border
+							legal practice.
 						</p>
 					</div>
 				</div>
