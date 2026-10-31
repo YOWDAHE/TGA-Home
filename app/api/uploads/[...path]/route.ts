@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import axios from 'axios';
 
-const PUBLIC_API_URL = (process.env.PUBLIC_API_URL || process.env.BACKEND_URL || 'http://localhost:3000').replace(/\/$/, '');
 const BACKEND_URL = (process.env.BACKEND_URL || 'http://localhost:3000').replace(/\/$/, '');
 
 export async function GET(
@@ -18,7 +17,9 @@ export async function GET(
     const backendUrl =
       pathSegments[0] === 'partners' && pathSegments.length >= 2
         ? `${BACKEND_URL}/api/landing/uploads/partners/${pathSegments[1]}`
-        : `${PUBLIC_API_URL}/uploads/${path}`;
+        : // The backend's public /uploads folder, reached over the internal network.
+          // PUBLIC_API_URL points at /api-backend, whose /uploads is the login-only admin API.
+          `${BACKEND_URL}/uploads/${path}`;
     console.log('backendUrl:>>>', backendUrl);
     
     console.log('API route: Proxying upload request to:', backendUrl);
