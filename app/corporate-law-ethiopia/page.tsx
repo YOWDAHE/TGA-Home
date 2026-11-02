@@ -1,4 +1,3 @@
-import Header from "@/components/Sections/Header";
 import { Metadata } from "next";
 import Link from "next/link";
 

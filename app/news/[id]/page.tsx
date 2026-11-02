@@ -1,7 +1,12 @@
 import NewsDetailPage from '@/components/Sections/NewsDetailPage'
-import { getNewsById, getRelatedNews } from '@/app/actions/news.actions'
-import React from 'react'
+import { homeFont } from '../../fonts'
+import { getNewsById as fetchNewsById } from '@/app/actions/news.actions'
+import { getRelatedNews, getRelatedUpdates } from '@/lib/related-content'
+import React, { cache } from 'react'
 import type { Metadata } from 'next'
+
+// The backend counts a view on every fetch, so the metadata and the page share one request
+const getNewsById = cache(fetchNewsById)
 
 export const dynamic = 'force-dynamic'
 
@@ -84,7 +89,10 @@ export async function generateMetadata({ params }: NewsPageProps): Promise<Metad
     : plainTextContent;
 
   // Get the first image from visual_content if available
-  const imageUrl = visual_content && visual_content.length > 0 ? visual_content[0] : null;
+  // Images are stored either as URL strings or as { secure_url } objects; metadata needs the string
+  const firstImage = visual_content && visual_content.length > 0 ? visual_content[0] : null;
+  const imageUrl: string | null =
+    typeof firstImage === 'string' ? firstImage : typeof firstImage?.secure_url === 'string' ? firstImage.secure_url : null;
   console.log(published_date);
 
   // Prefer explicit seo_keywords (comma-separated). Fallback to generated + hashtags + title
@@ -154,26 +162,21 @@ async function page({ params }: { params: Promise<{ id: string }> }) {
   const id = (await params).id;
   const news = await getNewsById(id);
   
-  // Get related news based on the first hashtag
-  let relatedNews = null;
-  if (news?.data?.hashtags) {
-    const hashtags = news.data.hashtags.split(',');
-    const firstHashtag = hashtags[0].trim();
-    if (firstHashtag) {
-      try {
-        relatedNews = await getRelatedNews(firstHashtag);
-      } catch (error) {
-        console.error('Error fetching related news:', error);
-      }
-    }
-  }
-
   if (!news) {
     return <div>News not found.</div>;
   }
 
+  // Same hashtag or practice area first, topped up with the latest
+  const related = { categoryId: (news.data as { category_id?: number | null }).category_id };
+  const [relatedNews, relatedUpdates] = await Promise.all([
+    getRelatedNews({ ...related, excludeId: news.data.id, hashtags: news.data.hashtags }),
+    getRelatedUpdates(related),
+  ]);
+
   return (
-    <NewsDetailPage news={news} relatedNews={relatedNews} />
+    <div className={homeFont.className}>
+      <NewsDetailPage news={news} relatedNews={relatedNews} relatedUpdates={relatedUpdates} />
+    </div>
   );
 }
 

@@ -2,9 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import {
 	ArrowLeft,
@@ -21,29 +18,31 @@ import {
 import { documentDownload, Resource } from "@/app/actions/resources.actions";
 import { useAuth } from "@/contexts/AuthContext";
 import AuthRequiredModal from "@/components/auth/AuthRequiredModal";
-import Header from "./Header";
-import { convertToApiUrl } from "@/lib/utils";
-import { Document, Page, pdfjs } from "react-pdf";
+import { MotionConfig, motion } from "framer-motion";
+import TopNav from "./TopNav";
+import Footer from "./Footer";
+import { easeOut } from "./Reveal";
+import { FrostedColors } from "./Backdrop";
 import IframePdfViewer from "./IframePdfViewer";
-import "@/styles/pdf-viewer.css";
-
-// Set up PDF.js worker with a working CDN URL
-pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
+import RelatedContent from "./RelatedContent";
+import { LegalUpdate } from "@/app/types/legal-updates";
+import { News } from "@/app/types/news";
 
 interface DocumentDetailPageProps {
 	resource: Resource;
+	relatedResources?: Resource[];
+	relatedUpdates?: LegalUpdate[];
+	relatedNews?: News[];
 }
 
 export default function DocumentDetailPage({
 	resource,
+	relatedResources = [],
+	relatedUpdates = [],
+	relatedNews = [],
 }: DocumentDetailPageProps) {
-	const [isLoading, setIsLoading] = useState(true);
 	const [showAuthModal, setShowAuthModal] = useState(false);
 	const [isDownloading, setIsDownloading] = useState(false);
-	const [pdfError, setPdfError] = useState(false);
-	const [viewerType, setViewerType] = useState<
-		"react-pdf" | "simple" | "iframe"
-	>("react-pdf");
 	const { user } = useAuth();
 	const { toast } = useToast();
 
@@ -144,125 +143,129 @@ export default function DocumentDetailPage({
 		return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
 	};
 
+	const details = [
+		{ icon: User, label: "Author", value: "TGA Global Law Firm LL.P" },
+		{ icon: Calendar, label: "Uploaded", value: new Date(resource.createdAt).toLocaleDateString() },
+		{ icon: Eye, label: "Views", value: resource.view_count.toLocaleString() },
+		{ icon: FileText, label: "File size", value: formatFileSize(resource.file_size) },
+	];
+
+	const actionClass =
+		"inline-flex items-center justify-center gap-2 rounded-full bg-white px-4 py-2.5 text-sm font-medium text-brand-navy ring-1 ring-black/10 transition-colors hover:bg-brand-tint";
+
 	return (
-		<div className="min-h-screen bg-gray-50">
-			<Header />
+		<MotionConfig reducedMotion="user">
+			<div className="relative isolate min-h-screen overflow-x-clip text-brand-navy antialiased">
+				<FrostedColors />
+				<TopNav currentHref="/resources" />
 
-			<div className="container mx-auto px-4 py-8 mt-16">
-				{/* Breadcrumb */}
-				<div className="mb-6">
-					<Link
-						href="/resources"
-						className="inline-flex items-center text-teal-600 hover:text-teal-700 transition-colors"
+				<header className="mx-auto max-w-6xl px-4 pb-8 pt-10 sm:px-6 sm:pt-14">
+					<motion.div
+						initial={{ opacity: 0, y: 10 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ duration: 0.6, ease: easeOut, delay: 0.05 }}
 					>
-						<ArrowLeft className="w-4 h-4 mr-2" />
-						Back to Resources
-					</Link>
-				</div>
+						<Link
+							href="/resources"
+							className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm text-brand-navy shadow-sm ring-1 ring-black/5 transition-colors hover:bg-brand-tint"
+						>
+							<ArrowLeft className="h-4 w-4" />
+							Resources
+						</Link>
+					</motion.div>
 
-				<div className="grid lg:grid-cols-4 gap-6">
-					{/* Main Content - PDF Viewer */}
-					<div className="lg:col-span-3">
-						<IframePdfViewer
-							resource={resource}
-							onDownload={handleDownload}
-							onShare={handleShare}
-							isDownloading={isDownloading}
-						/>
+					<div className="mt-8 grid gap-8 lg:grid-cols-12 lg:items-end">
+						<motion.div
+							initial={{ opacity: 0, y: 24, filter: "blur(8px)" }}
+							animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+							transition={{ duration: 0.8, ease: easeOut, delay: 0.1 }}
+							className="lg:col-span-8"
+						>
+							<span className="inline-flex rounded-full bg-brand-tint px-3 py-1 text-xs font-medium text-brand-green">
+								PDF document
+							</span>
+							<h1 className="mt-4 text-balance text-3xl font-semibold leading-[1.1] tracking-tight sm:text-5xl">
+								{resource.title}
+							</h1>
+							<p className="mt-4 max-w-2xl text-pretty leading-relaxed text-[#606b80] sm:text-lg">
+								{resource.description || "No description available."}
+							</p>
+						</motion.div>
+
+						<motion.div
+							initial={{ opacity: 0, y: 10 }}
+							animate={{ opacity: 1, y: 0 }}
+							transition={{ duration: 0.6, ease: easeOut, delay: 0.25 }}
+							className="flex flex-wrap gap-2 lg:col-span-4 lg:justify-end"
+						>
+							<button
+								type="button"
+								onClick={handleDownload}
+								disabled={isDownloading}
+								className="inline-flex items-center justify-center gap-2 rounded-full bg-brand-navy px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-green disabled:opacity-60"
+							>
+								{isDownloading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
+								{isDownloading ? "Downloading..." : "Download"}
+							</button>
+							<button type="button" onClick={handleShare} className={actionClass}>
+								<Share2 className="h-4 w-4" />
+								Share
+							</button>
+							<button
+								type="button"
+								onClick={() => window.open(resource.file_url, "_blank")}
+								className={actionClass}
+							>
+								<ExternalLink className="h-4 w-4" />
+								New tab
+							</button>
+						</motion.div>
 					</div>
 
-					{/* Sidebar - Document Info */}
-					<div className="lg:col-span-1">
-						<div className="space-y-4">
-							{/* Document Description */}
-							<Card className="shadow-lg">
-								<CardContent className="p-4">
-									<h2 className="text-lg font-bold text-gray-900 mb-3">Description</h2>
-									<p className="text-sm text-gray-600 leading-relaxed">
-										{resource.description || "No description available."}
-									</p>
-								</CardContent>
-							</Card>
+					<motion.dl
+						initial={{ opacity: 0, y: 10 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ duration: 0.6, ease: easeOut, delay: 0.3 }}
+						className="mt-8 grid grid-cols-2 gap-2 sm:grid-cols-4"
+					>
+						{details.map(({ icon: Icon, label, value }) => (
+							<div key={label} className="flex items-center gap-3 rounded-2xl bg-white/70 p-3 ring-1 ring-black/5">
+								<span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-tint text-brand-green">
+									<Icon className="h-4 w-4" />
+								</span>
+								<div className="min-w-0">
+									<dt className="text-xs text-[#7a8397]">{label}</dt>
+									<dd className="truncate text-sm font-medium text-brand-navy">{value}</dd>
+								</div>
+							</div>
+						))}
+					</motion.dl>
+				</header>
 
-							{/* Document Details */}
-							<Card className="shadow-lg">
-								<CardContent className="p-4">
-									<h2 className="text-lg font-bold text-gray-900 mb-3">
-										Document Details
-									</h2>
+				{/* The document itself, as large as the screen allows */}
+				<motion.section
+					initial={{ opacity: 0, y: 30 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ duration: 0.8, ease: easeOut, delay: 0.35 }}
+					className="mx-auto max-w-6xl px-4 pb-16 sm:px-6 sm:pb-20"
+				>
+					<IframePdfViewer resource={resource} className="h-[calc(100svh-6rem)] min-h-[32rem]" />
+				</motion.section>
 
-									<div className="space-y-3">
-										<div className="flex items-center space-x-3">
-											<User className="w-4 h-4 text-gray-400" />
-											<div>
-												<p className="text-xs text-gray-500">Author</p>
-												<p className="text-sm font-medium text-gray-900">
-													TGA Global Law Firm LL.P
-												</p>
-											</div>
-										</div>
+				<RelatedContent
+					resources={relatedResources}
+					updates={relatedUpdates}
+					news={relatedNews}
+					order={["resources", "updates", "news"]}
+				/>
 
-										<div className="flex items-center space-x-3">
-											<Calendar className="w-4 h-4 text-gray-400" />
-											<div>
-												<p className="text-xs text-gray-500">Uploaded</p>
-												<p className="text-sm font-medium text-gray-900">
-													{new Date(resource.createdAt).toLocaleDateString()}
-												</p>
-											</div>
-										</div>
-
-										<div className="flex items-center space-x-3">
-											<Eye className="w-4 h-4 text-gray-400" />
-											<div>
-												<p className="text-xs text-gray-500">Views</p>
-												<p className="text-sm font-medium text-gray-900">
-													{Math.floor(resource.view_count / 2).toLocaleString()}
-												</p>
-											</div>
-										</div>
-
-										<div className="flex items-center space-x-3">
-											<FileText className="w-4 h-4 text-gray-400" />
-											<div>
-												<p className="text-xs text-gray-500">File Size</p>
-												<p className="text-sm font-medium text-gray-900">
-													{formatFileSize(resource.file_size)}
-												</p>
-											</div>
-										</div>
-									</div>
-								</CardContent>
-							</Card>
-
-							{/* Viewer Options */}
-							<Card className="shadow-lg">
-								<CardContent className="p-4">
-									<h2 className="text-lg font-bold text-gray-900 mb-3">
-										Viewer Options
-									</h2>
-									<div className="space-y-2">
-										<Button
-											onClick={() => window.open(resource.file_url, "_blank")}
-											variant="outline"
-											size="sm"
-											className="w-full"
-										>
-											<ExternalLink className="w-4 h-4 mr-2" />
-											Open in New Tab
-										</Button>
-									</div>
-								</CardContent>
-							</Card>
-						</div>
-					</div>
-				</div>
+				<Footer />
 			</div>
 			<AuthRequiredModal
 				isOpen={showAuthModal}
 				onClose={() => setShowAuthModal(false)}
 				action="download resources"
 			/>
-		</div>
+		</MotionConfig>
 	);
 }

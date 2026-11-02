@@ -1,9 +1,10 @@
-import { Home, Mail, MessageCircle, Phone, Loader2, Check } from "lucide-react";
+import { ArrowRight, Home, Mail, MapPin, MessageCircle, Phone, Loader2, Check } from "lucide-react";
+import Section from "./Section";
 import React, { useState } from "react";
-import { Button } from "../ui/button";
 import { ContactUs as ContactUsType } from "@/app/types/landing";
 import { createRemark, RemarkData } from "@/app/actions/contact.actions";
 import { useToast } from "@/hooks/use-toast";
+import Reveal from "./Reveal";
 
 interface ContactUsProps {
 	contactUs: ContactUsType[];
@@ -88,175 +89,202 @@ export default function ContactUs({ contactUs }: ContactUsProps) {
 		}
 	};
 
+	const inputClass = (hasError: boolean) =>
+		`w-full rounded-xl border bg-white px-4 py-3.5 shadow-sm text-brand-navy placeholder:text-[#9aa3b5] transition-all focus:outline-none focus:ring-4 ${
+			hasError
+				? "border-red-300 focus:border-red-400 focus:ring-red-100"
+				: "border-[#e3e8ef] focus:border-brand-green focus:ring-brand-tint"
+		}`;
+
+	// Phone and WhatsApp rows show their number; the others show their email (and phone, if any)
+	const contactRows = contactUs.map((contact) => {
+		const medium = contact.medium.toLowerCase();
+		const isWhatsApp = medium.includes("whatsapp");
+		const isPhone = medium.includes("phone");
+		const digits = (contact.phone_number ?? "").replace(/[^\d]/g, "");
+		let Icon = Mail;
+		if (isPhone) Icon = Phone;
+		else if (isWhatsApp) Icon = MessageCircle;
+		else if (medium.includes("office")) Icon = Home;
+
+		const lines: { text: string; href?: string }[] =
+			isPhone || isWhatsApp
+				? [
+						{
+							text: contact.phone_number || contact.email || "-",
+							href: contact.phone_number
+								? isWhatsApp
+									? `https://wa.me/${digits}`
+									: `tel:${digits ? `+${digits}` : contact.phone_number}`
+								: undefined,
+						},
+					]
+				: [
+						{
+							text: contact.email ?? "info@tgagloballawfirm.com",
+							href: `mailto:${contact.email ?? "info@tgagloballawfirm.com"}`,
+						},
+						...(contact.phone_number
+							? [{ text: contact.phone_number, href: `tel:+${digits}` }]
+							: []),
+					];
+		return { id: contact.id, medium: contact.medium, Icon, lines, external: isWhatsApp, isOffice: medium.includes("office") };
+	});
+
+	const officeRow = contactRows.find((row) => row.isOffice);
+	const directRows = contactRows.filter((row) => !row.isOffice);
+
+	const renderLines = (lines: { text: string; href?: string }[], external: boolean) =>
+		lines.map((line) =>
+			line.href ? (
+				<a
+					key={line.text}
+					href={line.href}
+					target={external ? "_blank" : undefined}
+					rel={external ? "noopener noreferrer" : undefined}
+					className="block break-words text-brand-navy underline-offset-4 transition-colors hover:text-brand-green hover:underline"
+				>
+					{line.text}
+				</a>
+			) : (
+				<p key={line.text} className="break-words text-brand-navy">
+					{line.text}
+				</p>
+			)
+		);
+
+	const labelClass = "mb-2 block text-sm font-medium text-brand-navy";
+
 	return (
-		<section
-			id="contact"
-			className="py-20 bg-gradient-to-br from-gray-100 via-gray-50 to-white relative overflow-hidden"
-		>
-			<div className="absolute inset-0 bg-[url('/office/placeholder.jpg?height=50&width=50')] opacity-5"></div>
-			<div className="container mx-auto px-4 relative z-10">
-				<div className="text-center mb-16">
-					<h2 className="text-2xl md:text-5xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent mb-6">
-						CONTACT US
-					</h2>
-					<div className="w-24 h-1 bg-gradient-to-r from-teal-500 to-emerald-500 mx-auto rounded-full"></div>
-					<p className="text-gray-600 mt-4 text-lg">
-						Get in touch for premium legal services
-					</p>
-				</div>
+		<Section id="contact" pattern>
+			<Reveal className="max-w-3xl text-center sm:text-left">
+				<p className="text-sm font-medium text-brand-green">Contact us</p>
+				<h2 className="mx-auto mt-3 max-w-[16rem] text-balance text-3xl min-[400px]:max-w-[18rem] sm:mx-0 sm:max-w-none font-semibold tracking-tight text-brand-navy sm:text-5xl">
+					Get in touch for premium legal services
+				</h2>
+				<p className="mx-auto mt-4 max-w-[19rem] text-pretty text-base leading-relaxed text-[#606b80] min-[400px]:max-w-[21rem] sm:mx-0 sm:max-w-none sm:text-lg">
+					Get in touch with us for premium business service, we will promptly
+					respond to all your enquiries.
+				</p>
+			</Reveal>
 
-				<div className="grid md:grid-cols-2 gap-12 max-w-6xl mx-auto">
-					<div className="bg-white md:p-10 p-6 rounded-3xl shadow-2xl border border-gray-100">
-						<h3 className="text-2xl font-bold text-gray-900 mb-6">
-							Send us a message
-						</h3>
-						<p className="text-gray-600 mb-8 leading-relaxed">
-							Get in touch with us for premium business service, we will promptly
-							respond to all your enquiries.
-						</p>
+			<div className="mt-12 grid gap-10 lg:grid-cols-2 lg:gap-12">
+				{/* Message form */}
+				<Reveal className="rounded-3xl bg-[#f5f7fa]/90 p-6 ring-1 ring-black/5 backdrop-blur-xl sm:p-8">
+					<h3 className="text-2xl font-semibold tracking-tight text-brand-navy">Send us a message</h3>
 
-						<form onSubmit={handleSubmit} className="space-y-6">
-							<div>
-								<label
-									htmlFor="name"
-									className="block text-sm font-semibold text-gray-700 mb-2"
-								>
-									Name
-								</label>
-								<input
-									type="text"
-									id="name"
-									value={formData.name}
-									onChange={(e) => handleInputChange("name", e.target.value)}
-									placeholder="Enter your full name"
-									className={`w-full px-4 py-4 border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-300 ${errors.name ? "border-red-300 focus:ring-red-500" : "border-gray-200"
-										}`}
-								/>
-								{errors.name && (
-									<p className="text-red-500 text-sm mt-1">{errors.name}</p>
-								)}
+					<form onSubmit={handleSubmit} className="mt-6 space-y-5">
+						<div>
+							<label htmlFor="name" className={labelClass}>
+								Name
+							</label>
+							<input
+								type="text"
+								id="name"
+								value={formData.name}
+								onChange={(e) => handleInputChange("name", e.target.value)}
+								placeholder="Enter your full name"
+								className={inputClass(!!errors.name)}
+							/>
+							{errors.name && <p className="mt-1.5 text-sm text-red-500">{errors.name}</p>}
+						</div>
+
+						<div>
+							<label htmlFor="email" className={labelClass}>
+								Email
+							</label>
+							<input
+								type="email"
+								id="email"
+								value={formData.email}
+								onChange={(e) => handleInputChange("email", e.target.value)}
+								placeholder="your.email@example.com"
+								className={inputClass(!!errors.email)}
+							/>
+							{errors.email && <p className="mt-1.5 text-sm text-red-500">{errors.email}</p>}
+						</div>
+
+						<div>
+							<label htmlFor="content" className={labelClass}>
+								Message
+							</label>
+							<textarea
+								id="content"
+								value={formData.content}
+								onChange={(e) => handleInputChange("content", e.target.value)}
+								placeholder="Tell us about your legal needs..."
+								rows={5}
+								className={`${inputClass(!!errors.content)} resize-none`}
+							></textarea>
+							{errors.content && <p className="mt-1.5 text-sm text-red-500">{errors.content}</p>}
+						</div>
+
+						<button
+							type="submit"
+							disabled={isSubmitting}
+							className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-brand-navy px-8 py-3.5 font-medium text-white transition-colors hover:bg-brand-green disabled:cursor-not-allowed disabled:opacity-50"
+						>
+							{isSubmitting ? (
+								<>
+									<Loader2 className="h-5 w-5 animate-spin" />
+									Sending Message...
+								</>
+							) : (
+								"Send Message"
+							)}
+						</button>
+					</form>
+				</Reveal>
+
+				{/* Direct contact details and map */}
+				<Reveal delay={0.1} className="flex flex-col">
+					<h3 className="text-2xl font-semibold tracking-tight text-brand-navy">Prefer to reach us directly?</h3>
+					<ul className="mt-5 space-y-4">
+						{directRows.map(({ id, medium, Icon, lines, external }) => (
+							<li key={id} className="flex items-start gap-3">
+								<Icon className="mt-0.5 h-5 w-5 shrink-0 text-brand-green" strokeWidth={1.75} />
+								<div className="min-w-0">
+									<span className="sr-only">{medium}: </span>
+									{renderLines(lines, external)}
+								</div>
+							</li>
+						))}
+					</ul>
+
+					<div className="relative mt-8 min-h-[440px] flex-1 overflow-hidden rounded-3xl ring-1 ring-black/5">
+						<iframe
+							title="tga location"
+							src="https://www.google.com/maps/embed/v1/place?q=dembel%20city%20center&key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8"
+							className="absolute inset-x-0 bottom-0 h-[calc(100%+220px)] w-full grayscale-[60%]"
+							style={{ border: 0 }}
+							allowFullScreen
+							loading="lazy"
+							referrerPolicy="no-referrer-when-downgrade"
+						></iframe>
+
+						{/* Office card over the map; the map is taller than its frame so the pin stays above this card */}
+						<div className="absolute inset-x-3 bottom-3 rounded-2xl bg-white/95 p-5 shadow-lg ring-1 ring-black/5 backdrop-blur sm:inset-x-5 sm:bottom-5 sm:p-6">
+							<h4 className="text-xl font-semibold tracking-tight text-brand-navy">Visit our office</h4>
+							<div className="mt-3 flex items-start gap-3 text-sm">
+								<MapPin className="mt-0.5 h-5 w-5 shrink-0 text-brand-green" strokeWidth={1.75} />
+								<div className="min-w-0">
+									<p className="text-[#606b80]">{officeRow?.medium ?? "Addis Ababa"}</p>
+									{officeRow && renderLines(officeRow.lines, false)}
+								</div>
 							</div>
-
-							<div>
-								<label
-									htmlFor="email"
-									className="block text-sm font-semibold text-gray-700 mb-2"
-								>
-									Email
-								</label>
-								<input
-									type="email"
-									id="email"
-									value={formData.email}
-									onChange={(e) => handleInputChange("email", e.target.value)}
-									placeholder="your.email@example.com"
-									className={`w-full px-4 py-4 border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-300 ${errors.email
-										? "border-red-300 focus:ring-red-500"
-										: "border-gray-200"
-										}`}
-								/>
-								{errors.email && (
-									<p className="text-red-500 text-sm mt-1">{errors.email}</p>
-								)}
-							</div>
-
-							<div>
-								<label
-									htmlFor="content"
-									className="block text-sm font-semibold text-gray-700 mb-2"
-								>
-									Message
-								</label>
-								<textarea
-									id="content"
-									value={formData.content}
-									onChange={(e) => handleInputChange("content", e.target.value)}
-									placeholder="Tell us about your legal needs..."
-									rows={5}
-									className={`w-full px-4 py-4 border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-300 resize-none ${errors.content
-										? "border-red-300 focus:ring-red-500"
-										: "border-gray-200"
-										}`}
-								></textarea>
-								{errors.content && (
-									<p className="text-red-500 text-sm mt-1">{errors.content}</p>
-								)}
-							</div>
-
-							<Button
-								type="submit"
-								disabled={isSubmitting}
-								className="w-full bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 text-white py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] text-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+							<a
+								href="https://www.google.com/maps/search/?api=1&query=dembel%20city%20center"
+								target="_blank"
+								rel="noopener noreferrer"
+								className="group mt-4 inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium text-brand-navy ring-1 ring-black/10 transition-colors hover:bg-brand-tint"
 							>
-								{isSubmitting ? (
-									<>
-										<Loader2 className="w-5 h-5 mr-2 animate-spin" />
-										Sending Message...
-									</>
-								) : (
-									"Send Message"
-								)}
-							</Button>
-						</form>
-					</div>
-
-					<div className="flex flex-col gap-8">
-						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-							{contactUs.map((contact, index) => {
-								let icon = null;
-								let color = "from-blue-500 to-blue-600";
-								if (contact.medium.toLowerCase().includes("phone")) {
-									icon = <Phone className="w-6 h-6 text-white" />;
-									color = "from-blue-500 to-blue-600";
-								} else if (contact.medium.toLowerCase().includes("email")) {
-									icon = <Mail className="w-6 h-6 text-white" />;
-									color = "from-green-500 to-green-600";
-								} else if (contact.medium.toLowerCase().includes("whatsapp")) {
-									icon = <MessageCircle className="w-6 h-6 text-white" />;
-									color = "from-emerald-500 to-emerald-600";
-								} else if (contact.medium.toLowerCase().includes("office")) {
-									icon = <Home className="w-6 h-6 text-white" />;
-									color = "from-purple-500 to-purple-600";
-								}
-								return (
-									<div
-										key={contact.id}
-										className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border border-gray-100"
-									>
-										<div
-											className={`w-12 h-12 bg-gradient-to-r ${color} rounded-xl flex items-center justify-center mb-4`}
-										>
-											{icon}
-										</div>
-										<h3 className="text-gray-500 font-semibold mb-2">
-											{contact.medium}
-										</h3>
-										<p className="text-gray-900 font-bold">
-											{(contact.email ?? "info@tgagloballawfirm.com") || contact.phone_number || "-"}
-										</p>
-									</div>
-								);
-							})}
-						</div>
-
-						<div className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100 flex-1">
-							<div className="h-full">
-								<iframe
-									title="tga location"
-									src="https://www.google.com/maps/embed/v1/place?q=dembel%20city%20center&key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8"
-									width="100%"
-									height="100%"
-									style={{ border: 0 }}
-									allowFullScreen
-									loading="lazy"
-									referrerPolicy="no-referrer-when-downgrade"
-									className="rounded-3xl"
-								></iframe>
-							</div>
+								Get directions
+								<ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+							</a>
 						</div>
 					</div>
-				</div>
+				</Reveal>
 			</div>
-		</section>
+		</Section>
 	);
 }

@@ -3,6 +3,7 @@ import React, { Suspense } from 'react'
 import { getResources, getTopViewedResources } from '../actions/resources.actions';
 import { getCategories } from '../actions/news.actions';
 import type { Metadata } from 'next'
+import { homeFont } from '../fonts'
 
 export const dynamic = 'force-dynamic'
 
@@ -83,6 +84,7 @@ export default async function page({ searchParams }: PageProps) {
 
     console.log(">>>>>", resourcesResponse.data.documents);
     return (
+      <div className={homeFont.className}>
       <Suspense fallback={<ResourcesLoading />}>
         <ResourcesPage 
           resources={resourcesResponse.data.documents} 
@@ -93,6 +95,7 @@ export default async function page({ searchParams }: PageProps) {
           isLoading={false}
         />
       </Suspense>
+      </div>
     )
   } catch (error) {
     console.error('Error fetching resources:', error);

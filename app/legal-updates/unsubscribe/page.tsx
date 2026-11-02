@@ -3,7 +3,7 @@ import { unsubscribeFromLegalUpdates } from "@/app/actions/legal-updates.actions
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { CheckCircle, XCircle } from "lucide-react";
-import Header from "@/components/Sections/Header";
+import TopNav from "@/components/Sections/TopNav";
 
 export const dynamic = "force-dynamic";
 
@@ -17,8 +17,8 @@ export default async function UnsubscribePage({ searchParams }: PageProps) {
   if (!token) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <Header />
-        <div className="container mx-auto px-4 py-24 mt-16 max-w-md">
+        <TopNav currentHref="/legal-updates" />
+        <div className="container mx-auto px-4 py-16 max-w-md">
           <Card>
             <CardContent className="p-8 text-center">
               <XCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
@@ -48,8 +48,8 @@ export default async function UnsubscribePage({ searchParams }: PageProps) {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header />
-      <div className="container mx-auto px-4 py-24 mt-16 max-w-md">
+      <TopNav currentHref="/legal-updates" />
+      <div className="container mx-auto px-4 py-16 max-w-md">
         <Card>
           <CardContent className="p-8 text-center">
             {success ? (

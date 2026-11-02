@@ -3,10 +3,6 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Search,
@@ -16,10 +12,19 @@ import {
   ChevronLeft,
   Scale,
   Loader2,
+  ArrowUpRight,
+  X,
 } from "lucide-react";
 import { LegalUpdate, LegalUpdateCategory } from "@/app/types/legal-updates";
-import Header from "./Header";
+import { MotionConfig, motion } from "framer-motion";
+import TopNav from "./TopNav";
+import Footer from "./Footer";
+import Section from "./Section";
+import SectionHeading from "./SectionHeading";
+import Reveal, { easeOut } from "./Reveal";
+import { FrostedColors } from "./Backdrop";
 import LegalUpdatesSubscribeForm from "./LegalUpdatesSubscribeForm";
+import { Highlight, MatchBadges, excerptAround, matchedFields } from "./SearchMatch";
 
 const CONTENT_TYPE_LABELS: Record<string, string> = {
   alert: "Client Alert",
@@ -29,10 +34,10 @@ const CONTENT_TYPE_LABELS: Record<string, string> = {
 };
 
 const CONTENT_TYPE_COLORS: Record<string, string> = {
-  alert: "bg-red-100 text-red-700",
-  analysis: "bg-blue-100 text-blue-700",
-  guide: "bg-purple-100 text-purple-700",
-  update: "bg-teal-100 text-teal-700",
+  alert: "bg-red-50 text-red-700",
+  analysis: "bg-[#eef1fb] text-brand-navy",
+  guide: "bg-amber-50 text-amber-700",
+  update: "bg-brand-tint text-brand-green",
 };
 
 interface LegalUpdatesPageProps {
@@ -44,15 +49,31 @@ interface LegalUpdatesPageProps {
   initialContentType?: string;
 }
 
+const pagerClass =
+  "inline-flex items-center rounded-full bg-white px-4 py-2 text-sm text-brand-navy ring-1 ring-black/10 transition-colors hover:bg-brand-tint disabled:pointer-events-none disabled:opacity-40";
+
+// Content-type filters are pills; the selected one is filled navy
+const chipClass = (active: boolean) =>
+  `shrink-0 rounded-full px-4 py-2 text-sm transition-colors disabled:opacity-60 ${
+    active
+      ? "bg-brand-navy text-white"
+      : "bg-white/80 text-[#4b5468] ring-1 ring-black/5 hover:bg-white hover:text-brand-navy"
+  }`;
+
+const typeBadge = (type: string) =>
+  `inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${CONTENT_TYPE_COLORS[type] || "bg-[#f2f4f8] text-[#4b5468]"}`;
+
+// Update bodies are HTML; excerpts and matching use plain text
+const stripHtml = (html: string) =>
+  (html ?? "").replace(/<[^>]*>/g, " ").replace(/&nbsp;/g, " ").replace(/\s+/g, " ").trim();
+
 const CardSkeleton = () => (
-  <Card className="border-0 shadow-md">
-    <CardContent className="p-6">
-      <Skeleton className="h-5 w-24 mb-3" />
-      <Skeleton className="h-6 w-full mb-2" />
-      <Skeleton className="h-4 w-3/4 mb-4" />
-      <Skeleton className="h-4 w-1/2" />
-    </CardContent>
-  </Card>
+  <div className="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-black/5">
+    <Skeleton className="mb-4 h-5 w-24 rounded-full bg-[#eef1f5]" />
+    <Skeleton className="mb-2 h-6 w-full rounded bg-[#eef1f5]" />
+    <Skeleton className="mb-4 h-4 w-3/4 rounded bg-[#eef1f5]" />
+    <Skeleton className="h-4 w-1/2 rounded bg-[#eef1f5]" />
+  </div>
 );
 
 export default function LegalUpdatesPage({
@@ -68,13 +89,17 @@ export default function LegalUpdatesPage({
   const [contentType, setContentType] = useState(initialContentType);
   const [currentPage, setCurrentPage] = useState(pagination.currentPage);
   const [totalPages, setTotalPages] = useState(pagination.totalPages);
+  const [totalItems, setTotalItems] = useState(pagination.totalItems);
   const [loading, setLoading] = useState(false);
+  // The submitted phrase; while it is set the page shows only the results
+  const [activeQuery, setActiveQuery] = useState(initialSearch.trim());
   const router = useRouter();
 
   useEffect(() => {
     setUpdates(initialUpdates);
     setCurrentPage(pagination.currentPage);
     setTotalPages(pagination.totalPages);
+    setTotalItems(pagination.totalItems);
     setLoading(false);
   }, [initialUpdates, pagination]);
 
@@ -90,6 +115,7 @@ export default function LegalUpdatesPage({
         setUpdates(result.data.data.legalUpdates);
         setCurrentPage(result.data.data.pagination.currentPage);
         setTotalPages(result.data.data.pagination.totalPages);
+        setTotalItems(result.data.data.pagination.totalItems);
       }
     } finally {
       setLoading(false);
@@ -98,7 +124,14 @@ export default function LegalUpdatesPage({
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
+    setActiveQuery(searchInput.trim());
     fetchUpdates(1, searchInput, contentType);
+  };
+
+  const clearSearch = () => {
+    setSearchInput("");
+    setActiveQuery("");
+    fetchUpdates(1, "", contentType);
   };
 
   const formatDate = (date?: string | null) => {
@@ -107,173 +140,351 @@ export default function LegalUpdatesPage({
   };
 
   return (
-    <div className="min-h-screen bg-white">
-      <Header currentPage="legal-updates" />
+    <MotionConfig reducedMotion="user">
+      <div className="relative isolate min-h-screen overflow-x-clip text-brand-navy antialiased">
+        <FrostedColors />
+        <TopNav currentHref="/legal-updates" />
 
-      <div className="container mx-auto px-4 py-8 mt-16">
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-2">
-            <Scale className="w-8 h-8 text-teal-600" />
-            <h1 className="text-3xl font-bold text-gray-900">Legal Updates</h1>
-          </div>
-          <p className="text-gray-600 max-w-2xl">
+        {/* Page header with search and filters */}
+        <section className="px-4 pb-6 pt-14 text-center sm:px-6 sm:pt-20">
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: easeOut, delay: 0.1 }}
+            className="mb-6 inline-flex items-center gap-2 rounded-full bg-white px-3.5 py-1.5 text-xs font-medium text-[#4b5468] shadow-sm ring-1 ring-black/5 sm:px-4"
+          >
+            <Scale className="h-3.5 w-3.5 text-brand-green" />
+            Client alerts & analysis
+          </motion.p>
+          <motion.h1
+            initial={{ opacity: 0, y: 24, filter: "blur(8px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            transition={{ duration: 0.8, ease: easeOut, delay: 0.15 }}
+            className="mx-auto max-w-[16rem] text-balance text-[2.75rem] font-semibold leading-none tracking-tight sm:max-w-none sm:text-7xl"
+          >
+            Legal Updates
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: easeOut, delay: 0.3 }}
+            className="mx-auto mt-5 max-w-[19rem] text-pretty text-base leading-relaxed text-[#606b80] min-[400px]:max-w-[21rem] sm:max-w-xl sm:text-lg"
+          >
             Stay informed with client alerts, regulatory updates, and legal analysis from TGA Global Law Firm.
-          </p>
-        </div>
+          </motion.p>
 
+          <motion.form
+            onSubmit={handleSearch}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: easeOut, delay: 0.4 }}
+            className="mx-auto mt-8 flex max-w-xl items-center gap-2 rounded-full bg-white p-1.5 pl-5 text-left shadow-sm ring-1 ring-black/5 focus-within:ring-2 focus-within:ring-brand-green/40"
+          >
+            <Search className="h-4 w-4 shrink-0 text-[#9aa3b5]" />
+            <input
+              type="search"
+              placeholder="Search legal updates..."
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              disabled={loading}
+              className="min-w-0 flex-1 bg-transparent py-2 text-brand-navy placeholder:text-[#9aa3b5] focus:outline-none [&::-webkit-search-cancel-button]:hidden"
+            />
+            <button
+              type="submit"
+              disabled={loading}
+              className="inline-flex min-w-[5.5rem] items-center justify-center rounded-full bg-brand-navy px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-green disabled:opacity-60 sm:px-6"
+            >
+              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Search"}
+            </button>
+          </motion.form>
+
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: easeOut, delay: 0.5 }}
+            className="-mx-4 mt-5 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:mx-auto sm:flex-wrap sm:justify-center sm:overflow-visible sm:px-0 sm:pb-0"
+          >
+            {["", "alert", "analysis", "guide", "update"].map((type) => (
+              <button
+                key={type || "all"}
+                type="button"
+                className={chipClass(contentType === type)}
+                onClick={() => {
+                  setContentType(type);
+                  fetchUpdates(1, activeQuery, type);
+                }}
+                disabled={loading}
+              >
+                {type ? CONTENT_TYPE_LABELS[type] : "All"}
+              </button>
+            ))}
+          </motion.div>
+        </section>
+
+        {activeQuery ? (
+          /* Search results only: featured updates and the sidebar stay hidden while searching */
+          <section className="px-4 pb-16 sm:px-6 sm:pb-24">
+            <div className="mx-auto max-w-4xl">
+              <div className="flex flex-col items-center justify-between gap-3 text-center sm:flex-row sm:text-left">
+                <div>
+                  <h2 className="text-2xl font-semibold tracking-tight text-brand-navy sm:text-3xl">
+                    Results for “{activeQuery}”
+                  </h2>
+                  <p className="mt-1 text-sm text-[#7a8397]">
+                    {loading
+                      ? "Searching..."
+                      : `${totalItems} update${totalItems === 1 ? "" : "s"} found${
+                          contentType ? ` · ${CONTENT_TYPE_LABELS[contentType]}` : ""
+                        }`}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={clearSearch}
+                  className="inline-flex shrink-0 items-center rounded-full bg-white px-4 py-2 text-sm text-brand-navy ring-1 ring-black/10 transition-colors hover:bg-brand-tint"
+                >
+                  <X className="mr-1 h-4 w-4" />
+                  Clear search
+                </button>
+              </div>
+
+              {loading ? (
+                <div className="flex items-center justify-center py-20 text-[#606b80]">
+                  <Loader2 className="h-6 w-6 animate-spin text-brand-green" />
+                  <span className="ml-2">Searching...</span>
+                </div>
+              ) : updates.length === 0 ? (
+                <div className="py-20 text-center">
+                  <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-white shadow-sm ring-1 ring-black/5">
+                    <Search className="h-8 w-8 text-[#9aa3b5]" />
+                  </div>
+                  <h3 className="mb-2 text-xl font-semibold text-brand-navy">No legal updates found</h3>
+                  <p className="text-[#606b80]">Try a different phrase or another type.</p>
+                </div>
+              ) : (
+                <ul className="mt-8 space-y-3">
+                  {updates.map((item, index) => {
+                    const text = stripHtml(item.content);
+                    const found = matchedFields(activeQuery, [
+                      { label: "Title", value: item.title },
+                      { label: "Summary", value: item.summary },
+                      { label: "Text", value: text },
+                      { label: "Author", value: item.author },
+                    ]);
+                    // Show the passage where the phrase appears; fall back to the summary
+                    const excerptSource =
+                      !found.includes("Summary") && found.includes("Text") ? text : item.summary || text;
+                    return (
+                      <motion.li
+                        key={item.id}
+                        initial={{ opacity: 0, y: 16 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.45, ease: easeOut, delay: Math.min(index, 8) * 0.04 }}
+                      >
+                        <Link
+                          href={`/legal-updates/${item.slug}`}
+                          className="group flex items-center gap-4 rounded-3xl bg-white p-4 shadow-sm ring-1 ring-black/5 transition-shadow hover:shadow-lg sm:gap-5 sm:p-5"
+                        >
+                          <div className="min-w-0 flex-1">
+                            <div className="flex flex-wrap items-center gap-2">
+                              <MatchBadges labels={found} />
+                              <span className={typeBadge(item.content_type)}>{CONTENT_TYPE_LABELS[item.content_type]}</span>
+                            </div>
+                            <h3 className="mt-2 line-clamp-2 font-semibold leading-snug tracking-tight text-brand-navy transition-colors group-hover:text-brand-green sm:text-lg">
+                              <Highlight text={item.title} query={activeQuery} />
+                            </h3>
+                            {excerptSource && (
+                              <p className="mt-1.5 line-clamp-2 text-sm leading-relaxed text-[#606b80]">
+                                <Highlight text={excerptAround(excerptSource, activeQuery)} query={activeQuery} />
+                              </p>
+                            )}
+                            <p className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-[#7a8397]">
+                              <span className="flex items-center">
+                                <Calendar className="mr-1 h-3 w-3" />
+                                {formatDate(item.published_date)}
+                              </span>
+                              {item.author && (
+                                <span className="flex items-center">
+                                  <User className="mr-1 h-3 w-3" />
+                                  <Highlight text={item.author} query={activeQuery} />
+                                </span>
+                              )}
+                            </p>
+                          </div>
+                          <ChevronRight className="hidden h-5 w-5 shrink-0 text-brand-green transition-transform group-hover:translate-x-0.5 sm:block" />
+                        </Link>
+                      </motion.li>
+                    );
+                  })}
+                </ul>
+              )}
+
+              {totalPages > 1 && (
+                <div className="mt-10 flex items-center justify-center gap-3">
+                  <button
+                    type="button"
+                    className={pagerClass}
+                    disabled={currentPage <= 1 || loading}
+                    onClick={() => fetchUpdates(currentPage - 1, activeQuery, contentType)}
+                  >
+                    <ChevronLeft className="mr-1 h-4 w-4" />
+                    Previous
+                  </button>
+                  <span className="text-sm text-[#606b80]">Page {currentPage} of {totalPages}</span>
+                  <button
+                    type="button"
+                    className={pagerClass}
+                    disabled={currentPage >= totalPages || loading}
+                    onClick={() => fetchUpdates(currentPage + 1, activeQuery, contentType)}
+                  >
+                    Next
+                    <ChevronRight className="ml-1 h-4 w-4" />
+                  </button>
+                </div>
+              )}
+            </div>
+          </section>
+        ) : (
+        <>
         {featuredUpdates.length > 0 && (
-          <div className="mb-10">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Featured Updates</h2>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {featuredUpdates.map((item) => (
-                <Link key={item.id} href={`/legal-updates/${item.slug}`}>
-                  <Card className="border-teal-200 bg-teal-50 hover:shadow-lg transition-shadow h-full">
-                    <CardContent className="p-5">
-                      <Badge className={`mb-2 ${CONTENT_TYPE_COLORS[item.content_type] || "bg-gray-100"}`}>
-                        {CONTENT_TYPE_LABELS[item.content_type]}
-                      </Badge>
-                      <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">{item.title}</h3>
-                      {item.summary && <p className="text-sm text-gray-600 line-clamp-2 mb-3">{item.summary}</p>}
-                      <div className="flex items-center text-xs text-gray-500">
-                        <Calendar className="w-3 h-3 mr-1" />
+          <Section>
+            <SectionHeading title="Featured Updates" description="The alerts and analysis we want every client to see" />
+            <div className="mt-14 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {featuredUpdates.map((item, index) => (
+                <Reveal key={item.id} delay={index * 0.08}>
+                  <Link
+                    href={`/legal-updates/${item.slug}`}
+                    className="group relative isolate flex h-full flex-col overflow-hidden rounded-3xl bg-brand-navy p-6 text-white transition-shadow hover:shadow-xl sm:p-7"
+                  >
+                    <div aria-hidden className="absolute -right-16 -top-20 -z-10 h-48 w-48 rounded-full bg-brand-green/40 blur-3xl transition-transform duration-700 group-hover:scale-125" />
+                    <span className="mb-5 inline-flex self-start rounded-full bg-white/10 px-2.5 py-0.5 text-xs font-medium text-brand-tint">
+                      {CONTENT_TYPE_LABELS[item.content_type]}
+                    </span>
+                    <h3 className="mb-2 line-clamp-2 text-xl font-semibold tracking-tight">{item.title}</h3>
+                    {item.summary && <p className="mb-6 line-clamp-2 text-sm leading-relaxed text-white/65">{item.summary}</p>}
+                    <div className="mt-auto flex items-center justify-between text-xs text-white/55">
+                      <span className="flex items-center">
+                        <Calendar className="mr-1 h-3 w-3" />
                         {formatDate(item.published_date)}
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
+                      </span>
+                      <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white transition-colors group-hover:bg-brand-green">
+                        <ArrowUpRight className="h-4 w-4" />
+                      </span>
+                    </div>
+                  </Link>
+                </Reveal>
               ))}
             </div>
-          </div>
+          </Section>
         )}
 
-        <div className="grid lg:grid-cols-4 gap-8">
-          <div className="lg:col-span-3">
-            <div className="flex flex-wrap gap-2 mb-6">
-              {["", "alert", "analysis", "guide", "update"].map((type) => (
-                <Button
-                  key={type || "all"}
-                  variant={contentType === type ? "default" : "outline"}
-                  size="sm"
-                  className={contentType === type ? "bg-teal-600 hover:bg-teal-700" : ""}
-                  onClick={() => {
-                    setContentType(type);
-                    fetchUpdates(1, searchInput, type);
-                  }}
-                  disabled={loading}
-                >
-                  {type ? CONTENT_TYPE_LABELS[type] : "All"}
-                </Button>
-              ))}
-            </div>
+        <Section pattern>
+          <div className="grid gap-10 lg:grid-cols-12 lg:gap-8">
+            <div className="lg:col-span-8">
+              <Reveal>
+                <h2 className="mb-6 text-center text-3xl font-semibold tracking-tight text-brand-navy sm:text-left sm:text-4xl">
+                  {contentType ? CONTENT_TYPE_LABELS[contentType] : "All updates"}
+                </h2>
+              </Reveal>
 
-            <form onSubmit={handleSearch} className="flex gap-2 mb-6">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <Input
-                  placeholder="Search legal updates..."
-                  value={searchInput}
-                  onChange={(e) => setSearchInput(e.target.value)}
-                  className="pl-10"
-                  disabled={loading}
-                />
-              </div>
-              <Button type="submit" className="bg-teal-600 hover:bg-teal-700" disabled={loading}>
-                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Search"}
-              </Button>
-            </form>
-
-            {loading ? (
-              <div className="grid md:grid-cols-2 gap-4">
-                {Array.from({ length: 6 }).map((_, i) => <CardSkeleton key={i} />)}
-              </div>
-            ) : updates.length === 0 ? (
-              <div className="text-center py-16 text-gray-500">
-                <Scale className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                <p>No legal updates found.</p>
-              </div>
-            ) : (
-              <div className="grid md:grid-cols-2 gap-4">
-                {updates.map((item) => (
-                  <Link key={item.id} href={`/legal-updates/${item.slug}`}>
-                    <Card className="hover:shadow-lg transition-shadow h-full border-0 shadow-md">
-                      <CardContent className="p-5">
-                        <Badge className={`mb-2 ${CONTENT_TYPE_COLORS[item.content_type] || "bg-gray-100"}`}>
+              {loading ? (
+                <div className="grid gap-4 md:grid-cols-2">
+                  {Array.from({ length: 6 }).map((_, i) => <CardSkeleton key={i} />)}
+                </div>
+              ) : updates.length === 0 ? (
+                <Reveal className="py-16 text-center text-[#606b80]">
+                  <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-white shadow-sm ring-1 ring-black/5">
+                    <Scale className="h-9 w-9 text-[#9aa3b5]" />
+                  </div>
+                  <p>No legal updates found.</p>
+                </Reveal>
+              ) : (
+                <div className="grid gap-4 md:grid-cols-2">
+                  {updates.map((item, index) => (
+                    <Reveal key={item.id} delay={(index % 2) * 0.06}>
+                      <Link
+                        href={`/legal-updates/${item.slug}`}
+                        className="group flex h-full flex-col rounded-3xl bg-white p-6 shadow-sm ring-1 ring-black/5 transition-shadow hover:shadow-lg"
+                      >
+                        <span className={`${typeBadge(item.content_type)} mb-4 self-start`}>
                           {CONTENT_TYPE_LABELS[item.content_type]}
-                        </Badge>
-                        <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2 group-hover:text-teal-600">
+                        </span>
+                        <h3 className="mb-2 line-clamp-2 text-lg font-semibold leading-snug tracking-tight text-brand-navy transition-colors group-hover:text-brand-green">
                           {item.title}
                         </h3>
                         {item.summary && (
-                          <p className="text-sm text-gray-600 line-clamp-2 mb-3">{item.summary}</p>
+                          <p className="mb-5 line-clamp-2 text-sm leading-relaxed text-[#606b80]">{item.summary}</p>
                         )}
-                        <div className="flex items-center justify-between text-xs text-gray-500">
-                          <div className="flex items-center gap-3">
+                        <div className="mt-auto flex items-center justify-between gap-3 text-xs text-[#7a8397]">
+                          <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1">
                             <span className="flex items-center">
-                              <Calendar className="w-3 h-3 mr-1" />
+                              <Calendar className="mr-1 h-3 w-3" />
                               {formatDate(item.published_date)}
                             </span>
                             {item.author && (
                               <span className="flex items-center">
-                                <User className="w-3 h-3 mr-1" />
+                                <User className="mr-1 h-3 w-3" />
                                 {item.author}
                               </span>
                             )}
                           </div>
-                          <ChevronRight className="w-4 h-4 text-teal-500" />
+                          <ChevronRight className="h-4 w-4 shrink-0 text-brand-green transition-transform group-hover:translate-x-0.5" />
                         </div>
-                      </CardContent>
-                    </Card>
-                  </Link>
-                ))}
-              </div>
-            )}
+                      </Link>
+                    </Reveal>
+                  ))}
+                </div>
+              )}
 
-            {totalPages > 1 && (
-              <div className="flex justify-center items-center gap-4 mt-8">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  disabled={currentPage <= 1 || loading}
-                  onClick={() => fetchUpdates(currentPage - 1, searchInput, contentType)}
-                >
-                  <ChevronLeft className="w-4 h-4 mr-1" />
-                  Previous
-                </Button>
-                <span className="text-sm text-gray-600">Page {currentPage} of {totalPages}</span>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  disabled={currentPage >= totalPages || loading}
-                  onClick={() => fetchUpdates(currentPage + 1, searchInput, contentType)}
-                >
-                  Next
-                  <ChevronRight className="w-4 h-4 ml-1" />
-                </Button>
-              </div>
-            )}
-          </div>
-
-          <div className="lg:col-span-1">
-            <div className="sticky top-24 space-y-6">
-              <LegalUpdatesSubscribeForm />
-              {categories.length > 0 && (
-                <Card className="shadow-md border-0">
-                  <CardContent className="p-5">
-                    <h3 className="font-semibold text-gray-900 mb-3">Practice Areas</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {categories.map((cat) => (
-                        <Badge key={cat.id} variant="outline" className="cursor-default">
-                          {cat.name}
-                        </Badge>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
+              {totalPages > 1 && (
+                <div className="mt-10 flex items-center justify-center gap-3">
+                  <button
+                    type="button"
+                    className={pagerClass}
+                    disabled={currentPage <= 1 || loading}
+                    onClick={() => fetchUpdates(currentPage - 1, searchInput, contentType)}
+                  >
+                    <ChevronLeft className="mr-1 h-4 w-4" />
+                    Previous
+                  </button>
+                  <span className="text-sm text-[#606b80]">Page {currentPage} of {totalPages}</span>
+                  <button
+                    type="button"
+                    className={pagerClass}
+                    disabled={currentPage >= totalPages || loading}
+                    onClick={() => fetchUpdates(currentPage + 1, searchInput, contentType)}
+                  >
+                    Next
+                    <ChevronRight className="ml-1 h-4 w-4" />
+                  </button>
+                </div>
               )}
             </div>
+
+            <div className="lg:col-span-4">
+              <Reveal delay={0.1} className="space-y-4 lg:sticky lg:top-8">
+                <LegalUpdatesSubscribeForm />
+                {categories.length > 0 && (
+                  <div className="rounded-3xl bg-white/70 p-6 shadow-sm ring-1 ring-black/5 backdrop-blur-xl">
+                    <h3 className="mb-4 font-semibold tracking-tight text-brand-navy">Practice Areas</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {categories.map((cat) => (
+                        <span key={cat.id} className="cursor-default rounded-full bg-[#f2f4f8] px-3 py-1 text-xs text-[#4b5468]">
+                          {cat.name}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </Reveal>
+            </div>
           </div>
-        </div>
+        </Section>
+        </>
+        )}
+
+        <Footer />
       </div>
-    </div>
+    </MotionConfig>
   );
 }

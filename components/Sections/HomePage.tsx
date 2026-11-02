@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { ArrowUp } from "lucide-react";
 import AboutUs from "@/components/Sections/AboutUs";
 import Hero from "@/components/Sections/Hero";
-import Header from "@/components/Sections/Header";
 import Statistics from "@/components/Sections/Statistics";
 import Services from "@/components/Sections/Services";
 import Partners from "@/components/Sections/Partners";
@@ -25,6 +24,8 @@ import {
 import type { News as NewsType } from "@/app/types/news";
 import type { Resource } from "@/app/actions/resources.actions";
 import { usePathname } from "next/navigation";
+import { MotionConfig } from "framer-motion";
+import { FrostedColors } from "@/components/Sections/Backdrop";
 
 interface LandingPageProps {
 	data: {
@@ -129,32 +130,35 @@ export default function LandingPage({
 	};
 
 	return (
-		<div className="min-h-screen bg-white relative">
-			<Header showHeader={false} currentPage={currentSection} />
-			<Hero />
-			<div ref={aboutRef}>
-				<AboutUs />
-			</div>
-			<Statistics stats={data.stats} />
-			<div ref={servicesRef} id="services">
-				<Services />
-			</div>
-			<PracticeAreas practices={data.practices} />
-			<News news={news} resources={resources} />
-			<Partners partners={data.partners} />
-			<ContactUs contactUs={data.contactUs} />
-			<Footer contactUs={data.contactUs} />
+		<MotionConfig reducedMotion="user">
+			<div className="relative isolate min-h-screen text-brand-navy antialiased">
+				<FrostedColors />
+				<Hero />
+				<div ref={aboutRef}>
+					<AboutUs />
+				</div>
+				<Statistics stats={data.stats} />
+				<div ref={servicesRef} id="services">
+					<Services />
+				</div>
+				<PracticeAreas practices={data.practices} />
+				<News news={news} resources={resources} />
+				<Partners partners={data.partners} />
+				<ContactUs contactUs={data.contactUs} />
+				<Footer contactUs={data.contactUs} />
 
-			{/* Scroll to Top Button */}
-			{showScrollTop && (
-				<Button
-					onClick={scrollToTop}
-					className="fixed bottom-8 right-8 rounded-full w-12 h-12 bg-slate-700 hover:bg-slate-600 text-white shadow-lg z-50"
-					size="icon"
-				>
-					<ArrowUp className="w-5 h-5" />
-				</Button>
-			)}
-		</div>
+				{/* Scroll to Top Button */}
+				{showScrollTop && (
+					<Button
+						onClick={scrollToTop}
+						aria-label="Scroll to top"
+						className="fixed bottom-6 right-6 z-50 h-11 w-11 rounded-full bg-brand-navy/90 text-white shadow-lg backdrop-blur hover:bg-brand-green sm:bottom-8 sm:right-8"
+						size="icon"
+					>
+						<ArrowUp className="w-5 h-5" />
+					</Button>
+				)}
+			</div>
+		</MotionConfig>
 	);
 }

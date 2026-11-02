@@ -13,6 +13,12 @@ const config: Config = {
 	theme: {
 		extend: {
 			colors: {
+				// TGA brand palette (Deep Navy, Emerald Green)
+				brand: {
+					navy: '#0B1B4D',
+					green: '#007A5E',
+					tint: '#E6F2EE'
+				},
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
 				card: {

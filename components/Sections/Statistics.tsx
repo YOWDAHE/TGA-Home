@@ -1,31 +1,34 @@
 import React from "react";
 import { Stat } from "@/app/types/landing";
+import SectionHeading from "./SectionHeading";
+import Section from "./Section";
+import Reveal from "./Reveal";
 
 interface StatisticsProps {
-  stats: Stat[];
+	stats: Stat[];
 }
 
 export default function Statistics({ stats }: StatisticsProps) {
-  return (
-			<section className="bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800 text-white py-24 lg:px-20 relative overflow-hidden">
-				<div className="absolute inset-0 bg-[url('/office/placeholder.jpg?height=50&width=50')] opacity-10"></div>
-				<div className="container mx-auto px-4 relative z-10">
-					<div className="flex flex-wrap md:flex-nowrap justify-center gap-6">
-						{stats.map((stat, index) => (
-							<div
-								key={stat.id}
-								className="w-[calc(50%-0.75rem)] md:w-auto md:flex-1 md:max-w-60 text-center p-6 xl:p-8 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 hover:bg-white/20 transition-all duration-300 transform hover:scale-105 group"
-							>
-								<div className="text-4xl xl:text-5xl font-bold mb-3 text-teal-300">
-									{stat.stat}
-								</div>
-								<div className="text-base text-gray-200 font-medium">
-									{stat.description}
-								</div>
-							</div>
-						))}
-					</div>
-				</div>
-			</section>
-		);
+	return (
+		<Section pattern>
+			<SectionHeading
+				title="Our track record"
+				description="Numbers that reflect nearly two decades of trusted counsel."
+			/>
+			<dl className="mt-12 grid grid-cols-2 gap-3 sm:gap-4 lg:flex">
+				{stats.map((stat, index) => (
+					<Reveal
+						key={stat.id}
+						delay={index * 0.08}
+						className="flex flex-col-reverse rounded-2xl bg-white p-5 text-center shadow-sm ring-1 ring-black/5 sm:p-8 lg:flex-1"
+					>
+						<dt className="mt-2 text-sm text-[#606b80] sm:text-base">{stat.description}</dt>
+						<dd className="text-3xl font-semibold tracking-tight text-brand-navy sm:text-5xl">
+							{stat.stat}
+						</dd>
+					</Reveal>
+				))}
+			</dl>
+		</Section>
+	);
 }

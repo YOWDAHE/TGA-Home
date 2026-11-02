@@ -1,7 +1,13 @@
 import DocumentDetailPage from '@/components/Sections/DocumentDetailPage';
-import { getResourceById } from '../../actions/resources.actions';
+import { homeFont } from '../../fonts';
+import { getResourceById as fetchResourceById } from '../../actions/resources.actions';
+import { getRelatedNews, getRelatedResources, getRelatedUpdates } from '@/lib/related-content';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next'
+import { cache } from 'react';
+
+// The backend counts a view on every fetch, so the metadata and the page share one request
+const getResourceById = cache(fetchResourceById);
 
 export const dynamic = 'force-dynamic'
 
@@ -156,7 +162,24 @@ export default async function DocumentPage({ params }: DocumentPageProps) {
 			notFound();
 		}
 
-		return <DocumentDetailPage resource={resource} />;
+		// Same practice area first, topped up with the latest
+		const related = { categoryId: resource.category_id };
+		const [relatedResources, relatedUpdates, relatedNews] = await Promise.all([
+			getRelatedResources({ ...related, excludeId: resource.id }),
+			getRelatedUpdates(related),
+			getRelatedNews(related),
+		]);
+
+		return (
+			<div className={homeFont.className}>
+				<DocumentDetailPage
+					resource={resource}
+					relatedResources={relatedResources}
+					relatedUpdates={relatedUpdates}
+					relatedNews={relatedNews}
+				/>
+			</div>
+		);
 	} catch (error) {
 		console.error('Error fetching document:', error);
 		notFound();

@@ -3,10 +3,6 @@
 import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
 	FileText,
@@ -19,12 +15,20 @@ import {
 	Loader2,
 	ChevronLeft,
 	ChevronRight,
+	X,
 } from "lucide-react";
 import { Resource, incrementDocumentView } from "@/app/actions/resources.actions";
 import { Category } from "@/app/types/news";
 import { useAuth } from "@/contexts/AuthContext";
 import AuthRequiredModal from "@/components/auth/AuthRequiredModal";
-import Header from "./Header";
+import Footer from "./Footer";
+import TopNav from "./TopNav";
+import Section from "./Section";
+import SectionHeading from "./SectionHeading";
+import Reveal, { easeOut } from "./Reveal";
+import { FrostedColors } from "./Backdrop";
+import { Highlight, MatchBadges, excerptAround, matchedFields } from "./SearchMatch";
+import { MotionConfig, motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
 
 interface ResourcesPageProps {
@@ -41,80 +45,91 @@ interface ResourcesPageProps {
 	isLoading?: boolean;
 }
 
+const cardClass = "rounded-3xl bg-white/70 shadow-sm ring-1 ring-black/5 backdrop-blur-xl";
+const tagClass = "rounded-full bg-[#f2f4f8] px-2.5 py-0.5 text-xs text-[#4b5468]";
+const pagerClass =
+	"inline-flex items-center rounded-full bg-white px-4 py-2 text-sm text-brand-navy ring-1 ring-black/10 transition-colors hover:bg-brand-tint disabled:pointer-events-none disabled:opacity-40";
+
+// Category filters are pills with a count; the selected one is filled navy
+const chipClass = (active: boolean) =>
+	`inline-flex shrink-0 items-center gap-2 rounded-full py-2 pl-4 pr-2 text-sm transition-colors ${
+		active
+			? "bg-brand-navy text-white"
+			: "bg-white/80 text-[#4b5468] ring-1 ring-black/5 hover:bg-white hover:text-brand-navy"
+	}`;
+const countClass = (active: boolean) =>
+	`rounded-full px-2 py-0.5 text-xs tabular-nums ${active ? "bg-white/15 text-white" : "bg-[#f2f4f8] text-[#7a8397]"}`;
+
+// "Open" goes to the resource page; the second button opens the file in a new tab (sign-in required)
+function ResourceActions({
+	resource,
+	onOpenInNewTab,
+	busy,
+}: {
+	resource: Resource;
+	onOpenInNewTab: (resource: Resource) => void;
+	busy: boolean;
+}) {
+	return (
+		<div className="mt-auto flex gap-2">
+			<Link
+				href={`/resources/${resource.id}`}
+				className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-brand-navy px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-green"
+			>
+				<Eye className="h-4 w-4" />
+				Open
+			</Link>
+			<button
+				type="button"
+				onClick={() => onOpenInNewTab(resource)}
+				disabled={busy}
+				aria-label="Open file in a new tab"
+				className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-brand-green ring-1 ring-black/10 transition-colors hover:bg-brand-tint disabled:opacity-50"
+			>
+				{busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <ExternalLink className="h-4 w-4" />}
+			</button>
+		</div>
+	);
+}
+
 // Skeleton component for resource cards
 const ResourceCardSkeleton = () => (
-	<Card className="group hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] border-0 shadow-lg bg-white rounded-2xl overflow-hidden flex flex-col h-full">
-		<CardContent className="p-0 flex flex-col h-full">
-			{/* Header skeleton */}
-			<div className="bg-gradient-to-br from-gray-500 to-gray-700 p-6 text-white relative overflow-hidden">
-				<Skeleton className="w-12 h-12 bg-white/20 rounded-2xl mx-auto" />
+	<div className="flex flex-col overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-black/5">
+		<Skeleton className="m-2 h-36 rounded-2xl bg-[#eef1f5]" />
+		<div className="flex flex-col p-5 pt-3">
+			<div className="mb-3 flex gap-2">
+				<Skeleton className="h-5 w-10 rounded-full bg-[#eef1f5]" />
+				<Skeleton className="h-5 w-20 rounded-full bg-[#eef1f5]" />
 			</div>
-
-			{/* Content skeleton */}
-			<div className="p-6 flex flex-col flex-grow">
-				<div className="flex items-center justify-between mb-3">
-					<div className="flex items-center space-x-2">
-						<Skeleton className="w-12 h-5 bg-gray-200 rounded" />
-						<Skeleton className="w-16 h-5 bg-gray-200 rounded" />
-					</div>
-					<Skeleton className="w-8 h-4 bg-gray-200 rounded" />
-				</div>
-
-				<Skeleton className="w-full h-6 bg-gray-200 rounded mb-3" />
-				<Skeleton className="w-3/4 h-6 bg-gray-200 rounded mb-4" />
-
-				<Skeleton className="w-full h-4 bg-gray-200 rounded mb-4" />
-				<Skeleton className="w-2/3 h-4 bg-gray-200 rounded mb-6" />
-
-				{/* Action buttons skeleton */}
-				<div className="flex space-x-2 mt-auto">
-					<Skeleton className="flex-1 h-9 bg-gray-200 rounded" />
-					<Skeleton className="w-9 h-9 bg-gray-200 rounded" />
-				</div>
+			<Skeleton className="mb-2 h-6 w-full rounded bg-[#eef1f5]" />
+			<Skeleton className="mb-4 h-6 w-3/4 rounded bg-[#eef1f5]" />
+			<Skeleton className="mb-6 h-4 w-2/3 rounded bg-[#eef1f5]" />
+			<div className="flex gap-2">
+				<Skeleton className="h-10 flex-1 rounded-full bg-[#eef1f5]" />
+				<Skeleton className="h-10 w-10 rounded-full bg-[#eef1f5]" />
 			</div>
-		</CardContent>
-	</Card>
+		</div>
+	</div>
 );
 
 // Skeleton for most visited section
 const MostVisitedSkeleton = () => (
-	<div className="mb-8">
-		<div className="flex items-center mb-4">
-			<TrendingUp className="w-5 h-5 mr-2 text-teal-500" />
-			<h2 className="text-2xl font-bold text-gray-900">Most Visited</h2>
-		</div>
-		<div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-			{Array.from({ length: 6 }).map((_, index) => (
-				<Card
-					key={index}
-					className="group hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] border-0 shadow-lg bg-white rounded-2xl overflow-hidden flex flex-col h-full"
-				>
-					<CardContent className="p-0 flex flex-col h-full">
-						<div className="p-4 flex flex-col flex-grow">
-							<div className="flex items-center justify-between mb-2">
-								<div className="flex items-center space-x-2">
-									<Skeleton className="w-10 h-4 bg-gray-200 rounded" />
-									<Skeleton className="w-14 h-4 bg-gray-200 rounded" />
-								</div>
-							</div>
-
-							<Skeleton className="w-full h-5 bg-gray-200 rounded mb-2" />
-							<Skeleton className="w-3/4 h-5 bg-gray-200 rounded mb-4" />
-
-							<div className="flex items-center text-sm text-gray-500 mb-4">
-								<Eye className="w-4 h-4 mr-1" />
-								<Skeleton className="w-12 h-4 bg-gray-200 rounded" />
-							</div>
-
-							<div className="flex space-x-2 mt-auto">
-								<Skeleton className="flex-1 h-8 bg-gray-200 rounded" />
-								<Skeleton className="w-8 h-8 bg-gray-200 rounded" />
-							</div>
-						</div>
-					</CardContent>
-				</Card>
-			))}
-		</div>
+	<div className="mt-14 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+		{Array.from({ length: 6 }).map((_, index) => (
+			<div key={index} className={`${cardClass} p-5 sm:p-6`}>
+				<Skeleton className="mb-4 h-11 w-11 rounded-2xl bg-[#eef1f5]" />
+				<div className="mb-3 flex gap-2">
+					<Skeleton className="h-5 w-10 rounded-full bg-[#eef1f5]" />
+					<Skeleton className="h-5 w-16 rounded-full bg-[#eef1f5]" />
+				</div>
+				<Skeleton className="mb-2 h-5 w-full rounded bg-[#eef1f5]" />
+				<Skeleton className="mb-5 h-5 w-3/4 rounded bg-[#eef1f5]" />
+				<div className="flex gap-2">
+					<Skeleton className="h-10 flex-1 rounded-full bg-[#eef1f5]" />
+					<Skeleton className="h-10 w-10 rounded-full bg-[#eef1f5]" />
+				</div>
+			</div>
+		))}
 	</div>
 );
 
@@ -272,371 +287,379 @@ export default function ResourcesPage({ resources, topViewedResources, categorie
 		}
 	};
 
+	const busy = isLoading || isPageChanging;
+
+	// The submitted phrase lives in the URL; while it is set the page shows only the results
+	const activeQuery = (searchParams.get("search") || "").trim();
+
+	const clearSearch = () => {
+		setIsPageChanging(true);
+		setSearchTerm("");
+		updateURL("", selectedCategory, 1);
+	};
+
+	const pager = pagination && pagination.totalPages > 1 && (
+		<div className="mt-10 flex items-center justify-center gap-3">
+			<button
+				type="button"
+				onClick={() => handlePageChange(currentPage - 1)}
+				disabled={currentPage === 1}
+				className={pagerClass}
+			>
+				<ChevronLeft className="mr-1 h-4 w-4" />
+				Previous
+			</button>
+
+			<span className="text-sm text-[#606b80]">
+				{isPageChanging && (
+					<Loader2 className="mr-2 inline-block h-4 w-4 animate-spin text-[#7a8397]" />
+				)}
+				Page {pagination.currentPage} of {pagination.totalPages}
+			</span>
+
+			<button
+				type="button"
+				onClick={() => handlePageChange(currentPage + 1)}
+				disabled={currentPage === pagination.totalPages}
+				className={pagerClass}
+			>
+				Next
+				<ChevronRight className="ml-1 h-4 w-4" />
+			</button>
+		</div>
+	);
+
 	return (
-		<div className="min-h-screen bg-white">
-			<Header currentPage="resources" />
+		<MotionConfig reducedMotion="user">
+			<div className="relative isolate min-h-screen overflow-x-clip text-brand-navy antialiased">
+				<FrostedColors />
+				<TopNav currentHref="/resources" />
 
-			<div className="container mx-auto px-4 py-8 mt-16">
-				<div className="grid lg:grid-cols-4 gap-8">
-					{/* Sidebar */}
-					<div className="lg:col-span-1">
-						<div className="bg-teal-500 text-white p-6 rounded-lg sticky top-8">
-							<h1 className="text-2xl font-bold mb-6">RESOURCES</h1>
+				{/* Page header with search */}
+				<section className="px-4 pb-10 pt-14 text-center sm:px-6 sm:pt-20">
+					<motion.p
+						initial={{ opacity: 0, y: 10 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ duration: 0.6, ease: easeOut, delay: 0.1 }}
+						className="mb-6 inline-flex items-center gap-2 rounded-full bg-white px-3.5 py-1.5 text-xs font-medium text-[#4b5468] shadow-sm ring-1 ring-black/5 sm:px-4"
+					>
+						<span className="h-1.5 w-1.5 rounded-full bg-brand-green" />
+						TGA Global Law Firm LL.P
+					</motion.p>
+					<motion.h1
+						initial={{ opacity: 0, y: 24, filter: "blur(8px)" }}
+						animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+						transition={{ duration: 0.8, ease: easeOut, delay: 0.15 }}
+						className="text-[2.75rem] font-semibold leading-none tracking-tight sm:text-7xl"
+					>
+						Resources
+					</motion.h1>
+					<motion.p
+						initial={{ opacity: 0, y: 16 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ duration: 0.7, ease: easeOut, delay: 0.3 }}
+						className="mx-auto mt-5 max-w-[19rem] text-pretty text-base leading-relaxed text-[#606b80] min-[400px]:max-w-[21rem] sm:max-w-xl sm:text-lg"
+					>
+						Legal guides, documents and materials from our team
+					</motion.p>
 
-							{/* Search */}
-							<div className="mb-6">
-								<div className="relative">
-									<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-teal-200 w-4 h-4" />
-									<Input
-										type="text"
-										placeholder="Search resources..."
-										value={searchTerm}
-										onChange={(e) => handleSearchChange(e.target.value)}
-										onKeyPress={handleSearchKeyPress}
-										className="pl-10 pr-12 bg-white/20 border-white/30 text-white placeholder:text-teal-200 focus:bg-white/30"
+					{/* Search */}
+					<motion.div
+						initial={{ opacity: 0, y: 10 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ duration: 0.6, ease: easeOut, delay: 0.4 }}
+						className="mx-auto mt-8 flex max-w-xl items-center gap-2 rounded-full bg-white p-1.5 pl-5 text-left shadow-sm ring-1 ring-black/5 focus-within:ring-2 focus-within:ring-brand-green/40"
+					>
+						<Search className="h-4 w-4 shrink-0 text-[#9aa3b5]" />
+						<input
+							type="text"
+							placeholder="Search resources..."
+							value={searchTerm}
+							onChange={(e) => handleSearchChange(e.target.value)}
+							onKeyPress={handleSearchKeyPress}
+							className="min-w-0 flex-1 bg-transparent py-2 text-brand-navy placeholder:text-[#9aa3b5] focus:outline-none"
+						/>
+						<button
+							type="button"
+							onClick={() => {
+								setIsPageChanging(true);
+								updateURL(searchTerm, selectedCategory);
+							}}
+							className="rounded-full bg-brand-navy px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-green sm:px-6"
+						>
+							Search
+						</button>
+					</motion.div>
+
+					{/* Categories */}
+					<motion.div
+						initial={{ opacity: 0, y: 10 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ duration: 0.6, ease: easeOut, delay: 0.5 }}
+						className="mt-5 -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:mx-auto sm:flex-wrap sm:justify-center sm:overflow-visible sm:px-0 sm:pb-0 sm:max-w-4xl"
+						aria-label="Categories"
+					>
+						{/* All Categories Option */}
+						<button
+							type="button"
+							onClick={() => handleCategorySelect("All")}
+							className={chipClass(selectedCategory === "All")}
+						>
+							<Folder className="h-4 w-4 shrink-0" />
+							All Categories
+							<span className={countClass(selectedCategory === "All")}>
+								{isLoading ? "..." : pagination?.totalItems}
+							</span>
+						</button>
+
+						{/* Individual Categories */}
+						{categories.map((category) => {
+							const active = selectedCategory === category.id.toString();
+							return (
+								<button
+									key={category.id}
+									type="button"
+									onClick={() => handleCategorySelect(category.id.toString())}
+									className={chipClass(active)}
+								>
+									{category.name}
+									<span className={countClass(active)}>
+										{isLoading ? "..." : (countsToShow[category.id] ?? 0)}
+									</span>
+								</button>
+							);
+						})}
+					</motion.div>
+				</section>
+
+				{/* Most Visited Section (hidden while searching) */}
+				{!activeQuery && (
+				<Section>
+					<SectionHeading
+						title="Most Visited"
+						description="The documents readers open most often"
+					/>
+					{busy ? (
+						<MostVisitedSkeleton />
+					) : (
+						<div className="mt-14 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+							{topViewedResources.slice(0, 6).map((resource, index) => (
+								<Reveal
+									key={resource.id}
+									delay={(index % 3) * 0.06}
+									className={`${cardClass} group flex flex-col p-5 transition-shadow hover:shadow-md sm:p-6`}
+								>
+									<div className="mb-4 flex items-center justify-between">
+										<span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-brand-tint text-brand-green">
+											<FileText className="h-5 w-5" strokeWidth={1.75} />
+										</span>
+										<span className="text-xs font-medium tabular-nums text-brand-green">
+											{String(index + 1).padStart(2, "0")}
+										</span>
+									</div>
+									<div className="mb-2 flex flex-wrap items-center gap-2">
+										<span className={tagClass}>PDF</span>
+										<span className={tagClass}>{getCategoryName(resource.category_id)}</span>
+									</div>
+
+									<Link href={`/resources/${resource.id}`}>
+										<h3 className="mb-2 line-clamp-2 font-semibold leading-snug text-brand-navy transition-colors group-hover:text-brand-green">
+											{resource.title}
+										</h3>
+									</Link>
+
+									<div className="mb-5 flex items-center text-sm text-[#7a8397]">
+										<Eye className="mr-1 h-4 w-4" />
+										<span>
+											{resource.view_count.toLocaleString()} views
+										</span>
+									</div>
+
+									<ResourceActions
+										resource={resource}
+										onOpenInNewTab={handleOpenResource}
+										busy={isIncrementingView}
 									/>
-									<Button
-										size="sm"
-										onClick={() => {
-											setIsPageChanging(true);
-											updateURL(searchTerm, selectedCategory);
-										}}
-										className="absolute right-1 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white border-0 h-8 w-8 p-0"
-									>
-										<Search className="w-4 h-4" />
-									</Button>
-								</div>
-							</div>
-
-							{/* Categories */}
-							<div>
-								<h3 className="text-xl font-semibold mb-4 flex items-center">
-									<Folder className="w-5 h-5 mr-2" />
-									Categories
-								</h3>
-								<div className="space-y-2">
-									{/* All Categories Option */}
-									<button
-										onClick={() => handleCategorySelect("All")}
-										className={`w-full text-left px-3 py-2 rounded transition-colors flex items-center ${
-											selectedCategory === "All"
-												? "bg-white/20 text-white"
-												: "text-teal-100 hover:bg-white/10 hover:text-white"
-										}`}
-									>
-										<Folder className="w-4 h-4 mr-2 flex-shrink-0" />
-										<span className="truncate">All Categories</span>
-										<Badge
-											variant="secondary"
-											className="ml-auto bg-white/20 text-teal-100 text-xs"
-										>
-											{isLoading ? "..." : pagination?.totalItems}
-										</Badge>
-									</button>
-
-									{/* Individual Categories */}
-									{categories.map((category) => (
-										<button
-											key={category.id}
-											onClick={() => handleCategorySelect(category.id.toString())}
-											className={`w-full text-left px-3 py-2 rounded transition-colors flex items-center ${
-												selectedCategory === category.id.toString()
-													? "bg-white/20 text-white"
-													: "text-teal-100 hover:bg-white/10 hover:text-white"
-											}`}
-										>
-											<Folder className="w-4 h-4 mr-2 flex-shrink-0" />
-											<span className="truncate">{category.name}</span>
-											<Badge
-												variant="secondary"
-												className="ml-auto bg-white/20 text-teal-100 text-xs"
-											>
-												{isLoading
-													? "..."
-													: (countsToShow[category.id] ?? 0)}
-											</Badge>
-										</button>
-									))}
-								</div>
-							</div>
+								</Reveal>
+							))}
 						</div>
-					</div>
+					)}
+				</Section>
+				)}
 
-					{/* Main Content */}
-					<div className="lg:col-span-3 flex gap-8 md:flex-col flex-col-reverse">
-						{/* Most Visited Section */}
-						{isLoading || isPageChanging ? (
-							<MostVisitedSkeleton />
-						) : (
-							<div className="mb-8">
-								<div className="flex items-center mb-4">
-									<TrendingUp className="w-5 h-5 mr-2 text-teal-500" />
-									<h2 className="text-xl font-bold text-gray-900">Most Visited</h2>
-								</div>
-								<div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-									{topViewedResources.slice(0, 6).map((resource) => (
-										<Card
-											key={resource.id}
-											className="group hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] border-0 shadow-lg bg-white rounded-2xl overflow-hidden flex flex-col h-full"
-										>
-											<CardContent className="p-0 flex flex-col h-full">
-												{/* Content */}
-												<div className="p-4 flex flex-col flex-grow">
-													<div className="flex items-center justify-between mb-2">
-														<div className="flex items-center space-x-2">
-															<Badge
-																variant="outline"
-																className="text-xs text-emerald-600 border-emerald-200 bg-emerald-50"
-															>
-																PDF
-															</Badge>
-															<Badge
-																variant="outline"
-																className="text-xs text-gray-600 border-gray-200 bg-gray-50"
-															>
-																{getCategoryName(resource.category_id)}
-															</Badge>
-														</div>
-													</div>
-
-													<Link href={`/resources/${resource.id}`}>
-														<h3 className="font-bold text-gray-900 mb-2 line-clamp-2 leading-tight group-hover:text-emerald-600 transition-colors cursor-pointer">
-															{resource.title}
-														</h3>
-													</Link>
-
-													<div className="flex items-center text-sm text-gray-500 mb-4">
-														<Eye className="w-4 h-4 mr-1" />
-														<span>
-															{Math.floor(resource.view_count / 2).toLocaleString()} views
-														</span>
-													</div>
-
-													{/* Action Buttons - Always at bottom */}
-													<div className="flex space-x-2 mt-auto">
-														<Link href={`/resources/${resource.id}`} className="flex-1">
-															<Button
-																size="sm"
-																className="w-full bg-emerald-500 hover:bg-emerald-600 text-white shadow-md hover:shadow-lg transition-all duration-300"
-															>
-																<Eye className="w-4 h-4 mr-2" />
-																Open
-															</Button>
-														</Link>
-														{/* <Button
-															size="sm"
-															variant="outline"
-															onClick={() => handlePreview(resource)}
-															className=" border-emerald-200 text-emerald-600 hover:bg-emerald-50 hover:border-emerald-300 transition-all duration-300 flex items-center justify-center"
-															title="Preview in new tab"
-														>
-															<ExternalLink className="w-4 h-4" />
-														</Button> */}
-														<Button
-															size="sm"
-															variant="outline"
-															onClick={() => handleOpenResource(resource)}
-															disabled={isIncrementingView}
-															className=" border-emerald-200 text-emerald-600 hover:bg-emerald-50 hover:border-emerald-300 transition-all duration-300 flex items-center justify-center"
-														>
-															{isIncrementingView ? (
-																<Loader2 className="w-4 h-4 mr-2 animate-spin" />
-															) : (
-																<ExternalLink className="w-4 h-4" />
-															)}
-														</Button>
-													</div>
-												</div>
-											</CardContent>
-										</Card>
-									))}
-								</div>
-							</div>
-						)}
-
-						{/* Results Section */}
-						<div>
-							<div className="flex items-center justify-between mb-6">
-								<h2 className="text-xl font-bold text-gray-900">
-									Results{" "}
-									{!isLoading &&
-										!isPageChanging &&
-										searchTerm &&
-										showSearchText &&
-										`for "${searchTerm}"`}
-								</h2>
-								<div className="text-sm text-gray-500">
-									{isLoading || isPageChanging
-										? "Loading..."
-										: `${resources.length} resource${
-												resources.length !== 1 ? "s" : ""
-										  } found`}
-								</div>
-							</div>
-
-							{isLoading || isPageChanging ? (
-								<div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-									{Array.from({ length: 6 }).map((_, index) => (
-										<ResourceCardSkeleton key={index} />
-									))}
-								</div>
-							) : resources.length === 0 ? (
-								<div className="text-center py-12">
-									<div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-										<FileText className="w-12 h-12 text-gray-400" />
-									</div>
-									<h3 className="text-xl font-semibold text-gray-600 mb-2">
-										No resources found
-									</h3>
-									<p className="text-gray-500">
-										Try adjusting your search terms or category filter.
-									</p>
-								</div>
-							) : (
-								<>
-									<div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-										{resources.map((resource) => (
-											<Card
-												key={resource.id}
-												className="group hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] border-0 shadow-lg bg-white rounded-2xl overflow-hidden flex flex-col h-full"
-											>
-												<CardContent className="p-0 flex flex-col h-full">
-													{/* Header with PDF Icon */}
-													<div className="bg-gradient-to-br from-gray-500 to-gray-700 p-6 text-white relative overflow-hidden">
-														<div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -mr-10 -mt-10"></div>
-														<div className="absolute bottom-0 left-0 w-16 h-16 bg-white/10 rounded-full -ml-8 -mb-8"></div>
-														<div className="relative z-10 flex items-center justify-center">
-															<div className="bg-white/20 backdrop-blur-sm rounded-2xl p-4 group-hover:scale-110 transition-transform duration-300 flex flex-col items-center justify-center gap-2">
-																<FileText className="w-12 h-12 text-white" />
-																<text
-																	x="12"
-																	y="16"
-																	textAnchor="middle"
-																	className="text-xs font-bold fill-current text-center"
-																>
-																	PDF
-																</text>
-															</div>
-														</div>
-													</div>
-
-													{/* Content */}
-													<div className="p-6 flex flex-col flex-grow">
-														<div className="flex items-center justify-between mb-3">
-															<div className="flex items-center space-x-2">
-																<Badge
-																	variant="outline"
-																	className="text-xs text-red-600 border-red-200 bg-red-50"
-																>
-																	PDF
-																</Badge>
-																<Badge
-																	variant="outline"
-																	className="text-xs text-gray-600 border-gray-200 bg-gray-50"
-																>
-																	{getCategoryName(resource.category_id)}
-																</Badge>
-															</div>
-															<div className="flex items-center text-xs text-gray-500">
-																<Eye className="w-3 h-3 mr-1" />
-																{Math.floor(resource.view_count / 2)}
-															</div>
-														</div>
-
-														<Link href={`/resources/${resource.id}`}>
-															<h3 className="font-bold text-gray-900 mb-3 line-clamp-2 text-lg leading-tight group-hover:text-red-600 transition-colors cursor-pointer">
-																{resource.title}
-															</h3>
-														</Link>
-
-														<p className="text-sm text-gray-600 mb-4 line-clamp-2 leading-relaxed">
-															{resource.description}
-														</p>
-
-														<div className="flex items-center justify-between text-xs text-gray-500 mb-6">
-															<div className="flex items-center space-x-3">
-																<span className="flex items-center">
-																	<Download className="w-3 h-3 mr-1" />
-																	{resource.download_count}
-																</span>
-																<span className="text-gray-300">•</span>
-																<span>{new Date(resource.createdAt).toLocaleDateString()}</span>
-															</div>
-														</div>
-
-														{/* Action Buttons - Always at bottom */}
-														<div className="flex space-x-2 mt-auto">
-															<Link href={`/resources/${resource.id}`} className="flex-1">
-																<Button
-																	size="sm"
-																	className="flex-1 bg-gray-500 hover:bg-gray-600 text-white shadow-md hover:shadow-lg transition-all duration-300 w-full"
-																>
-																	<Eye className="w-4 h-4 mr-2" />
-																	Open
-																</Button>
-															</Link>
-															<Button
-																size="sm"
-																variant="outline"
-																onClick={() => handleOpenResource(resource)}
-																disabled={isIncrementingView}
-																className=" border-emerald-200 text-emerald-600 hover:bg-emerald-50 hover:border-emerald-300 transition-all duration-300 flex items-center justify-center"
-															>
-																{isIncrementingView ? (
-																	<Loader2 className="w-4 h-4 mr-2 animate-spin" />
-																) : (
-																	<ExternalLink className="w-4 h-4" />
-																)}
-															</Button>
-														</div>
-													</div>
-												</CardContent>
-											</Card>
-										))}
-									</div>
-
-									{/* Pagination */}
-									{pagination && pagination.totalPages > 1 && (
-										<div className="flex items-center justify-center space-x-2 mt-8">
-											<Button
-												variant="outline"
-												onClick={() => handlePageChange(currentPage - 1)}
-												disabled={currentPage === 1}
-												className="flex items-center"
-											>
-												<ChevronLeft className="w-4 h-4 mr-1" />
-												Previous
-											</Button>
-
-											<span className="text-sm text-gray-600">
-												{isPageChanging && (
-													<Loader2 className="w-4 h-4 inline-block mr-2 animate-spin text-gray-500" />
-												)}
-												Page {pagination.currentPage} of {pagination.totalPages}
-											</span>
-
-											<Button
-												variant="outline"
-												onClick={() => handlePageChange(currentPage + 1)}
-												disabled={currentPage === pagination.totalPages}
-												className="flex items-center"
-											>
-												Next
-												<ChevronRight className="w-4 h-4 ml-1" />
-											</Button>
-										</div>
-									)}
-								</>
+				{/* Results Section */}
+				<Section pattern id="results">
+					<Reveal className={`flex flex-col items-center justify-between gap-2 text-center sm:flex-row sm:text-left ${activeQuery ? "mx-auto max-w-4xl" : ""}`}>
+						<h2 className="text-3xl font-semibold tracking-tight text-brand-navy sm:text-4xl">
+							{activeQuery ? `Results for “${activeQuery}”` : "Results"}
+						</h2>
+						<div className="flex items-center gap-3 text-sm text-[#7a8397]">
+							{busy
+								? "Loading..."
+								: activeQuery && pagination
+								? `${pagination.totalItems} resource${Number(pagination.totalItems) !== 1 ? "s" : ""} found`
+								: `${resources.length} resource${
+										resources.length !== 1 ? "s" : ""
+								  } found`}
+							{activeQuery && (
+								<button
+									type="button"
+									onClick={clearSearch}
+									className="inline-flex shrink-0 items-center rounded-full bg-white px-4 py-2 text-sm text-brand-navy ring-1 ring-black/10 transition-colors hover:bg-brand-tint"
+								>
+									<X className="mr-1 h-4 w-4" />
+									Clear search
+								</button>
 							)}
 						</div>
-					</div>
-				</div>
+					</Reveal>
+
+					{busy ? (
+						<div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+							{Array.from({ length: 6 }).map((_, index) => (
+								<ResourceCardSkeleton key={index} />
+							))}
+						</div>
+					) : resources.length === 0 ? (
+						<Reveal className="py-16 text-center">
+							<div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-white shadow-sm ring-1 ring-black/5">
+								<FileText className="h-9 w-9 text-[#9aa3b5]" />
+							</div>
+							<h3 className="mb-2 text-xl font-semibold text-brand-navy">
+								No resources found
+							</h3>
+							<p className="text-[#606b80]">
+								Try adjusting your search terms or category filter.
+							</p>
+						</Reveal>
+					) : activeQuery ? (
+						/* Search rows: what matched, and the phrase in context */
+						<>
+						<ul className="mx-auto mt-8 max-w-4xl space-y-3">
+							{resources.map((resource, index) => {
+								const found = matchedFields(activeQuery, [
+									{ label: "Title", value: resource.title },
+									{ label: "Description", value: resource.description },
+									{ label: "Text", value: resource.content_text },
+									{ label: "File name", value: resource.filename },
+									{ label: "Author", value: resource.author },
+								]);
+								// Show the passage where the phrase appears; fall back to the description
+								const excerptSource =
+									!found.includes("Description") && found.includes("Text")
+										? resource.content_text
+										: resource.description;
+								return (
+									<motion.li
+										key={resource.id}
+										initial={{ opacity: 0, y: 16 }}
+										animate={{ opacity: 1, y: 0 }}
+										transition={{ duration: 0.45, ease: easeOut, delay: Math.min(index, 8) * 0.04 }}
+										className="group flex flex-col gap-4 rounded-3xl bg-white p-4 shadow-sm ring-1 ring-black/5 transition-shadow hover:shadow-lg sm:flex-row sm:items-center sm:p-5"
+									>
+										<span className="hidden h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-brand-navy text-white sm:flex">
+											<FileText className="h-6 w-6" strokeWidth={1.5} />
+										</span>
+										<div className="min-w-0 flex-1">
+											<div className="flex flex-wrap items-center gap-2">
+												<MatchBadges labels={found} />
+												<span className={tagClass}>{getCategoryName(resource.category_id)}</span>
+											</div>
+											<Link href={`/resources/${resource.id}`}>
+												<h3 className="mt-2 line-clamp-2 font-semibold leading-snug tracking-tight text-brand-navy transition-colors group-hover:text-brand-green sm:text-lg">
+													<Highlight text={resource.title} query={activeQuery} />
+												</h3>
+											</Link>
+											{excerptSource && (
+												<p className="mt-1.5 line-clamp-2 text-sm leading-relaxed text-[#606b80]">
+													<Highlight text={excerptAround(excerptSource, activeQuery)} query={activeQuery} />
+												</p>
+											)}
+										</div>
+										<div className="flex w-full shrink-0 sm:w-44">
+											<ResourceActions
+												resource={resource}
+												onOpenInNewTab={handleOpenResource}
+												busy={isIncrementingView}
+											/>
+										</div>
+									</motion.li>
+								);
+							})}
+						</ul>
+						{pager}
+						</>
+					) : (
+						<>
+							<div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+								{resources.map((resource, index) => (
+									<Reveal
+										key={resource.id}
+										delay={(index % 3) * 0.06}
+										className="group flex flex-col overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-black/5 transition-shadow hover:shadow-lg"
+									>
+										{/* Document cover */}
+										<div className="relative m-2 flex h-36 items-center justify-center overflow-hidden rounded-2xl bg-brand-navy">
+											<div aria-hidden className="absolute -right-10 -top-12 h-40 w-40 rounded-full bg-brand-green/40 blur-2xl" />
+											<div className="relative flex flex-col items-center gap-1.5 rounded-2xl bg-white/10 px-5 py-4 text-white backdrop-blur-sm transition-transform duration-300 group-hover:scale-105">
+												<FileText className="h-10 w-10" strokeWidth={1.5} />
+												<span className="text-xs font-semibold tracking-wider">PDF</span>
+											</div>
+										</div>
+
+										<div className="flex flex-1 flex-col p-5 pt-3">
+											<div className="mb-3 flex items-center justify-between gap-2">
+												<div className="flex flex-wrap items-center gap-2">
+													<span className={tagClass}>PDF</span>
+													<span className={tagClass}>{getCategoryName(resource.category_id)}</span>
+												</div>
+												<div className="flex shrink-0 items-center text-xs text-[#7a8397]">
+													<Eye className="mr-1 h-3 w-3" />
+													{resource.view_count}
+												</div>
+											</div>
+
+											<Link href={`/resources/${resource.id}`}>
+												<h3 className="mb-2 line-clamp-2 text-lg font-semibold leading-snug tracking-tight text-brand-navy transition-colors group-hover:text-brand-green">
+													{resource.title}
+												</h3>
+											</Link>
+
+											<p className="mb-4 line-clamp-2 text-sm leading-relaxed text-[#606b80]">
+												{resource.description}
+											</p>
+
+											<div className="mb-5 flex items-center gap-3 text-xs text-[#7a8397]">
+												<span className="flex items-center">
+													<Download className="mr-1 h-3 w-3" />
+													{resource.download_count}
+												</span>
+												<span className="text-[#c3ccd9]">•</span>
+												<span>{new Date(resource.createdAt).toLocaleDateString()}</span>
+											</div>
+
+											<ResourceActions
+												resource={resource}
+												onOpenInNewTab={handleOpenResource}
+												busy={isIncrementingView}
+											/>
+										</div>
+									</Reveal>
+								))}
+							</div>
+
+							{pager}
+						</>
+					)}
+				</Section>
+
+				<Footer />
 			</div>
 			<AuthRequiredModal
 				isOpen={showAuthModal}
 				onClose={() => setShowAuthModal(false)}
 				action="access resources"
 			/>
-		</div>
+		</MotionConfig>
 	);
 }

@@ -3,6 +3,7 @@ import React from "react";
 import { getLandingPageData } from "./actions/landing.actions";
 import { getNewsByQuery } from "./actions/news.actions";
 import { getResources } from "./actions/resources.actions";
+import { homeFont } from "./fonts";
 
 export const dynamic = "force-dynamic";
 
@@ -22,11 +23,13 @@ export default async function page() {
 		}
 
 		return (
-			<LandingPage 
-				data={landingData.data} 
-				news={newsResponse.data.news}
-				resources={resourcesResponse.data.documents}
-			/>
+			<div className={homeFont.className}>
+				<LandingPage
+					data={landingData.data}
+					news={newsResponse.data.news}
+					resources={resourcesResponse.data.documents}
+				/>
+			</div>
 		);
 	} catch (error) {
 		console.error('Error fetching page data:', error);

@@ -3,6 +3,7 @@ import React from 'react'
 import { getCategories, getNews, getNewsByQuery } from '../actions/news.actions';
 import { NewsResponse, NewsQueryResponse } from '../types/news';
 import type { Metadata } from 'next'
+import { homeFont } from '../fonts'
 
 export const metadata: Metadata = {
   title: 'News & Updates',
@@ -56,6 +57,8 @@ export default async function page() {
   });
 
   return (
-    <NewsPage news={news} newsQuery={newsQuery} categories={categories} />
+    <div className={homeFont.className}>
+      <NewsPage news={news} newsQuery={newsQuery} categories={categories} />
+    </div>
   )
 }

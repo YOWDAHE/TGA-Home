@@ -3,10 +3,6 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
 import { EmbeddedContent } from "@/components/ui/embedded-content";
 import {
 	Carousel,
@@ -31,6 +27,7 @@ import {
 	X,
 	Check,
 	ExternalLink,
+	Loader2,
 } from "lucide-react";
 import {
 	NewsResponse,
@@ -40,10 +37,16 @@ import {
 	CategoryResponse,
 } from "@/app/types/news";
 import { convertToApiUrl } from "@/lib/utils";
-import Header from "./Header";
+import Footer from "./Footer";
+import TopNav from "./TopNav";
+import Section from "./Section";
+import SectionHeading from "./SectionHeading";
+import Reveal, { easeOut } from "./Reveal";
+import { FrostedColors } from "./Backdrop";
+import { Highlight, MatchBadges, excerptAround, matchedFields } from "./SearchMatch";
+import { MotionConfig, motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter, useSearchParams } from "next/navigation";
-import Loader from "@/components/loader";
 
 interface NewsQueryParams {
 	page?: number;
@@ -53,6 +56,23 @@ interface NewsQueryParams {
 	q?: string;
 	category?: string;
 }
+
+const cardClass = "rounded-3xl bg-white/70 shadow-sm ring-1 ring-black/5 backdrop-blur-xl";
+const columnHeading = "mb-5 text-center text-2xl font-semibold tracking-tight text-brand-navy sm:text-left";
+const pagerClass =
+	"inline-flex items-center rounded-full bg-white px-4 py-2 text-sm text-brand-navy ring-1 ring-black/10 transition-colors hover:bg-brand-tint disabled:pointer-events-none disabled:opacity-40";
+
+// Category filters are pills; the selected one is filled navy
+const chipClass = (active: boolean) =>
+	`shrink-0 rounded-full px-4 py-2 text-sm transition-colors ${
+		active
+			? "bg-brand-navy text-white"
+			: "bg-white/80 text-[#4b5468] ring-1 ring-black/5 hover:bg-white hover:text-brand-navy"
+	}`;
+
+// Article bodies are HTML; excerpts show plain text
+const stripHtml = (html: string) =>
+	(html ?? "").replace(/<[^>]*>/g, " ").replace(/&nbsp;/g, " ").replace(/\s+/g, " ").trim();
 
 interface NewsPageProps {
 	news: NewsResponse;
@@ -74,7 +94,8 @@ export default function NewsPage({
 	const [queryResults, setQueryResults] = useState<NewsQueryResponse | null>(
 		null
 	);
-	const [isLoading, setIsLoading] = useState(false);
+	// A search in the URL loads its results on mount, so start in the loading state
+	const [isLoading, setIsLoading] = useState(Boolean(searchParams.get("q")?.trim()));
 	const [carouselApi, setCarouselApi] = useState<any>(null);
 	const [isNavigating, setIsNavigating] = useState(false);
 
@@ -91,7 +112,7 @@ export default function NewsPage({
 		if (newsItem.visual_content && newsItem.visual_content.length > 0) {
 			return convertToApiUrl(newsItem.visual_content[0]);
 		}
-		return "/office/placeholder.jpg";
+		return "/placeholder.jpg";
 	};
 
 	// Helper function to format date
@@ -161,9 +182,23 @@ export default function NewsPage({
 			? undefined
 			: categories.find((c) => c.name === selectedCategory)?.id;
 
-	// Handle search for Browse by Category section
+	// The submitted phrase lives in the URL; while it is set the page shows only the results
+	const activeQuery = (searchParams.get("q") || "").trim();
+
+	// Searching navigates to ?q=, which swaps the page into the results view
 	const handleSearch = () => {
-		fetchNewsByQuery(1, categoryIdForSelection(), { q: searchInput });
+		const q = searchInput.trim();
+		if (q === activeQuery) {
+			fetchNewsByQuery(1, categoryIdForSelection(), { q });
+			return;
+		}
+		router.push(q ? `/news?q=${encodeURIComponent(q)}` : "/news");
+	};
+
+	const clearSearch = () => {
+		setSearchInput("");
+		setSelectedCategory("All");
+		router.replace("/news");
 	};
 
 	// Handle category change for Browse by Category section
@@ -193,13 +228,6 @@ export default function NewsPage({
 		}
 	};
 
-	// Search handler for 3-section search bar
-	const handleThreeSectionSearchKeyPress = async () => {
-		document
-			.getElementById("browse-news-section")
-			?.scrollIntoView({ behavior: "smooth" });
-	};
-
 	const browseData = queryResults ?? newsQuery;
 
 	// Get current news items to display in Browse by Category section
@@ -216,7 +244,7 @@ export default function NewsPage({
 		const q = searchParams.get("q") || "";
 		setSearchInput(q);
 		void fetchNewsByQuery(1, categoryIdForSelection(), {
-			silent: true,
+			silent: !q.trim(),
 			q: q.trim(),
 		});
 		// eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: refetch when URL search changes only
@@ -264,536 +292,576 @@ export default function NewsPage({
 	};
 
 	return (
-		<div className="min-h-screen bg-white">
-			{/* Header */}
-			<Header currentPage="news" />
+		<MotionConfig reducedMotion="user">
+			<div className="relative isolate min-h-screen overflow-x-clip text-brand-navy antialiased">
+				<FrostedColors />
+				<TopNav currentHref="/news" />
 
-			<div className="container mx-auto px-4 mt-16 py-8">
-				{/* Page Header */}
-				<div className="mb-8">
-					<h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">NEWS</h1>
-					<p className="text-base md:text-lg text-gray-600">
+				{/* Page header */}
+				<section className="px-4 pb-10 pt-14 text-center sm:px-6 sm:pt-20">
+					<motion.p
+						initial={{ opacity: 0, y: 10 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ duration: 0.6, ease: easeOut, delay: 0.1 }}
+						className="mb-6 inline-flex items-center gap-2 rounded-full bg-white px-3.5 py-1.5 text-xs font-medium text-[#4b5468] shadow-sm ring-1 ring-black/5 sm:px-4"
+					>
+						<span className="h-1.5 w-1.5 rounded-full bg-brand-green" />
+						TGA Global Law Firm LL.P
+					</motion.p>
+					<motion.h1
+						initial={{ opacity: 0, y: 24, filter: "blur(8px)" }}
+						animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+						transition={{ duration: 0.8, ease: easeOut, delay: 0.15 }}
+						className="text-[2.75rem] font-semibold leading-none tracking-tight sm:text-7xl"
+					>
+						News
+					</motion.h1>
+					<motion.p
+						initial={{ opacity: 0, y: 16 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ duration: 0.7, ease: easeOut, delay: 0.3 }}
+						className="mx-auto mt-5 max-w-[19rem] text-pretty text-base leading-relaxed text-[#606b80] min-[400px]:max-w-[21rem] sm:max-w-xl sm:text-lg"
+					>
 						Stay updated with the latest legal insights and industry developments
-					</p>
-				</div>
+					</motion.p>
+					<motion.div
+						initial={{ opacity: 0, y: 10 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ duration: 0.6, ease: easeOut, delay: 0.4 }}
+						className="mx-auto mt-8 flex max-w-xl items-center gap-2 rounded-full bg-white p-1.5 pl-5 text-left shadow-sm ring-1 ring-black/5 focus-within:ring-2 focus-within:ring-brand-green/40"
+					>
+						<Search className="h-4 w-4 shrink-0 text-[#9aa3b5]" />
+						<input
+							type="search"
+							placeholder="Search news..."
+							value={searchInput}
+							onChange={handleSearchInputChange}
+							onKeyDown={handleSearchKeyPress}
+							className="min-w-0 flex-1 bg-transparent py-2 text-brand-navy placeholder:text-[#9aa3b5] focus:outline-none [&::-webkit-search-cancel-button]:hidden"
+						/>
+						<button
+							type="button"
+							onClick={handleSearch}
+							className="rounded-full bg-brand-navy px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-green sm:px-6"
+						>
+							Search
+						</button>
+					</motion.div>
+				</section>
 
-				{/* 3-Section Layout */}
-				<section className="mb-16 py-6 bg-gray-100">
-					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
-						{/* Left Section - Browse News */}
-						<div className="md:col-span-1 lg:col-span-1 order-1 md:order-1 lg:order-1">
-							<div className="rounded-lg px-2 md:px-4 h-full">
-								{/* Search */}
-								<Button
-									variant="outline"
-									className="w-full mb-4 flex justify-between hover:bg-white text-sm"
-									onClick={() => {
-										handleThreeSectionSearchKeyPress();
-									}}
+				{activeQuery ? (
+					/* Search results only: the curated sections stay hidden while searching */
+					<section className="px-4 pb-16 sm:px-6 sm:pb-24">
+						<div className="mx-auto max-w-4xl">
+							<div className="flex flex-col items-center justify-between gap-3 text-center sm:flex-row sm:text-left">
+								<div>
+									<h2 className="text-2xl font-semibold tracking-tight text-brand-navy sm:text-3xl">
+										Results for “{activeQuery}”
+									</h2>
+									<p className="mt-1 text-sm text-[#7a8397]">
+										{isLoading
+											? "Searching..."
+											: `${getPaginationInfo()?.totalItems ?? getCurrentNewsItems().length} ${
+													(getPaginationInfo()?.totalItems ?? getCurrentNewsItems().length) === 1 ? "story" : "stories"
+											  } found`}
+									</p>
+								</div>
+								<button
+									type="button"
+									onClick={clearSearch}
+									className="inline-flex shrink-0 items-center rounded-full bg-white px-4 py-2 text-sm text-brand-navy ring-1 ring-black/10 transition-colors hover:bg-brand-tint"
 								>
-									Search News
-									<Search className="w-4 h-4" />
-								</Button>
+									<X className="mr-1 h-4 w-4" />
+									Clear search
+								</button>
+							</div>
 
-								{/* News List */}
-								<div className="flex flex-col gap-2 max-h-64 md:max-h-96 overflow-y-auto">
-									{latest.slice(0, 3).map((article) => (
-										<Link href={`/news/${article.id}`} key={article.id}>
-											<Card
+							<div className="mt-6 -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0">
+								{[{ id: "All", name: "All" }, ...categories].map((category) => (
+									<button
+										key={category.id}
+										type="button"
+										onClick={() => handleCategoryChange(category.name)}
+										className={chipClass(selectedCategory === category.name)}
+									>
+										{category.name}
+									</button>
+								))}
+							</div>
+
+							{isLoading ? (
+								<div className="flex items-center justify-center py-20 text-[#606b80]">
+									<Loader2 className="h-6 w-6 animate-spin text-brand-green" />
+									<span className="ml-2">Searching...</span>
+								</div>
+							) : getCurrentNewsItems().length === 0 ? (
+								<div className="py-20 text-center">
+									<div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-white shadow-sm ring-1 ring-black/5">
+										<Search className="h-8 w-8 text-[#9aa3b5]" />
+									</div>
+									<h3 className="mb-2 text-xl font-semibold text-brand-navy">No stories found</h3>
+									<p className="text-[#606b80]">Try a different phrase or another category.</p>
+								</div>
+							) : (
+								<ul className="mt-8 space-y-3">
+									{getCurrentNewsItems().map((article, index) => {
+										const text = stripHtml(article.content);
+										const found = matchedFields(activeQuery, [
+											{ label: "Title", value: article.title },
+											{ label: "Text", value: text },
+											{ label: "Tags", value: article.hashtags },
+											{ label: "Source", value: `${article.source ?? ""} ${article.created_by ?? ""}` },
+										]);
+										return (
+											<motion.li
 												key={article.id}
-												className="overflow-hidden hover:shadow-md transition-shadow rounded-none"
+												initial={{ opacity: 0, y: 16 }}
+												animate={{ opacity: 1, y: 0 }}
+												transition={{ duration: 0.45, ease: easeOut, delay: Math.min(index, 8) * 0.04 }}
 											>
-												<CardContent className="p-2 md:p-3">
-													<div className="flex space-x-2 md:space-x-3">
-														<div className="flex-1 min-w-0">
-															<h4 className="font-medium text-xs md:text-sm text-gray-900 mb-1 line-clamp-2">
-																{article.title}
-															</h4>
-															<div className="flex items-center text-xs text-gray-500 space-x-1 md:space-x-2">
-																<span className="text-xs">
-																	{formatDate(article.createdAt)}
-																</span>
-																<span className="flex items-center">
-																	<Eye className="w-3 h-3 mr-1" />
-																	{article.view_count.toLocaleString()}
-																</span>
-															</div>
+												<Link
+													href={`/news/${article.id}`}
+													className="group flex gap-4 overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-black/5 transition-shadow hover:shadow-lg sm:gap-5"
+												>
+													<div className="min-h-[7.5rem] w-28 shrink-0 self-stretch overflow-hidden bg-[#eef1f5] sm:min-h-[9rem] sm:w-48">
+														<img
+															src={getImageUrl(article)}
+															alt={article.title}
+															width={176}
+															height={128}
+															className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+														/>
+													</div>
+													<div className="min-w-0 flex-1 py-4 pr-4">
+														<MatchBadges labels={found} />
+														<h3 className="mt-2 line-clamp-2 font-semibold leading-snug tracking-tight text-brand-navy transition-colors group-hover:text-brand-green sm:text-lg">
+															<Highlight text={article.title} query={activeQuery} />
+														</h3>
+														<p className="mt-1.5 line-clamp-2 text-sm leading-relaxed text-[#606b80]">
+															<Highlight text={excerptAround(text, activeQuery)} query={activeQuery} />
+														</p>
+														<p className="mt-2 text-xs text-[#7a8397]">{formatNewsMetaDate(article)}</p>
+													</div>
+												</Link>
+											</motion.li>
+										);
+									})}
+								</ul>
+							)}
+
+							{!isLoading && (getPaginationInfo()?.totalPages ?? 0) > 1 && (
+								<div className="mt-10 flex items-center justify-center gap-3">
+									<button
+										type="button"
+										onClick={() => handlePageChange(currentPage - 1)}
+										disabled={currentPage === 1}
+										className={pagerClass}
+									>
+										<ChevronLeft className="mr-1 h-4 w-4" />
+										Previous
+									</button>
+									<span className="text-sm text-[#606b80]">
+										Page {getPaginationInfo()?.currentPage} of {getPaginationInfo()?.totalPages}
+									</span>
+									<button
+										type="button"
+										onClick={() => handlePageChange(currentPage + 1)}
+										disabled={currentPage === getPaginationInfo()?.totalPages}
+										className={pagerClass}
+									>
+										Next
+										<ChevronRight className="ml-1 h-4 w-4" />
+									</button>
+								</div>
+							)}
+						</div>
+					</section>
+				) : (
+				<>
+				{/* Spotlight: quick list, featured carousel, latest/trending tabs */}
+				<section className="px-4 pb-16 sm:px-6 sm:pb-24">
+					<motion.div
+						initial={{ opacity: 0, y: 40 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ duration: 0.9, ease: easeOut, delay: 0.45 }}
+						className="mx-auto grid max-w-6xl grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-12"
+					>
+						{/* Left - Browse News */}
+						<div className={`${cardClass} order-2 p-4 sm:p-5 md:order-1 lg:col-span-3`}>
+							<p className="mb-3 px-1 text-sm font-medium text-brand-navy">Just in</p>
+							<div className="flex max-h-64 flex-col gap-2 overflow-y-auto md:max-h-96">
+								{latest.slice(0, 3).map((article) => (
+									<Link
+										href={`/news/${article.id}`}
+										key={article.id}
+										className="rounded-2xl bg-white p-3 ring-1 ring-black/5 transition-shadow hover:shadow-md"
+									>
+										<h4 className="mb-1.5 line-clamp-2 text-sm font-medium text-brand-navy">
+											{article.title}
+										</h4>
+										<div className="flex items-center gap-3 text-xs text-[#7a8397]">
+											<span>{formatDate(article.createdAt)}</span>
+											<span className="flex items-center">
+												<Eye className="mr-1 h-3 w-3" />
+												{article.view_count.toLocaleString()}
+											</span>
+										</div>
+									</Link>
+								))}
+							</div>
+						</div>
+
+						{/* Middle - Featured News Carousel */}
+						<div className="order-1 md:col-span-2 md:order-2 lg:col-span-6">
+							{featured.length > 0 && (
+								<Carousel
+									opts={{
+										align: "start",
+										loop: true,
+									}}
+									setApi={setCarouselApi}
+									className="h-full w-full overflow-hidden rounded-3xl"
+								>
+									<CarouselContent>
+										{featured.map((article) => (
+											<CarouselItem key={article.id}>
+												<Link
+													href={`/news/${article.id}`}
+													className="group relative block h-[320px] overflow-hidden rounded-3xl bg-[#eef1f5] md:h-[400px] lg:h-[460px]"
+												>
+													<img
+														src={getImageUrl(article)}
+														alt={article.title}
+														className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+													/>
+													<div className="absolute inset-0 bg-gradient-to-t from-brand-navy/90 via-brand-navy/30 to-transparent" />
+													<div className="absolute inset-x-0 bottom-0 p-5 text-white sm:p-7">
+														<span className="mb-3 inline-flex rounded-full bg-white/15 px-3 py-1 text-xs backdrop-blur-md">
+															Featured
+														</span>
+														<h3 className="mb-2 line-clamp-2 text-xl font-semibold tracking-tight sm:text-2xl">
+															{article.title}
+														</h3>
+														<p className="mb-3 line-clamp-2 text-sm text-white/75">
+															{stripHtml(article.content)}
+														</p>
+														<div className="flex items-center justify-between text-xs text-white/60">
+															<span>TGA Global Law Firm LL.P</span>
+															<span>{formatDate(article.published_date)}</span>
 														</div>
 													</div>
-												</CardContent>
-											</Card>
-										</Link>
-									))}
-								</div>
-							</div>
+												</Link>
+											</CarouselItem>
+										))}
+									</CarouselContent>
+									{/* <CarouselPrevious />
+									<CarouselNext /> */}
+								</Carousel>
+							)}
 						</div>
 
-						{/* Middle Section - Featured News Carousel */}
-						<div className="md:col-span-2 lg:col-span-2 order-3 md:order-2 lg:order-2">
-							<div className="h-full">
-								{featured.length > 0 && (
-									<Carousel
-										opts={{
-											align: "start",
-											loop: true,
-										}}
-										setApi={setCarouselApi}
-										className="w-full h-full"
-									>
-										<CarouselContent>
-											{featured.map((article) => (
-												<CarouselItem key={article.id}>
-													<Link href={`/news/${article.id}`} key={article.id}>
-														<div className="overflow-hidden">
-															<div className="relative h-[200px] md:h-[300px] lg:h-[400px] w-full">
-																<img
-																	src={getImageUrl(article)}
-																	alt={article.title}
-																	className="object-cover w-full h-full"
-																/>
-															</div>
-															<CardContent className="p-3 md:p-4 bg-white">
-																<h3 className="font-semibold text-sm md:text-base text-gray-900 mb-2 line-clamp-2">
-																	{article.title}
-																</h3>
-																<p className="text-xs md:text-sm text-gray-600 mb-3 line-clamp-2">
-																	{article.content}
-																</p>
-																<div className="flex items-center justify-between text-xs text-gray-500">
-																	<span>TGA Global Law Firm LL.P</span>
-																	<span>{formatDate(article.published_date)}</span>
-																</div>
-															</CardContent>
-														</div>
-													</Link>
-												</CarouselItem>
-											))}
-										</CarouselContent>
-										{/* <CarouselPrevious />
-										<CarouselNext /> */}
-									</Carousel>
-								)}
-							</div>
-						</div>
-
-						{/* Right Section - Latest & Trending Tabs */}
-						<div className="md:col-span-1 lg:col-span-1 order-2 md:order-3 lg:order-3">
-							<div className="rounded-lg px-2 md:px-6 h-full">
-								<Tabs defaultValue="latest" className="w-full">
-									<TabsList className="grid w-full grid-cols-2 mb-4">
-										<TabsTrigger
-											value="latest"
-											className="data-[state=active]:text-white data-[state=active]:bg-[#69b2a4] text-xs md:text-sm"
-										>
-											Latest
-										</TabsTrigger>
-										<TabsTrigger
-											value="trending"
-											className="data-[state=active]:text-white data-[state=active]:bg-[#69b2a4] text-xs md:text-sm"
-										>
-											Trending
-										</TabsTrigger>
-									</TabsList>
-
-									<TabsContent
+						{/* Right - Latest & Trending Tabs */}
+						<div className={`${cardClass} order-3 p-4 sm:p-5 lg:col-span-3`}>
+							<Tabs defaultValue="latest" className="w-full">
+								<TabsList className="mb-4 grid h-auto w-full grid-cols-2 rounded-full bg-[#eef1f5] p-1">
+									<TabsTrigger
 										value="latest"
-										className="flex flex-col gap-2 max-h-64 md:max-h-96 overflow-y-auto"
+										className="rounded-full py-1.5 text-xs data-[state=active]:bg-brand-navy data-[state=active]:text-white md:text-sm"
 									>
-										{latest.slice(0, 4).map((article) => (
-											<Link href={`/news/${article.id}`} key={article.id}>
-												<Card
-													key={article.id}
-													className="overflow-hidden hover:shadow-md transition-shadow rounded-none"
-												>
-													<CardContent className="p-2 md:p-3">
-														<div className="flex space-x-2 md:space-x-3">
-															<div className="w-8 h-8 md:w-12 md:h-12 flex-shrink-0 relative bg-gray-200 rounded">
-																<img
-																	src={getImageUrl(article)}
-																	alt={article.title}
-																	className="object-cover rounded w-full h-full"
-																/>
-															</div>
-															<div className="flex-1 min-w-0">
-																<h4 className="font-medium text-xs md:text-sm text-gray-900 mb-1 line-clamp-2">
-																	{article.title}
-																</h4>
-																<div className="flex items-center text-xs text-gray-500 space-x-1 md:space-x-2">
-																	<span className="text-xs">
-																		{formatDate(article.createdAt)}
-																	</span>
-																	<span className="flex items-center">
-																		<Eye className="w-3 h-3 mr-1" />
-																		{article.view_count.toLocaleString()}
-																	</span>
-																</div>
-															</div>
-														</div>
-													</CardContent>
-												</Card>
-											</Link>
-										))}
-									</TabsContent>
-
-									<TabsContent
+										Latest
+									</TabsTrigger>
+									<TabsTrigger
 										value="trending"
-										className="flex flex-col gap-2 max-h-64 md:max-h-96 overflow-y-auto"
+										className="rounded-full py-1.5 text-xs data-[state=active]:bg-brand-navy data-[state=active]:text-white md:text-sm"
 									>
-										{trending.slice(0, 4).map((article) => (
-											<Link href={`/news/${article.id}`} key={article.id}>
-												<Card
-													key={article.id}
-													className="overflow-hidden hover:shadow-md transition-shadow rounded-none"
-												>
-													<CardContent className="p-2 md:p-3">
-														<div className="flex space-x-2 md:space-x-3">
-															<div className="w-8 h-8 md:w-12 md:h-12 flex-shrink-0 relative bg-gray-200 rounded">
-																<img
-																	src={getImageUrl(article)}
-																	alt={article.title}
-																	className="object-cover rounded w-full h-full"
-																/>
-															</div>
-															<div className="flex-1 min-w-0">
-																<h4 className="font-medium text-xs md:text-sm text-gray-900 mb-1 line-clamp-2">
-																	{article.title}
-																</h4>
-																<div className="flex items-center text-xs text-gray-500 space-x-1 md:space-x-2">
-																	<span className="text-xs">
-																		{formatDate(article.published_date)}
-																	</span>
-																	<span className="flex items-center">
-																		<Eye className="w-3 h-3 mr-1" />
-																		{article.view_count.toLocaleString()}
-																	</span>
-																</div>
-															</div>
-														</div>
-													</CardContent>
-												</Card>
+										Trending
+									</TabsTrigger>
+								</TabsList>
+
+								{[
+									{ value: "latest", items: latest, date: (a: News) => a.createdAt },
+									{ value: "trending", items: trending, date: (a: News) => a.published_date },
+								].map((tab) => (
+									<TabsContent
+										key={tab.value}
+										value={tab.value}
+										className="mt-0 flex max-h-64 flex-col gap-2 overflow-y-auto md:max-h-96"
+									>
+										{tab.items.slice(0, 4).map((article) => (
+											<Link
+												href={`/news/${article.id}`}
+												key={article.id}
+												className="flex gap-3 overflow-hidden rounded-2xl bg-white ring-1 ring-black/5 transition-shadow hover:shadow-md"
+											>
+												<div className="min-h-[4.25rem] w-16 shrink-0 self-stretch overflow-hidden bg-[#eef1f5]">
+													<img
+														src={getImageUrl(article)}
+														alt={article.title}
+														className="h-full w-full object-cover"
+													/>
+												</div>
+												<div className="min-w-0 flex-1 py-2.5 pr-3">
+													<h4 className="mb-1 line-clamp-2 text-sm font-medium text-brand-navy">
+														{article.title}
+													</h4>
+													<div className="flex items-center gap-3 text-xs text-[#7a8397]">
+														<span>{formatDate(tab.date(article))}</span>
+														<span className="flex items-center">
+															<Eye className="mr-1 h-3 w-3" />
+															{article.view_count.toLocaleString()}
+														</span>
+													</div>
+												</div>
 											</Link>
 										))}
 									</TabsContent>
-								</Tabs>
-							</div>
+								))}
+							</Tabs>
 						</div>
-					</div>
+					</motion.div>
 				</section>
 
 				{/* Featured Articles */}
 				{featured.length > 0 && (
-					<section className="mb-12">
-						<h2 className="text-xl md:text-2xl font-semibold text-gray-900 mb-6">
-							Featured Stories
-						</h2>
-						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-							{featured.slice(0, 3).map((article) => (
-								<Card
+					<Section pattern>
+						<SectionHeading
+							title="Featured Stories"
+							description="Our pick of the stories worth your time"
+						/>
+						<div className="mt-14 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+							{featured.slice(0, 3).map((article, index) => (
+								<Reveal
 									key={article.id}
-									className="overflow-hidden hover:shadow-xl transition-shadow"
+									delay={index * 0.08}
+									className="group flex flex-col overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-black/5 transition-shadow hover:shadow-lg"
 								>
-									<div className="relative">
+									<div className="relative h-60 overflow-hidden bg-[#eef1f5]">
 										<img
 											src={getImageUrl(article)}
 											alt={article.title}
 											width={400}
 											height={250}
-											className="w-full h-40 md:h-48 object-cover"
+											className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
 										/>
 										{trending.some((t) => t.id === article.id) && (
-											<Badge className="absolute top-2 md:top-4 right-2 md:right-4 bg-red-500 text-xs">
-												<TrendingUp className="w-3 h-3 mr-1" />
+											<span className="absolute right-3 top-3 inline-flex items-center rounded-full bg-white/90 px-2.5 py-1 text-xs font-medium text-brand-green backdrop-blur">
+												<TrendingUp className="mr-1 h-3 w-3" />
 												Trending
-											</Badge>
+											</span>
 										)}
 									</div>
-									<CardContent className="p-3 md:p-4">
-										<h3 className="text-base md:text-lg font-bold text-gray-900 mb-2 line-clamp-2">
+									<div className="flex flex-1 flex-col p-5">
+										<div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-[#7a8397]">
+											<span className="flex items-center">
+												<Calendar className="mr-1 h-3 w-3" />
+												{formatDate(article.published_date)}
+											</span>
+											<span className="flex items-center">
+												<Clock className="mr-1 h-3 w-3" />
+												{getReadTime(article.read_minutes)}
+											</span>
+											<span className="flex items-center">
+												<Eye className="mr-1 h-3 w-3" />
+												{article.view_count.toLocaleString()}
+											</span>
+										</div>
+										<h3 className="mb-2 line-clamp-2 text-lg font-semibold tracking-tight text-brand-navy">
 											{article.title}
 										</h3>
-										<p className="text-xs md:text-sm text-gray-600 mb-3 line-clamp-2">
-											{article.content}
+										<p className="mb-4 line-clamp-2 text-sm leading-relaxed text-[#606b80]">
+											{stripHtml(article.content)}
 										</p>
-										<div className="flex flex-col md:flex-row md:items-center md:justify-between text-xs text-gray-500 mb-3 space-y-1 md:space-y-0">
-											<div className="flex flex-col md:flex-row md:items-center space-y-1 md:space-y-0 md:space-x-3">
-												<span className="flex items-center">
-													<User className="w-3 h-3 mr-1" />
-													TGA Global Law Firm LL.P
-												</span>
-												<span className="flex items-center">
-													<Calendar className="w-3 h-3 mr-1" />
-													{formatDate(article.published_date)}
-												</span>
-											</div>
-											<div className="flex flex-col md:flex-row md:items-center space-y-1 md:space-y-0 md:space-x-3">
-												<span className="flex items-center">
-													<Clock className="w-3 h-3 mr-1" />
-													{getReadTime(article.read_minutes)}
-												</span>
-												<span className="flex items-center">
-													<Eye className="w-3 h-3 mr-1" />
-													{article.view_count.toLocaleString()}
-												</span>
-											</div>
-										</div>
-										<div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-2 md:space-y-0">
-											<Link href={`/news/${article.id}`}>
-												<Button className="bg-teal-500 hover:bg-teal-600 text-xs md:text-sm w-full md:w-auto">
-													Read More
-													<ChevronRight className="w-3 h-3 ml-1" />
-												</Button>
+										<p className="mb-5 flex items-center text-xs text-[#7a8397]">
+											<User className="mr-1 h-3 w-3" />
+											TGA Global Law Firm LL.P
+										</p>
+										<div className="mt-auto flex items-center justify-between">
+											<Link
+												href={`/news/${article.id}`}
+												className="group/btn inline-flex items-center gap-1.5 rounded-full bg-brand-navy px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-green"
+											>
+												Read More
+												<ChevronRight className="h-4 w-4 transition-transform group-hover/btn:translate-x-0.5" />
 											</Link>
-											<div className="flex justify-center md:justify-end space-x-2">
-												<Button
-													variant="outline"
-													size="icon"
-													onClick={() => handleShare(article)}
-													className="w-8 h-8"
-												>
-													<Share2 className="w-3 h-3" />
-												</Button>
-											</div>
+											<button
+												type="button"
+												onClick={() => handleShare(article)}
+												aria-label="Copy link"
+												className="flex h-10 w-10 items-center justify-center rounded-full text-[#7a8397] ring-1 ring-black/10 transition-colors hover:bg-brand-tint hover:text-brand-green"
+											>
+												<Share2 className="h-4 w-4" />
+											</button>
 										</div>
-									</CardContent>
-								</Card>
+									</div>
+								</Reveal>
 							))}
 						</div>
-					</section>
+					</Section>
 				)}
 
-				{/* Main Content Grid */}
-				<div className="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-8">
-					{/* Latest Articles */}
-					<div className="lg:col-span-2">
-						<div className="flex items-center justify-between mb-6">
-							<h2 className="text-xl md:text-2xl font-semibold text-gray-900">
-								LATEST
-							</h2>
-							{/* <Button
-								variant="outline"
-								className="text-teal-500 border-teal-500 bg-transparent"
-							>
-								View All
-							</Button> */}
-						</div>
-						<div className="flex flex-col gap-2">
-							{latest.slice(0, 5).map((article) => (
-								<Link href={`/news/${article.id}`} key={article.id}>
-									<Card
+				{/* Latest, Hot and Trending */}
+				<Section>
+					<div className="grid grid-cols-1 gap-10 lg:grid-cols-4 lg:gap-8">
+						{/* Latest Articles */}
+						<Reveal className="lg:col-span-2">
+							<h2 className={columnHeading}>Latest</h2>
+							<div className="flex flex-col gap-3">
+								{latest.slice(0, 5).map((article) => (
+									<Link
+										href={`/news/${article.id}`}
 										key={article.id}
-										className="overflow-hidden hover:shadow-lg transition-shadow"
+										className={`${cardClass} group flex gap-4 overflow-hidden transition-shadow hover:shadow-md`}
 									>
-										<CardContent className="p-0">
-											<div className="flex">
-												<div className="w-32 h-26 flex-shrink-0 relative bg-red-500">
-													<img
-														src={getImageUrl(article)}
-														alt={article.title}
-														// width={128}
-														// height={96}
-														className="w-full h-full object-cover"
-													/>
-												</div>
-												<div className="p-3 md:p-4 flex-1">
-													<h3 className="font-semibold text-sm md:text-base text-gray-900 mb-2 line-clamp-2">
-														{article.title}
-													</h3>
-													<div className="flex flex-col md:flex-row md:items-center text-xs text-gray-500 space-y-1 md:space-y-0 md:space-x-3">
-														<span>TGA Global Law Firm LL.P</span>
-														<span>{formatDate(article.createdAt)}</span>
-														<span>{getReadTime(article.read_minutes)}</span>
-													</div>
-												</div>
+										<div className="min-h-[7rem] w-28 shrink-0 self-stretch overflow-hidden bg-[#eef1f5] sm:w-36">
+											<img
+												src={getImageUrl(article)}
+												alt={article.title}
+												className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+											/>
+										</div>
+										<div className="min-w-0 flex-1 py-3 pr-4">
+											<h3 className="mb-2 line-clamp-2 font-medium text-brand-navy">
+												{article.title}
+											</h3>
+											<div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-[#7a8397]">
+												<span className="hidden sm:inline">TGA Global Law Firm LL.P</span>
+												<span>{formatDate(article.createdAt)}</span>
+												<span>{getReadTime(article.read_minutes)}</span>
 											</div>
-										</CardContent>
-									</Card>
-								</Link>
-							))}
-						</div>
-					</div>
+										</div>
+									</Link>
+								))}
+							</div>
+						</Reveal>
 
-					{/* Top Articles Sidebar */}
-					<div className="lg:col-span-1">
-						<h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-6">HOT</h2>
-						<div className="flex flex-col gap-2">
-							{hot.slice(0, 5).map((article, index) => (
-								<Link href={`/news/${article.id}`} key={article.id}>
-									<Card
+						{/* Top Articles Sidebar */}
+						<Reveal delay={0.08} className="lg:col-span-1">
+							<h2 className={columnHeading}>Hot</h2>
+							<div className="flex flex-col gap-3">
+								{hot.slice(0, 5).map((article, index) => (
+									<Link
+										href={`/news/${article.id}`}
 										key={article.id}
-										className="overflow-hidden hover:shadow-md transition-shadow"
+										className={`${cardClass} flex items-start gap-3 p-4 transition-shadow hover:shadow-md`}
 									>
-										<CardContent className="p-3 md:p-4">
-											<div className="flex items-start space-x-2 md:space-x-3">
-												<div className="bg-teal-500 text-white rounded-full w-5 h-5 md:w-6 md:h-6 flex items-center justify-center text-xs md:text-sm font-bold flex-shrink-0">
-													{index + 1}
-												</div>
-												<div className="flex-1">
-													<h4 className="font-semibold text-xs md:text-sm text-gray-900 mb-1 line-clamp-2">
-														{article.title}
-													</h4>
-													<div className="flex flex-col md:flex-row md:items-center text-xs text-gray-500 space-y-1 md:space-y-0 md:space-x-2">
-														<span className="flex items-center">
-															<Eye className="w-3 h-3 mr-1" />
-															{article.view_count.toLocaleString()}
-														</span>
-														<span>{getReadTime(article.read_minutes)}</span>
-													</div>
-												</div>
-											</div>
-										</CardContent>
-									</Card>
-								</Link>
-							))}
-						</div>
-					</div>
-
-					{/* Trending Articles */}
-					<div className="lg:col-span-1">
-						<h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-6 flex items-center">
-							<TrendingUp className="w-5 h-5 md:w-6 md:h-6 mr-2 text-red-500" />
-							TRENDING
-						</h2>
-						<div className="flex flex-col gap-2">
-							{trending.map((article) => (
-								<Link href={`/news/${article.id}`} key={article.id}>
-									<Card
-										key={article.id}
-										className="overflow-hidden hover:shadow-md transition-shadow"
-									>
-										<CardContent className="p-3 md:p-4">
-											<h4 className="font-semibold text-xs md:text-sm text-gray-900 mb-2 line-clamp-2">
+										<span className="text-sm font-semibold tabular-nums text-brand-green">
+											{String(index + 1).padStart(2, "0")}
+										</span>
+										<div className="min-w-0 flex-1">
+											<h4 className="mb-1.5 line-clamp-2 text-sm font-medium text-brand-navy">
 												{article.title}
 											</h4>
-											<p className="text-xs text-gray-600 mb-2 line-clamp-2">
-												{article.content}
-											</p>
-											<div className="flex flex-col md:flex-row md:items-center text-xs text-gray-500 space-y-1 md:space-y-0 md:space-x-2">
-												<span>{formatDate(article.published_date)}</span>
+											<div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-[#7a8397]">
 												<span className="flex items-center">
-													<Eye className="w-3 h-3 mr-1" />
+													<Eye className="mr-1 h-3 w-3" />
 													{article.view_count.toLocaleString()}
 												</span>
+												<span>{getReadTime(article.read_minutes)}</span>
 											</div>
-										</CardContent>
-									</Card>
-								</Link>
-							))}
-						</div>
+										</div>
+									</Link>
+								))}
+							</div>
+						</Reveal>
+
+						{/* Trending Articles */}
+						<Reveal delay={0.16} className="lg:col-span-1">
+							<h2 className={`${columnHeading} flex items-center justify-center gap-2 sm:justify-start`}>
+								<TrendingUp className="h-5 w-5 text-brand-green" />
+								Trending
+							</h2>
+							<div className="flex flex-col gap-3">
+								{trending.map((article) => (
+									<Link
+										href={`/news/${article.id}`}
+										key={article.id}
+										className={`${cardClass} p-4 transition-shadow hover:shadow-md`}
+									>
+										<h4 className="mb-1.5 line-clamp-2 text-sm font-medium text-brand-navy">
+											{article.title}
+										</h4>
+										<p className="mb-2 line-clamp-2 text-xs leading-relaxed text-[#606b80]">
+											{stripHtml(article.content)}
+										</p>
+										<div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-[#7a8397]">
+											<span>{formatDate(article.published_date)}</span>
+											<span className="flex items-center">
+												<Eye className="mr-1 h-3 w-3" />
+												{article.view_count.toLocaleString()}
+											</span>
+										</div>
+									</Link>
+								))}
+							</div>
+						</Reveal>
 					</div>
-				</div>
+				</Section>
 
 				{/* Other News (Videos & External Links) Section */}
 				{others.length > 0 && (
-					<section className="mt-16 md:mt-20">
-						<div className="mx-auto px-0 md:px-4">
-							{/* Section Header */}
-							<div className="mb-8 md:mb-12">
-								<h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
-									External Content & Videos
-								</h2>
-								<p className="text-base md:text-lg text-gray-600 max-w-2xl">
-									Discover curated videos, external articles, and multimedia content from
-									trusted sources
-								</p>
-							</div>
-
-							{/* Content Grid */}
-							<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
-								{others.map((other, index) => (
-									<div
-										key={other.id}
-										className="group relative"
-										style={{
-											animationDelay: `${index * 100}ms`,
-										}}
-									>
-										<EmbeddedContent
-											title={other.title}
-											description={other.description}
-											link={other.link}
-											createdAt={other.createdAt}
-											className="h-full transform transition-all duration-300 group-hover:scale-100 group-hover:shadow-2xl rounded-md"
-										/>
-									</div>
-								))}
-							</div>
-
-							{/* Call to Action */}
-							{/* <div className="text-center mt-12">
-								<Button
-									variant="outline"
-									size="lg"
-									className="text-teal-600 border-teal-600 hover:bg-teal-50 hover:border-teal-700 px-8 py-3 text-lg font-semibold rounded-xl transition-all duration-300 hover:shadow-lg"
-									onClick={() => {
-										document.getElementById("browse-news-section")?.scrollIntoView({
-											behavior: "smooth",
-										});
-									}}
-								>
-									<ChevronRight className="w-5 h-5 mr-2" />
-									Explore More Content
-								</Button>
-							</div> */}
+					<Section pattern>
+						<SectionHeading
+							title="External Content & Videos"
+							description="Discover curated videos, external articles, and multimedia content from trusted sources"
+						/>
+						<div className="mt-14 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+							{others.map((other, index) => (
+								<Reveal key={other.id} delay={Math.min(index, 6) * 0.06} className="group relative">
+									<EmbeddedContent
+										title={other.title}
+										description={other.description}
+										link={other.link}
+										createdAt={other.createdAt}
+										className="h-full overflow-hidden rounded-3xl transition-all duration-300 group-hover:shadow-xl"
+									/>
+								</Reveal>
+							))}
 						</div>
-					</section>
+					</Section>
 				)}
 
 				{/* Browse by Category Section */}
-				<section id="browse-news-section" className="mt-16">
-					<h2 className="text-xl md:text-2xl font-semibold text-gray-900 mb-2">
-						Browse News
-					</h2>
+				<Section id="browse-news-section">
+					<SectionHeading
+						title="Browse News"
+						description="Search every story, or filter by category"
+					/>
 
 					{/* Search and Filter Section */}
-					<div className="mb-8">
-						<div className="flex flex-col md:flex-row gap-4 mb-6">
-							<div className="flex-1 relative">
-								<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-								<Input
-									placeholder="Search news..."
-									value={searchInput}
-									onChange={handleSearchInputChange}
-									onKeyPress={handleSearchKeyPress}
-									className="pl-10"
-								/>
-							</div>
-							<Button
+					<Reveal className="mx-auto mt-10 max-w-3xl">
+						<div className="flex items-center gap-2 rounded-full bg-white p-1.5 pl-5 shadow-sm ring-1 ring-black/5 focus-within:ring-2 focus-within:ring-brand-green/40">
+							<Search className="h-4 w-4 shrink-0 text-[#9aa3b5]" />
+							<input
+								placeholder="Search news..."
+								value={searchInput}
+								onChange={handleSearchInputChange}
+								onKeyPress={handleSearchKeyPress}
+								className="min-w-0 flex-1 bg-transparent py-2 text-brand-navy placeholder:text-[#9aa3b5] focus:outline-none"
+							/>
+							<button
+								type="button"
 								onClick={handleSearch}
-								className="bg-teal-500 hover:bg-teal-600 w-full md:w-auto"
+								className="rounded-full bg-brand-navy px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-green sm:px-6"
 							>
 								Search
-							</Button>
+							</button>
 						</div>
 
-						<div className="flex flex-wrap gap-2 mb-8">
-							<Button
-								key="All"
-								variant={selectedCategory === "All" ? "default" : "outline"}
-								onClick={() => handleCategoryChange("All")}
-								className={`text-xs md:text-sm ${
-									selectedCategory === "All" ? "bg-teal-500 hover:bg-teal-600" : ""
-								}`}
-							>
-								All
-							</Button>
-							{categories.map((category) => (
-								<Button
+						<div className="mt-5 -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:mx-auto sm:flex-wrap sm:justify-center sm:overflow-visible sm:px-0 sm:pb-0">
+							{[{ id: "All", name: "All" }, ...categories].map((category) => (
+								<button
 									key={category.id}
-									variant={selectedCategory === category.name ? "default" : "outline"}
+									type="button"
 									onClick={() => handleCategoryChange(category.name)}
-									className={`text-xs md:text-sm ${
-										selectedCategory === category.name
-											? "bg-teal-500 hover:bg-teal-600"
-											: ""
-									}`}
+									className={chipClass(selectedCategory === category.name)}
 								>
 									{category.name}
-								</Button>
+								</button>
 							))}
 							{showFilterReset && (
-								<Button
+								<button
 									key="Cancel"
-									variant="outline"
+									type="button"
 									onClick={() => {
 										setSearchInput("");
 										setSelectedCategory("All");
@@ -803,87 +871,91 @@ export default function NewsPage({
 											void fetchNewsByQuery(1, undefined, { q: "" });
 										}
 									}}
-									className="text-xs md:text-sm bg-red-500 hover:bg-red-600 text-white border-0"
+									className="inline-flex shrink-0 items-center rounded-full bg-red-50 px-4 py-2 text-sm text-red-600 ring-1 ring-red-100 transition-colors hover:bg-red-100"
 								>
-									<X className="w-4 h-4 mr-1" />
+									<X className="mr-1 h-4 w-4" />
 									Reset filters
-								</Button>
+								</button>
 							)}
 						</div>
-					</div>
+					</Reveal>
 
 					{/* News Grid */}
 					{isLoading ? (
-						<div className="flex items-center justify-center py-12">
-							<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-500"></div>
-							<span className="ml-2 text-gray-600">Loading...</span>
+						<div className="flex items-center justify-center py-16 text-[#606b80]">
+							<Loader2 className="h-6 w-6 animate-spin text-brand-green" />
+							<span className="ml-2">Loading...</span>
 						</div>
 					) : (
-						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-							{getCurrentNewsItems().map((article) => (
-								<Link href={`/news/${article.id}`} key={article.id}>
-									<Card
-										key={article.id}
-										className="overflow-hidden hover:shadow-lg transition-shadow"
+						<div className="mt-12 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+							{getCurrentNewsItems().map((article, index) => (
+								<Reveal key={article.id} delay={(index % 3) * 0.06}>
+									<Link
+										href={`/news/${article.id}`}
+										className="group flex h-full flex-col overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-black/5 transition-shadow hover:shadow-lg"
 									>
-										<div className="relative">
+										<div className="h-60 overflow-hidden bg-[#eef1f5]">
 											<img
 												src={getImageUrl(article)}
 												alt={article.title}
 												width={400}
 												height={250}
-												className="w-full h-40 md:h-48 object-cover"
+												className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
 											/>
 										</div>
-										<CardContent className="p-3 md:p-4">
-											<h3 className="font-semibold text-sm md:text-base text-gray-900 mb-2 line-clamp-2">
+										<div className="flex flex-1 flex-col p-5">
+											<h3 className="mb-2 line-clamp-2 font-semibold tracking-tight text-brand-navy">
 												{article.title}
 											</h3>
-											<p className="text-xs md:text-sm text-gray-600 mb-3 line-clamp-2">
-												{article.content}
+											<p className="mb-4 line-clamp-2 text-sm leading-relaxed text-[#606b80]">
+												{stripHtml(article.content)}
 											</p>
-											<div className="flex flex-col md:flex-row md:items-center md:justify-between text-xs text-gray-500 space-y-1 md:space-y-0">
-												<span>TGA Global Law Firm LL.P</span>
-												<span>{formatNewsMetaDate(article)}</span>
+											<div className="mt-auto flex items-center justify-between gap-3 text-xs text-[#7a8397]">
+												<span className="truncate">TGA Global Law Firm LL.P</span>
+												<span className="shrink-0">{formatNewsMetaDate(article)}</span>
 											</div>
-										</CardContent>
-									</Card>
-								</Link>
+										</div>
+									</Link>
+								</Reveal>
 							))}
 						</div>
 					)}
 
 					{/* Pagination for Browse by Category */}
 					{getPaginationInfo() && (
-						<div className="flex items-center justify-center space-x-2 mt-8">
-							<Button
-								variant="outline"
+						<div className="mt-10 flex items-center justify-center gap-3">
+							<button
+								type="button"
 								onClick={() => handlePageChange(currentPage - 1)}
 								disabled={currentPage === 1}
-								className="flex items-center text-xs md:text-sm"
+								className={pagerClass}
 							>
-								<ChevronLeft className="w-4 h-4 mr-1" />
+								<ChevronLeft className="mr-1 h-4 w-4" />
 								Previous
-							</Button>
+							</button>
 
-							<span className="text-xs md:text-sm text-gray-600">
+							<span className="text-sm text-[#606b80]">
 								Page {getPaginationInfo()?.currentPage} of{" "}
 								{getPaginationInfo()?.totalPages}
 							</span>
 
-							<Button
-								variant="outline"
+							<button
+								type="button"
 								onClick={() => handlePageChange(currentPage + 1)}
 								disabled={currentPage === getPaginationInfo()?.totalPages}
-								className="flex items-center text-xs md:text-sm"
+								className={pagerClass}
 							>
 								Next
-								<ChevronRight className="w-4 h-4 ml-1" />
-							</Button>
+								<ChevronRight className="ml-1 h-4 w-4" />
+							</button>
 						</div>
 					)}
-				</section>
+				</Section>
+				</>
+				)}
+
+				<Footer />
 			</div>
-		</div>
+		</MotionConfig>
 	);
 }

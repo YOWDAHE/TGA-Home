@@ -2,6 +2,7 @@ import LegalUpdatesPage from "@/components/Sections/LegalUpdatesPage";
 import { getLegalUpdates } from "../actions/legal-updates.actions";
 import { getCategories } from "../actions/news.actions";
 import type { Metadata } from "next";
+import { homeFont } from "../fonts";
 
 export const dynamic = "force-dynamic";
 
@@ -40,11 +41,13 @@ export default async function page() {
   const pagination = updatesRes.data?.pagination || { currentPage: 1, totalPages: 1, totalItems: 0 };
 
   return (
-    <LegalUpdatesPage
-      initialUpdates={updates}
-      featuredUpdates={featuredUpdates}
-      categories={categories}
-      pagination={pagination}
-    />
+    <div className={homeFont.className}>
+      <LegalUpdatesPage
+        initialUpdates={updates}
+        featuredUpdates={featuredUpdates}
+        categories={categories}
+        pagination={pagination}
+      />
+    </div>
   );
 }

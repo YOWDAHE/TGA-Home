@@ -1,252 +1,157 @@
-import React, { Component } from "react";
-import { Button } from "../ui/button";
-import Image from "next/image";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import {
-	Carousel,
-	CarouselContent,
-	CarouselItem,
-} from "@/components/ui/carousel";
-import Autoplay from "embla-carousel-autoplay";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
+import { ArrowRight } from "lucide-react";
+import { easeOut } from "./Reveal";
+import TopNav from "./TopNav";
 
-type HeroState = {
-	currentTextIndex: number;
-};
+const B = ({ children }: { children: React.ReactNode }) => (
+	<span className="font-medium text-brand-navy">{children}</span>
+);
 
-export class Hero extends Component<{}, HeroState> {
-	interval?: ReturnType<typeof setInterval>;
+// Each rotating statement: a short headline, with the full statement underneath
+const slides = [
+	{
+		title: "Built for business in Ethiopia and Africa",
+		text: (
+			<>
+				Committed to a <B>robust business and investment</B> environment in Ethiopia
+				and Africa.
+			</>
+		),
+	},
+	{
+		title: "Trusted across 52 jurisdictions",
+		text: (
+			<>
+				A <B>globally renowned legal firm</B> with a distinct presence and forged
+				partnerships in over <B>52 jurisdictions and nations</B> across four
+				continents.
+			</>
+		),
+	},
+	{
+		title: "Africa's seat on the BRILSA council",
+		text: (
+			<>
+				The first and only African law firm chosen to the governing council of the{" "}
+				<B>BRILSA/Belt and Road International Legal Services Association</B>, which
+				is estimated to contribute <B>$7.1 trillion to the global GDP</B> annually
+				and has <B>153 member countries worldwide</B>.
+			</>
+		),
+	},
+	{
+		title: "Led by continental legal leadership",
+		text: (
+			<>
+				The managing partner of this <B>premier</B> law company holds a number of
+				prestigious positions and has garnered <B>international recognition</B>,
+				including <B>President</B> of the <B>Pan African Lawyers Union (PALU)</B> and{" "}
+				<B>Founding Former President of the Ethiopian Federal Bar Association</B>.
+			</>
+		),
+	},
+];
 
-	state: HeroState = {
-		currentTextIndex: 0,
-	};
+export default function Hero() {
+	const [slideIndex, setSlideIndex] = useState(0);
 
-	componentDidMount() {
-		this.interval = setInterval(() => {
-			this.setState(({ currentTextIndex }) => ({
-				currentTextIndex: (currentTextIndex + 1) % this.texts.length,
-			}));
-		}, 6000);
-	}
-
-	componentWillUnmount() {
-		clearInterval(this.interval);
-	}
-
-	texts = [
-		<div>
-			COMMITTED TO A{" "}
-			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">
-				ROBUST BUSINESS AND INVESTMENT
-			</span>{" "}
-			ENVIRONMENT
-			<br />
-			IN ETHIOPIA AND AFRICA
-		</div>,
-		<div>
-			A{" "}
-			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">
-				globally renowned legal firm
-			</span>{" "}
-			with a distinct presence and forged partnerships in over{" "}
-			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">
-				52 jurisdictions and nations
-			</span>{" "}
-			across four continents
-		</div>,
-		<div>
-			The first and only African law firm chosen to the governing council of the{" "}
-			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">
-				{" "}
-				BRILSA/Belt and Road International Legal Services Association
-			</span>
-			, which is estimated to contribute{" "}
-			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">
-				{" "}
-				$7.1 trillion to the global GDP
-			</span>{" "}
-			annually and has{" "}
-			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">
-				{" "}
-				153 member countries worldwide
-			</span>
-			.
-		</div>,
-		<div className="">
-			The managing partner of this{" "}
-			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">
-				premier
-			</span>{" "}
-			law company holds a number of prestigious positions and has garnered{" "}
-			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">
-				international recognition
-			</span>
-			, including{" "}
-			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">
-				President
-			</span>{" "}
-			of the{" "}
-			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">
-				Pan African Lawyers Union (PALU)
-			</span>{" "}
-			and{" "}
-			<span className="bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">
-				Founding Former President of the Ethiopian Federal Bar Association
-			</span>
-			.
-		</div>,
-	];
-	images = [
-		{ src: "/loader/loader-1.svg", alt: "Hero", width: 350, height: 350 },
-		{ src: "/loader/loader-1.svg", alt: "Hero 2", width: 350, height: 350 },
-		{ src: "/loader/loader-1.svg", alt: "Hero 3", width: 350, height: 350 },
-		{ src: "/loader/loader-1.svg", alt: "Hero 3", width: 350, height: 350 },
-	];
-
-	render() {
-		const { currentTextIndex } = this.state;
-		const heroImages = [
-			"/Images/hero/hero-1.jpg",
-			"/Images/hero/hero-2.jpg",
-			"/Images/hero/hero-3.jpg",
-		];
-
-		return (
-			<section
-				id="hero-section"
-				className="relative min-h-[700px] bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 text-white py-32 overflow-hidden max-h-[calc(100vh-90px)] flex items-center justify-center"
-			>
-				<div className="flex justify-evenly absolute top-10 gap-6 z-20 md:hidden">
-					<Link href="/about-us" className={`font-medium hover:text-teal-500`}>
-						About
-					</Link>
-					<Link href="#services" className={`font-medium hover:text-teal-500`}>
-						Service
-					</Link>
-					<Link href="/resources" className={`font-medium hover:text-teal-500`}>
-						Resources
-					</Link>
-					<Link href="/news" className={`font-medium hover:text-teal-500`}>
-						News
-					</Link>
-					<Link href="/legal-updates" className={`font-medium hover:text-teal-500`}>
-						Legal Updates
-					</Link>
-				</div>
-				{/* Rotating hero images background carousel */}
-				<div className="absolute inset-0 overflow-hidden min-h-[700px] h-full">
-					<Carousel
-						opts={{
-							loop: true,
-							duration: 20,
-						}}
-						plugins={[Autoplay({ delay: 4000, stopOnInteraction: false })]}
-						className="w-full h-full"
-					>
-						<CarouselContent className="h-full">
-							{heroImages.map((image, index) => (
-								<CarouselItem key={index} className="h-full">
-									<div className="relative w-full h-full">
-										<img
-											src={image}
-											alt={`Hero background ${index + 1}`}
-											className="object-cover opacity-30 w-full min-h-[700px] h-[100vh]"
-										/>
-									</div>
-								</CarouselItem>
-							))}
-						</CarouselContent>
-					</Carousel>
-				</div>
-
-				<div className="absolute inset-0 bg-gradient-to-r from-black/40 to-transparent"></div>
-
-				{/* Animated background elements */}
-				<div className="absolute inset-0 overflow-hidden">
-					<div className="absolute -top-40 -right-40 w-80 h-80 bg-teal-500/20 rounded-full blur-3xl animate-pulse"></div>
-					<div className="absolute -bottom-40 -left-40 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
-				</div>
-
-				<div className="hidden lg:flex items-center justify-center lg:gap-10 gap-4 absolute left-0 w-full top-10 text-sm lg:text-base">
-					<Link href="/">Home</Link>
-					<Link href="/about-us">About</Link>
-					<Link href="#services">Services</Link>
-					<Link href="/resources">Resources</Link>
-					<Link href="/news">News</Link>
-					<Link href="/legal-updates">Legal Updates</Link>
-					<Link href="#contact">Contact</Link>
-				</div>
-				<div className="container mx-auto px-4 text-center relative z-10 flex flex-col items-center justify-center gap-10 mt-4">
-					<img
-						src="/loader/loader-1.svg"
-						alt="Hero"
-						width={350}
-						height={350}
-						className="object-cover rounded-lg bg-white hidden md:block"
-					/>
-					<img
-						src="/loader/loader-1.svg"
-						alt="Hero"
-						width={200}
-						height={200}
-						className="object-cover rounded-lg bg-white md:hidden"
-					/>
-					{/* <AnimatePresence mode="wait">
-						<motion.div
-							key={currentTextIndex}
-							className="..."
-							initial={{ opacity: 0, y: 10 }}
-							animate={{ opacity: 1, y: 0 }}
-							exit={{ opacity: 0, y: -60 }}
-							transition={{ duration: 0.5, ease: "easeInOut" }}
-						>
-							<img
-								src={this.images[currentTextIndex].src}
-								alt={this.images[currentTextIndex].alt}
-								width={this.images[currentTextIndex].width}
-								height={this.images[currentTextIndex].height}
-								className="object-cover rounded-lg bg-white"
-							/>
-						</motion.div>
-					</AnimatePresence> */}
-
-					<AnimatePresence mode="wait">
-						<motion.div
-							className="text-xl md:text-3xl mb-8 leading-tight max-w-6xl mx-auto h-[120px] flex flex-col items-center justify-center mt-10 lg:mt-0"
-							style={{ minHeight: "5.5rem" }}
-							key={currentTextIndex}
-							initial={{ opacity: 0, y: 30 }}
-							animate={{ opacity: 1, y: 0 }}
-							exit={{ opacity: 0, y: -30 }}
-							transition={{ duration: 0.8, ease: "easeInOut" }}
-						>
-							{this.texts[currentTextIndex]}
-						</motion.div>
-					</AnimatePresence>
-
-					<div className="flex flex-col sm:flex-row gap-4 justify-center">
-						<Link href="#contact">
-							<Button
-								size="lg"
-								className="bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 text-white px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
-							>
-								Get Legal Consultation
-							</Button>
-						</Link>
-						<Link href="#about">
-							<Button
-								size="lg"
-								variant="outline"
-								className="border-2 border-white/30 text-white hover:bg-white/10 px-8 py-4 rounded-xl backdrop-blur-sm bg-transparent hover:text-white"
-							>
-								Learn More
-							</Button>
-						</Link>
-					</div>
-				</div>
-			</section>
+	useEffect(() => {
+		const slideTimer = setInterval(
+			() => setSlideIndex((i) => (i + 1) % slides.length),
+			6000
 		);
-	}
-}
+		return () => clearInterval(slideTimer);
+	}, []);
 
-export default Hero;
+	return (
+		<section
+			id="hero-section"
+			className="relative flex min-h-[100svh] flex-col pb-10 sm:pb-20"
+		>
+
+			<TopNav currentHref="/" />
+
+			{/* Copy */}
+			<div className="mx-auto flex w-full max-w-4xl flex-1 flex-col items-center justify-center px-5 py-10 text-center sm:px-6 sm:pt-16">
+				<motion.p
+					initial={{ opacity: 0, y: 10 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ duration: 0.6, ease: easeOut, delay: 0.1 }}
+					className="mb-5 inline-flex items-center gap-2 rounded-full bg-white px-3.5 py-1.5 text-xs font-medium text-[#4b5468] shadow-sm ring-1 ring-black/5 sm:mb-6 sm:px-4"
+				>
+					<span className="h-1.5 w-1.5 rounded-full bg-brand-green" />
+					TGA Global Law Firm LL.P · Addis Ababa
+				</motion.p>
+
+				{/* Slides share one grid cell, so the block keeps the tallest slide's height and
+				    nothing around it moves; shorter slides sit centered inside it */}
+				<div className="grid w-full">
+					{slides.map((slide, index) => {
+						const active = index === slideIndex;
+						return (
+							<motion.div
+								key={index}
+								aria-hidden={!active}
+								className={`self-center [grid-area:1/1] ${active ? "" : "pointer-events-none"}`}
+								initial={false}
+								animate={
+									active
+										? { opacity: 1, y: 0, filter: "blur(0px)" }
+										: { opacity: 0, y: -24, filter: "blur(8px)" }
+								}
+								transition={{ duration: 0.7, ease: easeOut }}
+							>
+								<h1 className="text-balance text-[2.375rem] font-semibold leading-[1.05] tracking-[-0.03em] sm:tracking-tight text-brand-navy sm:text-6xl lg:text-7xl">
+									{slide.title}
+								</h1>
+								<p className="mx-auto mt-4 max-w-2xl text-pretty text-base leading-relaxed text-[#606b80] sm:mt-6 sm:text-lg">
+									{slide.text}
+								</p>
+							</motion.div>
+						);
+					})}
+				</div>
+
+				<motion.div
+					initial={{ opacity: 0, y: 10 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ duration: 0.6, ease: easeOut, delay: 0.25 }}
+					className="mt-8 flex flex-col items-center justify-center gap-3 sm:mt-10 sm:flex-row"
+				>
+					<Link
+						href="#contact"
+						className="group inline-flex min-w-[15rem] items-center justify-center gap-2 rounded-full bg-brand-navy px-6 py-3.5 text-sm font-medium text-white shadow-[0_8px_20px_-8px_rgba(11,27,77,0.45)] transition-colors hover:bg-brand-green sm:min-w-0 sm:px-7"
+					>
+						Get Legal Consultation
+						<ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+					</Link>
+					<Link
+						href="#about"
+						className="inline-flex min-w-[15rem] items-center justify-center rounded-full bg-white px-6 py-3.5 text-sm font-medium text-brand-navy ring-1 ring-black/10 transition-colors hover:bg-[#f7f9fc] sm:min-w-0 sm:px-7"
+					>
+						Learn More
+					</Link>
+				</motion.div>
+
+				<div className="mt-8 flex justify-center gap-2">
+					{slides.map((_, index) => (
+						<button
+							key={index}
+							type="button"
+							aria-label={`Show statement ${index + 1}`}
+							onClick={() => setSlideIndex(index)}
+							className={`h-1.5 rounded-full transition-all duration-500 ${
+								index === slideIndex ? "w-8 bg-brand-green" : "w-1.5 bg-[#c3ccd9] hover:bg-[#9aa5b8]"
+							}`}
+						/>
+					))}
+				</div>
+			</div>
+
+		</section>
+	);
+}
