@@ -1,26 +1,15 @@
 import LoginForm from "@/components/auth/LoginForm";
 import React from "react";
 import type { Metadata } from 'next'
+import { pageMetadata } from '@/lib/seo'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Login',
-  description: 'Login to your TGA Global Law Firm LL.P account to access exclusive legal resources and services.',
-  robots: {
-    index: false,
-    follow: false,
-  },
-  openGraph: {
-    title: 'Login | TGA Global Law Firm LL.P',
-    description: 'Login to your TGA Global Law Firm LL.P account to access exclusive legal resources and services.',
-    url: '/login',
-    type: 'website',
-  },
-  twitter: {
-    card: 'summary',
-    title: 'Login | TGA Global Law Firm LL.P',
-    description: 'Login to your TGA Global Law Firm LL.P account.',
-  },
-}
+  description: 'Sign in to your TGA Global Law Firm LL.P account to access legal resources and services.',
+  path: '/login',
+  card: { eyebrow: 'Account', title: 'Sign in to TGA Global' },
+  noIndex: true,
+})
 
 export default function LoginPage() {
 	return <LoginForm />;

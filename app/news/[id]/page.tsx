@@ -4,6 +4,9 @@ import { getNewsById as fetchNewsById } from '@/app/actions/news.actions'
 import { getRelatedNews, getRelatedUpdates } from '@/lib/related-content'
 import React, { cache } from 'react'
 import type { Metadata } from 'next'
+import { pageMetadata, plainSummary } from '@/lib/seo'
+import { convertToApiUrl } from '@/lib/utils'
+import { parseHashtags } from '@/lib/hashtags'
 
 // The backend counts a view on every fetch, so the metadata and the page share one request
 const getNewsById = cache(fetchNewsById)
@@ -82,74 +85,32 @@ export async function generateMetadata({ params }: NewsPageProps): Promise<Metad
 
   const { title, content, visual_content, hashtags, published_date, seo_keywords } = news.data as any;
   
-  // Strip HTML tags from content for description
-  const plainTextContent = content?.replace(/<[^>]*>/g, '') || '';
-  const description = plainTextContent.length > 160 
-    ? plainTextContent.substring(0, 157) + '...' 
-    : plainTextContent;
-
-  // Get the first image from visual_content if available
-  // Images are stored either as URL strings or as { secure_url } objects; metadata needs the string
-  const firstImage = visual_content && visual_content.length > 0 ? visual_content[0] : null;
-  const imageUrl: string | null =
-    typeof firstImage === 'string' ? firstImage : typeof firstImage?.secure_url === 'string' ? firstImage.secure_url : null;
-  console.log(published_date);
+  // Images are stored either as URL strings or as { secure_url } objects
+  const firstImage = visual_content?.length ? visual_content[0] : null;
 
   // Prefer explicit seo_keywords (comma-separated). Fallback to generated + hashtags + title
   const explicitKeywords = typeof seo_keywords === 'string' && seo_keywords.trim().length > 0
     ? seo_keywords.split(",").map((k: string) => k.trim()).filter((k: string) => k.length > 0)
     : null;
   const generatedKeywords = generateApproximateKeywords(title, content);
-  const hashtagKeywords = hashtags ? hashtags.split(",").map((tag: string) => tag.trim()) : [];
+  const hashtagKeywords = parseHashtags(hashtags);
   const allKeywords = explicitKeywords && explicitKeywords.length > 0
     ? explicitKeywords
     : [...new Set([...generatedKeywords, ...hashtagKeywords, title.toLocaleLowerCase()])];
 
-  return {
-			title: title,
-			description: description,
-			keywords: allKeywords,
-			openGraph: {
-				title: `${title} | TGA Global Law Firm LL.P`,
-				description: description,
-				url: `/news/${id}`,
-				type: "article",
-				publishedTime: published_date.toString(),
-				images: imageUrl
-					? [
-							{
-								url: imageUrl,
-								width: 1200,
-								height: 630,
-								alt: title,
-							},
-					  ]
-					: [
-							{
-								url: "/Images/logo/TGA_LOGO.svg",
-								width: 1200,
-								height: 630,
-								alt: "TGA Global Law Firm LL.P News",
-							},
-					  ],
-				authors: ["TGA Global Law Firm LL.P"],
-				section: "Legal News",
-			},
-			twitter: {
-				card: "summary_large_image",
-				title: `${title} | TGA Global Law Firm LL.P`,
-				description: description,
-				images: imageUrl ? [imageUrl] : ["/Images/logo/TGA_LOGO.svg"],
-			},
-			alternates: {
-				canonical: `/news/${id}`,
-			},
-			other: {
-				"article:published_time": published_date.toString(),
-				"article:author": "TGA Global Law Firm LL.P",
-				"article:section": "Legal News",
-			},
-		};
+  return pageMetadata({
+    title,
+    description: plainSummary(content) || title,
+    path: `/news/${id}`,
+    type: 'article',
+    publishedTime: published_date,
+    keywords: allKeywords,
+    card: {
+      eyebrow: 'News',
+      date: published_date,
+      image: firstImage ? convertToApiUrl(firstImage) : null,
+    },
+  });
   } catch {
     return {
       title: 'Legal News | TGA Global Law Firm LL.P',

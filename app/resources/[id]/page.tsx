@@ -5,6 +5,7 @@ import { getRelatedNews, getRelatedResources, getRelatedUpdates } from '@/lib/re
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next'
 import { cache } from 'react';
+import { pageMetadata, plainSummary } from '@/lib/seo';
 
 // The backend counts a view on every fetch, so the metadata and the page share one request
 const getResourceById = cache(fetchResourceById);
@@ -76,16 +77,7 @@ export async function generateMetadata({ params }: DocumentPageProps): Promise<M
 			};
 		}
 
-		const { title, description, file_url, file_size, view_count, createdAt, seo_keywords } = resource as any;
-		
-		// Format file size for display
-		const formatFileSize = (bytes: number) => {
-			if (bytes === 0) return "0 Bytes";
-			const k = 1024;
-			const sizes = ["Bytes", "KB", "MB", "GB"];
-			const i = Math.floor(Math.log(bytes) / Math.log(k));
-			return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
-		};
+		const { title, description, createdAt, seo_keywords } = resource as any;
 
 		// Prefer explicit seo_keywords (comma-separated). Fallback to generated + title
 		const explicitKeywords = typeof seo_keywords === 'string' && seo_keywords.trim().length > 0
@@ -93,59 +85,18 @@ export async function generateMetadata({ params }: DocumentPageProps): Promise<M
 			: null;
 		const generatedKeywords = generateApproximateKeywords(title, description);
 
-		return {
-			title: title,
-			description:
-				description ||
-				`Download ${title} - Legal document from TGA Global Law Firm LL.P. File size: ${formatFileSize(
-					file_size
-				)}`,
+		return pageMetadata({
+			title,
+			description: plainSummary(description) || `Read and download "${title}", a legal resource from TGA Global Law Firm LL.P.`,
+			path: `/resources/${(await params).id}`,
+			type: 'article',
+			publishedTime: createdAt,
 			keywords:
 				explicitKeywords && explicitKeywords.length > 0
 					? explicitKeywords
 					: [...generatedKeywords, title.toLocaleLowerCase()],
-			openGraph: {
-				title: `${title} | TGA Global Law Firm LL.P`,
-				description:
-					description ||
-					`Download ${title} - Legal document from TGA Global Law Firm LL.P`,
-				url: `https://tgagloballawfirm.com/resources/${(await params).id}`,
-				type: "website",
-				images: [
-					{
-						url: "/Images/logo/TGA_LOGO_IMG.png",
-						width: 1200,
-						height: 630,
-						alt: `${title} - TGA Global Law Firm LL.P`,
-					},
-				],
-			},
-			twitter: {
-				card: "summary_large_image",
-				title: `${title} | TGA Global Law Firm LL.P`,
-				description:
-					description ||
-					`Download ${title} - Legal document from TGA Global Law Firm LL.P`,
-				images: ["/Images/logo/TGA_LOGO.svg"],
-			},
-			alternates: {
-				canonical: `https://tgagloballawfirm.com/resources/${(await params).id}`,
-			},
-			other: {
-				"file:size": formatFileSize(file_size),
-				"file:type": "document",
-				"view:count": view_count.toString(),
-				"published:date": createdAt,
-			},
-			robots: {
-				index: true,
-				follow: true,
-				googleBot: {
-					index: true,
-					follow: true,
-				},
-			},
-		};
+			card: { eyebrow: 'Resource · PDF', date: createdAt },
+		});
 	} catch (error) {
 		return {
 			title: 'Document Not Found',

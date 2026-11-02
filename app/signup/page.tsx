@@ -1,26 +1,15 @@
 import SignupForm from "@/components/auth/SignupForm";
 import React from "react";
 import type { Metadata } from 'next'
+import { pageMetadata } from '@/lib/seo'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Sign Up',
-  description: 'Create your TGA Global Law Firm LL.P account to access exclusive legal resources, documents, and professional legal services.',
-  robots: {
-    index: false,
-    follow: false,
-  },
-  openGraph: {
-    title: 'Sign Up | TGA Global Law Firm LL.P',
-    description: 'Create your TGA Global Law Firm LL.P account to access exclusive legal resources, documents, and professional legal services.',
-    url: '/signup',
-    type: 'website',
-  },
-  twitter: {
-    card: 'summary',
-    title: 'Sign Up | TGA Global Law Firm LL.P',
-    description: 'Create your TGA Global Law Firm LL.P account.',
-  },
-}
+  description: 'Create your TGA Global Law Firm LL.P account to access legal resources, documents and services.',
+  path: '/signup',
+  card: { eyebrow: 'Account', title: 'Create your TGA Global account' },
+  noIndex: true,
+})
 
 export default function SignupPage() {
 	return <SignupForm />;

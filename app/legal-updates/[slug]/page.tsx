@@ -6,6 +6,8 @@ import { getRelatedNews, getRelatedUpdates } from "@/lib/related-content";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { cache } from "react";
+import { pageMetadata, plainSummary } from "@/lib/seo";
+import { CONTENT_TYPE_LABELS } from "@/lib/content-types";
 
 // The backend counts a view on every fetch, so the metadata and the page share one request
 const getLegalUpdateBySlug = cache(fetchLegalUpdateBySlug);
@@ -21,18 +23,18 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const { slug } = await params;
     const res = await getLegalUpdateBySlug(slug);
     const item = res.data;
-    return {
+    return pageMetadata({
       title: item.title,
-      description: item.meta_description || item.summary || item.title,
-      keywords: item.seo_keywords?.split(",").map((k) => k.trim()),
-      openGraph: {
-        title: item.title,
-        description: item.meta_description || item.summary || undefined,
-        url: `/legal-updates/${slug}`,
-        type: "article",
+      description: item.meta_description || plainSummary(item.summary || item.content) || item.title,
+      path: `/legal-updates/${slug}`,
+      type: "article",
+      publishedTime: item.published_date,
+      keywords: item.seo_keywords?.split(",").map((k) => k.trim()).filter(Boolean),
+      card: {
+        eyebrow: CONTENT_TYPE_LABELS[item.content_type] || "Legal update",
+        date: item.published_date,
       },
-      alternates: { canonical: `/legal-updates/${slug}` },
-    };
+    });
   } catch {
     return { title: "Legal Update Not Found" };
   }

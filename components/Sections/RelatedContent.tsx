@@ -6,14 +6,10 @@ import type { LegalUpdate } from "@/app/types/legal-updates";
 import type { News } from "@/app/types/news";
 import type { Resource } from "@/app/actions/resources.actions";
 import { convertToApiUrl } from "@/lib/utils";
+import { CONTENT_TYPE_LABELS } from "@/lib/content-types";
 import Reveal from "./Reveal";
 
-export const CONTENT_TYPE_LABELS: Record<string, string> = {
-	alert: "Client Alert",
-	analysis: "Analysis",
-	guide: "Guide",
-	update: "Legal Update",
-};
+export { CONTENT_TYPE_LABELS };
 
 export const CONTENT_TYPE_COLORS: Record<string, string> = {
 	alert: "bg-red-50 text-red-700",

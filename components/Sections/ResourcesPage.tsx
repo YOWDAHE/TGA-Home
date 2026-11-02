@@ -13,6 +13,7 @@ import {
 	TrendingUp,
 	ExternalLink,
 	Loader2,
+	Share2,
 	ChevronLeft,
 	ChevronRight,
 	X,
@@ -30,6 +31,7 @@ import { FrostedColors } from "./Backdrop";
 import { Highlight, MatchBadges, excerptAround, matchedFields } from "./SearchMatch";
 import { MotionConfig, motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
+import { useCopyLink } from "./useCopyLink";
 
 interface ResourcesPageProps {
 	resources: Resource[];
@@ -60,7 +62,11 @@ const chipClass = (active: boolean) =>
 const countClass = (active: boolean) =>
 	`rounded-full px-2 py-0.5 text-xs tabular-nums ${active ? "bg-white/15 text-white" : "bg-[#f2f4f8] text-[#7a8397]"}`;
 
-// "Open" goes to the resource page; the second button opens the file in a new tab (sign-in required)
+const iconButtonClass =
+	"flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-brand-green ring-1 ring-black/10 transition-colors hover:bg-brand-tint disabled:opacity-50";
+
+// "Open" goes to the resource page, share copies that page's link, and the last button
+// opens the file in a new tab (sign-in required)
 function ResourceActions({
 	resource,
 	onOpenInNewTab,
@@ -70,6 +76,8 @@ function ResourceActions({
 	onOpenInNewTab: (resource: Resource) => void;
 	busy: boolean;
 }) {
+	const copyLink = useCopyLink();
+
 	return (
 		<div className="mt-auto flex gap-2">
 			<Link
@@ -81,10 +89,20 @@ function ResourceActions({
 			</Link>
 			<button
 				type="button"
+				onClick={() => copyLink(`/resources/${resource.id}`)}
+				aria-label="Copy link to this resource"
+				title="Copy link"
+				className={iconButtonClass}
+			>
+				<Share2 className="h-4 w-4" />
+			</button>
+			<button
+				type="button"
 				onClick={() => onOpenInNewTab(resource)}
 				disabled={busy}
 				aria-label="Open file in a new tab"
-				className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-brand-green ring-1 ring-black/10 transition-colors hover:bg-brand-tint disabled:opacity-50"
+				title="Open file in a new tab"
+				className={iconButtonClass}
 			>
 				{busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <ExternalLink className="h-4 w-4" />}
 			</button>
@@ -107,6 +125,7 @@ const ResourceCardSkeleton = () => (
 			<div className="flex gap-2">
 				<Skeleton className="h-10 flex-1 rounded-full bg-[#eef1f5]" />
 				<Skeleton className="h-10 w-10 rounded-full bg-[#eef1f5]" />
+				<Skeleton className="h-10 w-10 rounded-full bg-[#eef1f5]" />
 			</div>
 		</div>
 	</div>
@@ -126,6 +145,7 @@ const MostVisitedSkeleton = () => (
 				<Skeleton className="mb-5 h-5 w-3/4 rounded bg-[#eef1f5]" />
 				<div className="flex gap-2">
 					<Skeleton className="h-10 flex-1 rounded-full bg-[#eef1f5]" />
+					<Skeleton className="h-10 w-10 rounded-full bg-[#eef1f5]" />
 					<Skeleton className="h-10 w-10 rounded-full bg-[#eef1f5]" />
 				</div>
 			</div>
@@ -576,7 +596,7 @@ export default function ResourcesPage({ resources, topViewedResources, categorie
 												</p>
 											)}
 										</div>
-										<div className="flex w-full shrink-0 sm:w-44">
+										<div className="flex w-full shrink-0 sm:w-56">
 											<ResourceActions
 												resource={resource}
 												onOpenInNewTab={handleOpenResource}

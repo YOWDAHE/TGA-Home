@@ -1,19 +1,23 @@
 import { Metadata } from "next";
 import Link from "next/link";
+import { pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = {
-	title:
-		"Corporate Lawyers Ethiopia | Business Law Firm Addis Ababa | TGA Global Law Firm LL.P",
-	description:
-		"Leading corporate lawyers Ethiopia. Business law firm Addis Ababa specializing in corporate law, business registration, and commercial legal services. #1 law firm in Ethiopia.",
-	keywords:
-		"Corporate Lawyers Ethiopia, Business Law Firm Addis Ababa, Corporate Law Ethiopia, Business Registration Ethiopia, Commercial Lawyers Ethiopia, Commercial Law Ethiopia",
-	openGraph: {
+	...pageMetadata({
 		title: "Corporate Lawyers Ethiopia | Business Law Firm Addis Ababa",
 		description:
-			"Leading corporate lawyers Ethiopia. Business law firm Addis Ababa specializing in corporate law, business registration, and commercial legal services.",
-		type: "website",
-	},
+			"Leading corporate lawyers in Ethiopia. Business law firm in Addis Ababa for corporate law, business registration and commercial legal services.",
+		path: "/corporate-law-ethiopia",
+		card: { eyebrow: "Practice area", title: "Corporate lawyers in Ethiopia" },
+	}),
+	keywords: [
+		"Corporate Lawyers Ethiopia",
+		"Business Law Firm Addis Ababa",
+		"Corporate Law Ethiopia",
+		"Business Registration Ethiopia",
+		"Commercial Lawyers Ethiopia",
+		"Commercial Law Ethiopia",
+	],
 };
 
 export default function CorporateLawEthiopia() {

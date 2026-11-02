@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Loader2 } from "lucide-react";
+import { ExternalLink, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { convertToApiUrl } from "@/lib/utils";
 import { Resource } from "@/app/actions/resources.actions";
@@ -60,6 +60,16 @@ export default function IframePdfViewer({ resource, className = "" }: IframePdfV
 				onError={handleIframeError}
 				allowFullScreen
 			/>
+
+			<a
+				href={pdfUrl}
+				target="_blank"
+				rel="noopener noreferrer"
+				className="absolute bottom-5 left-1/2 z-20 inline-flex -translate-x-1/2 items-center gap-2 rounded-full bg-brand-navy px-5 py-3 text-sm font-medium text-white shadow-lg shadow-black/20 ring-1 ring-white/10 transition-colors hover:bg-brand-green"
+			>
+				Open resource
+				<ExternalLink className="h-4 w-4" />
+			</a>
 		</div>
 	);
 }

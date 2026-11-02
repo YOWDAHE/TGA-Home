@@ -1,15 +1,23 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
+import { pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: 'Real Estate Lawyers Ethiopia | Real Estate Law Ethiopia | TGA Global Law Firm LL.P',
-  description: 'Expert real estate lawyers Ethiopia. Real estate law Ethiopia services including property transactions, land disputes, and real estate legal advice. #1 law firm in Ethiopia.',
-  keywords: 'Real Estate Lawyers Ethiopia, Real Estate Law Ethiopia, Real Estate Lawyers Ethiopia Diaspora, Property Law Ethiopia, Land Law Ethiopia, Real Estate Legal Services Ethiopia',
-  openGraph: {
-    title: 'Real Estate Lawyers Ethiopia | Real Estate Law Ethiopia',
-    description: 'Expert real estate lawyers Ethiopia. Real estate law Ethiopia services including property transactions, land disputes, and real estate legal advice.',
-    type: 'website',
-  },
+  ...pageMetadata({
+    title: 'Real Estate Lawyers Ethiopia | Real Estate Law',
+    description:
+      'Real estate lawyers in Ethiopia for property transactions, land disputes and real estate legal advice, including for the diaspora.',
+    path: '/real-estate-law-ethiopia',
+    card: { eyebrow: 'Practice area', title: 'Real estate lawyers in Ethiopia' },
+  }),
+  keywords: [
+    'Real Estate Lawyers Ethiopia',
+    'Real Estate Law Ethiopia',
+    'Real Estate Lawyers Ethiopia Diaspora',
+    'Property Law Ethiopia',
+    'Land Law Ethiopia',
+    'Real Estate Legal Services Ethiopia',
+  ],
 };
 
 export default function RealEstateLawEthiopia() {

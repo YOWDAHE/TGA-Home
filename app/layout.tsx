@@ -2,13 +2,18 @@ import type { Metadata } from 'next'
 import './globals.css'
 import { Toaster } from '@/components/ui/toaster'
 import { AuthProvider } from '@/contexts/AuthContext'
+import { SITE_NAME, SITE_URL, previewImageUrl } from '@/lib/seo'
+
+const defaultPreview = previewImageUrl({
+	eyebrow: 'Law firm · Addis Ababa',
+	title: "Ethiopia's most reputable and top-ranked legal firm",
+})
 
 export const metadata: Metadata = {
 	title: {
 		default:
 			"TGA Global Law Firm LL.P — Ethiopia's Most Reputable and Leading Law Firm",
-		template:
-			"%s | TGA Global Law Firm LL.P—Ethiopia's most reputable and top-ranked legal firm",
+		template: "%s | TGA Global Law Firm LL.P",
 	},
 	icons: {
 		icon: "/favicon.ico",
@@ -76,35 +81,23 @@ export const metadata: Metadata = {
 		address: false,
 		telephone: false,
 	},
-	metadataBase: new URL("https://tgagloballawfirm.com"), //TODO: To be replaced with actual domain
-	alternates: {
-		canonical: "/",
-	},
+	metadataBase: new URL(SITE_URL),
+	// Pages without their own preview fall back to the firm's card
 	openGraph: {
 		type: "website",
 		locale: "en_US",
-		url: "https://tgagloballawfirm.com", //TODO: Replace with your actual domain
-		siteName: "TGA Global Law Firm LL.P",
-		title:
-			"TGA Global Law Firm LL.P—Ethiopia's most reputable and top-ranked legal firm",
+		siteName: SITE_NAME,
+		title: "TGA Global Law Firm LL.P — Ethiopia's most reputable and top-ranked legal firm",
 		description:
 			"TGA provides comprehensive legal services with expertise in corporate law, litigation, and legal consulting. Trust our experienced attorneys for your legal needs.",
-		images: [
-			{
-				url: "/loader/loader-1.svg",
-				width: 1200,
-				height: 630,
-				alt: "TGA Global Law Firm LL.P Logo",
-			},
-		],
+		images: [{ url: defaultPreview, width: 1200, height: 630, alt: "TGA Global Law Firm LL.P" }],
 	},
 	twitter: {
 		card: "summary_large_image",
-		title:
-			"TGA Global Law Firm LL.P—Ethiopia's most reputable and top-ranked legal firm",
+		title: "TGA Global Law Firm LL.P — Ethiopia's most reputable and top-ranked legal firm",
 		description:
 			"TGA provides comprehensive legal services with expertise in corporate law, litigation, and legal consulting.",
-		images: ["/loader/loader-1.svg"],
+		images: [defaultPreview],
 		creator: "@tgalawgroup", //TODO: Replace with your actual Twitter handle
 		site: "@tgalawgroup", //TODO: Replace with your actual Twitter handle
 	},
@@ -118,11 +111,6 @@ export const metadata: Metadata = {
 			"max-image-preview": "large",
 			"max-snippet": -1,
 		},
-	},
-	verification: {
-		google: "your-google-verification-code", //TODO: Replace with your actual Google verification code
-		yandex: "your-yandex-verification-code", //TODO: Replace with your actual Yandex verification code
-		yahoo: "your-yahoo-verification-code", //TODO: Replace with your actual Yahoo verification code
 	},
 	category: "legal services",
 	classification: "law firm",

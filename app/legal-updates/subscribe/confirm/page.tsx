@@ -4,6 +4,16 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { CheckCircle, XCircle } from "lucide-react";
 import TopNav from "@/components/Sections/TopNav";
+import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = pageMetadata({
+  title: "Confirm Subscription",
+  description: "Confirm your subscription to legal updates from TGA Global Law Firm LL.P.",
+  path: "/legal-updates/subscribe/confirm",
+  card: { eyebrow: "Legal updates", title: "Legal updates in your inbox" },
+  noIndex: true,
+});
 
 export const dynamic = "force-dynamic";
 

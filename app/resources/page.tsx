@@ -4,12 +4,18 @@ import { getResources, getTopViewedResources } from '../actions/resources.action
 import { getCategories } from '../actions/news.actions';
 import type { Metadata } from 'next'
 import { homeFont } from '../fonts'
+import { pageMetadata } from '@/lib/seo'
 
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: 'Legal Resources & Documents',
-  description: 'Access comprehensive legal resources, documents, and materials from TGA Global Law Firm LL.P. Download legal guides, templates, and expert legal content.',
+  ...pageMetadata({
+    title: 'Legal Resources & Documents',
+    description:
+      'Legal guides, documents and materials from TGA Global Law Firm LL.P, free to read and download.',
+    path: '/resources',
+    card: { eyebrow: 'Resources', title: 'Legal guides and documents' },
+  }),
   keywords: [
     'legal resources',
     'legal documents',
@@ -18,31 +24,8 @@ export const metadata: Metadata = {
     'law firm resources',
     'legal downloads',
     'attorney resources',
-    'legal materials'
+    'legal materials',
   ],
-  openGraph: {
-    title: 'Legal Resources & Documents | TGA Global Law Firm LL.P',
-    description: 'Access comprehensive legal resources, documents, and materials from TGA Global Law Firm LL.P. Download legal guides, templates, and expert legal content.',
-    url: '/resources',
-    type: 'website',
-    images: [
-      {
-        url: '/Images/logo/TGA_LOGO.svg',
-        width: 1200,
-        height: 630,
-        alt: 'TGA Global Law Firm LL.P Resources',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Legal Resources & Documents | TGA Global Law Firm LL.P',
-    description: 'Access comprehensive legal resources, documents, and materials from TGA Global Law Firm LL.P.',
-    images: ['/Images/logo/TGA_LOGO.svg'],
-  },
-  alternates: {
-    canonical: '/resources',
-  },
 }
 
 interface PageProps {

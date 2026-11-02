@@ -6,13 +6,9 @@ import { Calendar, Hash, Loader2 } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import type { News } from "@/app/types/news";
 import { convertToApiUrl } from "@/lib/utils";
+import { parseHashtags } from "@/lib/hashtags";
 
-/** Tags arrive as "a, b" or "#a #b"; this returns them without the leading # */
-export const parseHashtags = (hashtags?: string | null) =>
-	(hashtags ?? "")
-		.split(/[\s,]+/)
-		.map((tag) => tag.replace(/^#/, ""))
-		.filter(Boolean);
+export { parseHashtags };
 
 const stripHtml = (html: string) =>
 	(html ?? "").replace(/<[^>]*>/g, " ").replace(/&nbsp;/g, " ").replace(/\s+/g, " ").trim();

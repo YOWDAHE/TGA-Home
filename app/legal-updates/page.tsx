@@ -3,13 +3,18 @@ import { getLegalUpdates } from "../actions/legal-updates.actions";
 import { getCategories } from "../actions/news.actions";
 import type { Metadata } from "next";
 import { homeFont } from "../fonts";
+import { pageMetadata } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Legal Updates & Client Alerts",
-  description:
-    "Stay informed with legal updates, client alerts, regulatory changes, and expert analysis from TGA Global Law Firm LL.P.",
+  ...pageMetadata({
+    title: "Legal Updates & Client Alerts",
+    description:
+      "Legal updates, client alerts, regulatory changes and expert analysis from TGA Global Law Firm LL.P.",
+    path: "/legal-updates",
+    card: { eyebrow: "Legal updates", title: "Legal updates and client alerts" },
+  }),
   keywords: [
     "legal updates",
     "client alerts",
@@ -18,14 +23,6 @@ export const metadata: Metadata = {
     "legal analysis",
     "Ethiopia law updates",
   ],
-  openGraph: {
-    title: "Legal Updates & Client Alerts | TGA Global Law Firm LL.P",
-    description:
-      "Stay informed with legal updates, client alerts, and regulatory changes from TGA Global Law Firm.",
-    url: "/legal-updates",
-    type: "website",
-  },
-  alternates: { canonical: "/legal-updates" },
 };
 
 export default async function page() {

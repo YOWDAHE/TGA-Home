@@ -1,15 +1,23 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
+import { pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: 'Legal Services for Diaspora Ethiopians | Ethiopian Diaspora Legal Help | TGA Global Law Firm LL.P',
-  description: 'Legal services for diaspora Ethiopians. Ethiopian diaspora legal help including property management, investment advisory, and cross-border legal services. #1 law firm in Ethiopia.',
-  keywords: 'Legal Services for Diaspora Ethiopians, Ethiopian Diaspora Legal Help, Diaspora Property Lawyers Ethiopia, Ethiopian Diaspora Legal Services, Cross-Border Legal Services Ethiopia, Diaspora Legal Help Ethiopia',
-  openGraph: {
-    title: 'Legal Services for Diaspora Ethiopians | Ethiopian Diaspora Legal Help',
-    description: 'Legal services for diaspora Ethiopians. Ethiopian diaspora legal help including property management, investment advisory, and cross-border legal services.',
-    type: 'website',
-  },
+  ...pageMetadata({
+    title: 'Legal Services for Diaspora Ethiopians',
+    description:
+      'Legal help for the Ethiopian diaspora: property management, investment advice and cross-border legal services from TGA Global Law Firm.',
+    path: '/diaspora-legal-services',
+    card: { eyebrow: 'Practice area', title: 'Legal services for diaspora Ethiopians' },
+  }),
+  keywords: [
+    'Legal Services for Diaspora Ethiopians',
+    'Ethiopian Diaspora Legal Help',
+    'Diaspora Property Lawyers Ethiopia',
+    'Ethiopian Diaspora Legal Services',
+    'Cross-Border Legal Services Ethiopia',
+    'Diaspora Legal Help Ethiopia',
+  ],
 };
 
 export default function DiasporaLegalServices() {

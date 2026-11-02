@@ -12,7 +12,6 @@ import {
 	FileText,
 	ExternalLink,
 	Share2,
-	Check,
 	Loader2,
 } from "lucide-react";
 import { documentDownload, Resource } from "@/app/actions/resources.actions";
@@ -24,6 +23,7 @@ import Footer from "./Footer";
 import { easeOut } from "./Reveal";
 import { FrostedColors } from "./Backdrop";
 import IframePdfViewer from "./IframePdfViewer";
+import { useCopyLink } from "./useCopyLink";
 import RelatedContent from "./RelatedContent";
 import { LegalUpdate } from "@/app/types/legal-updates";
 import { News } from "@/app/types/news";
@@ -107,33 +107,8 @@ export default function DocumentDetailPage({
 		}
 	};
 
-	const handleShare = async () => {
-		try {
-			// Copy the file URL to clipboard
-			await navigator.clipboard.writeText(resource.file_url);
-
-			// Show success toast
-			toast({
-				title: "File URL copied!",
-				description: "The file URL has been copied to your clipboard.",
-				action: (
-					<div className="flex items-center space-x-2">
-						<Check className="w-4 h-4 text-green-500" />
-						<span className="text-sm text-green-600">Copied</span>
-					</div>
-				),
-			});
-		} catch (error) {
-			console.error("Error copying to clipboard:", error);
-
-			// Show error toast
-			toast({
-				title: "Copy failed",
-				description: "Failed to copy file URL to clipboard. Please try again.",
-				variant: "destructive",
-			});
-		}
-	};
+	const copyLink = useCopyLink();
+	const handleShare = () => copyLink(`/resources/${resource.id}`);
 
 	const formatFileSize = (bytes: number) => {
 		if (bytes === 0) return "0 Bytes";

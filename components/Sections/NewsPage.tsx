@@ -423,13 +423,13 @@ export default function NewsPage({
 													href={`/news/${article.id}`}
 													className="group flex gap-4 overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-black/5 transition-shadow hover:shadow-lg sm:gap-5"
 												>
-													<div className="min-h-[7.5rem] w-28 shrink-0 self-stretch overflow-hidden bg-[#eef1f5] sm:min-h-[9rem] sm:w-48">
+													<div className="relative min-h-[7.5rem] w-28 shrink-0 self-stretch overflow-hidden max-h-48 bg-[#eef1f5] sm:min-h-[9rem] sm:w-48">
 														<img
 															src={getImageUrl(article)}
 															alt={article.title}
 															width={176}
 															height={128}
-															className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+															className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
 														/>
 													</div>
 													<div className="min-w-0 flex-1 py-4 pr-4">
@@ -593,11 +593,11 @@ export default function NewsPage({
 												key={article.id}
 												className="flex gap-3 overflow-hidden rounded-2xl bg-white ring-1 ring-black/5 transition-shadow hover:shadow-md"
 											>
-												<div className="min-h-[4.25rem] w-16 shrink-0 self-stretch overflow-hidden bg-[#eef1f5]">
+												<div className="relative min-h-[4.25rem] w-16 shrink-0 self-stretch overflow-hidden max-h-48 bg-[#eef1f5]">
 													<img
 														src={getImageUrl(article)}
 														alt={article.title}
-														className="h-full w-full object-cover"
+														className="absolute inset-0 h-full w-full object-cover"
 													/>
 												</div>
 												<div className="min-w-0 flex-1 py-2.5 pr-3">
@@ -712,11 +712,11 @@ export default function NewsPage({
 										key={article.id}
 										className={`${cardClass} group flex gap-4 overflow-hidden transition-shadow hover:shadow-md`}
 									>
-										<div className="min-h-[7rem] w-28 shrink-0 self-stretch overflow-hidden bg-[#eef1f5] sm:w-36">
+										<div className="relative min-h-[7rem] w-28 shrink-0 self-stretch overflow-hidden max-h-48 bg-[#eef1f5] sm:w-36">
 											<img
 												src={getImageUrl(article)}
 												alt={article.title}
-												className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+												className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
 											/>
 										</div>
 										<div className="min-w-0 flex-1 py-3 pr-4">

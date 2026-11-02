@@ -4,10 +4,16 @@ import { getCategories, getNews, getNewsByQuery } from '../actions/news.actions'
 import { NewsResponse, NewsQueryResponse } from '../types/news';
 import type { Metadata } from 'next'
 import { homeFont } from '../fonts'
+import { pageMetadata } from '@/lib/seo'
 
 export const metadata: Metadata = {
-  title: 'News & Updates',
-  description: 'Stay updated with the latest legal news, industry insights, and updates from TGA Global Law Firm LL.P. Read our expert analysis and legal perspectives.',
+  ...pageMetadata({
+    title: 'News & Updates',
+    description:
+      'The latest news, insights and updates from TGA Global Law Firm LL.P: our expert analysis and legal perspectives.',
+    path: '/news',
+    card: { eyebrow: 'News', title: 'News and insights from TGA Global' },
+  }),
   keywords: [
     'legal news',
     'law firm news',
@@ -16,31 +22,8 @@ export const metadata: Metadata = {
     'legal analysis',
     'law industry news',
     'legal blog',
-    'attorney news'
+    'attorney news',
   ],
-  openGraph: {
-    title: 'News & Updates | TGA Global Law Firm LL.P',
-    description: 'Stay updated with the latest legal news, industry insights, and updates from TGA Global Law Firm LL.P. Read our expert analysis and legal perspectives.',
-    url: '/news',
-    type: 'website',
-    images: [
-      {
-        url: '/Images/logo/TGA_LOGO.svg',
-        width: 1200,
-        height: 630,
-        alt: 'TGA Global Law Firm LL.P News',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'News & Updates | TGA Global Law Firm LL.P',
-    description: 'Stay updated with the latest legal news, industry insights, and updates from TGA Global Law Firm LL.P.',
-    images: ['/Images/logo/TGA_LOGO.svg'],
-  },
-  alternates: {
-    canonical: '/news',
-  },
 }
 
 export const dynamic = 'force-dynamic'
