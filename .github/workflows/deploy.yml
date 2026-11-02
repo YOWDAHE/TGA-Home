@@ -40,3 +40,16 @@ jobs:
             cd "${DEPLOY_PATH}"
             docker-compose build frontend-home
             docker-compose up -d frontend-home
+
+            # nginx resolves container addresses once, so after a container is replaced it keeps
+            # proxying to the old, gone address (until its 6-hourly reload). Wait for the new
+            # container to accept connections, then reload nginx so it picks up the new address.
+            ready=""
+            for i in $(seq 1 90); do
+              if docker-compose exec -T frontend-home node -e "require('net').connect(3002,'127.0.0.1').on('connect',()=>process.exit(0)).on('error',()=>process.exit(1))"; then
+                ready=1; break
+              fi
+              sleep 2
+            done
+            docker-compose exec -T nginx nginx -s reload
+            [ -n "$ready" ] || { echo "frontend-home did not start listening on 3002"; docker-compose logs --tail=80 frontend-home; exit 1; }

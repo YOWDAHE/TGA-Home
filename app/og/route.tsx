@@ -29,8 +29,14 @@ const titleSize = (title: string, withImage: boolean) => {
 /** Fetches a same-site photo for the card; anything else is ignored */
 async function loadPhoto(path: string | null, origin: string) {
 	if (!path || !path.startsWith("/") || path.startsWith("//")) return null;
+	// In production only nginx knows /api-backend, so ask the backend for those files directly
+	const backend = process.env.BACKEND_URL?.replace(/\/$/, "");
+	const url =
+		backend && path.startsWith("/api-backend/")
+			? `${backend}/api/${path.slice("/api-backend/".length)}`
+			: new URL(path, origin).toString();
 	try {
-		const res = await fetch(new URL(path, origin), { signal: AbortSignal.timeout(5000) });
+		const res = await fetch(url, { signal: AbortSignal.timeout(5000) });
 		const type = res.headers.get("content-type") ?? "";
 		// Satori can draw PNG, JPEG and GIF, not WebP or AVIF
 		if (!res.ok || !/image\/(png|jpe?g|gif)/.test(type)) return null;

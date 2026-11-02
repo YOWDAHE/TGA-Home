@@ -17,6 +17,8 @@ ENV NODE_ENV=production
 
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
+# Fonts for the generated link-preview images (app/og/route.tsx)
+COPY --from=builder /app/assets ./assets
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./
 
