@@ -23,11 +23,10 @@ import { Category } from "@/app/types/news";
 import { useAuth } from "@/contexts/AuthContext";
 import AuthRequiredModal from "@/components/auth/AuthRequiredModal";
 import Footer from "./Footer";
-import TopNav from "./TopNav";
+import PageHero from "./PageHero";
 import Section from "./Section";
 import SectionHeading from "./SectionHeading";
 import Reveal, { easeOut } from "./Reveal";
-import { FrostedColors } from "./Backdrop";
 import { Highlight, MatchBadges, excerptAround, matchedFields } from "./SearchMatch";
 import { MotionConfig, motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
@@ -47,23 +46,28 @@ interface ResourcesPageProps {
 	isLoading?: boolean;
 }
 
-const cardClass = "rounded-3xl bg-white/70 shadow-sm ring-1 ring-black/5 backdrop-blur-xl";
-const tagClass = "rounded-full bg-[#f2f4f8] px-2.5 py-0.5 text-xs text-[#4b5468]";
-const pagerClass =
-	"inline-flex items-center rounded-full bg-white px-4 py-2 text-sm text-brand-navy ring-1 ring-black/10 transition-colors hover:bg-brand-tint disabled:pointer-events-none disabled:opacity-40";
+const cardClass = "rounded-sm bg-white ring-1 ring-brand-navy/10";
+const tagClass = "rounded-sm bg-[#f4f5f7] px-2.5 py-0.5 text-xs text-brand-navy/75";
+const secondaryButtonClass =
+	"inline-flex items-center rounded-sm bg-white px-4 py-2 text-sm text-brand-navy ring-1 ring-brand-navy/15 transition-colors hover:bg-brand-tint";
+const pagerClass = `${secondaryButtonClass} disabled:pointer-events-none disabled:opacity-40`;
+const skeletonClass = "rounded-sm bg-brand-tint/50";
 
 // Category filters are pills with a count; the selected one is filled navy
 const chipClass = (active: boolean) =>
-	`inline-flex shrink-0 items-center gap-2 rounded-full py-2 pl-4 pr-2 text-sm transition-colors ${
+	`inline-flex shrink-0 items-center gap-2 rounded-sm py-2 pl-4 pr-2 text-sm transition-colors ${
 		active
 			? "bg-brand-navy text-white"
-			: "bg-white/80 text-[#4b5468] ring-1 ring-black/5 hover:bg-white hover:text-brand-navy"
+			: "bg-white text-brand-navy ring-1 ring-brand-navy/15 hover:bg-brand-tint"
 	}`;
 const countClass = (active: boolean) =>
-	`rounded-full px-2 py-0.5 text-xs tabular-nums ${active ? "bg-white/15 text-white" : "bg-[#f2f4f8] text-[#7a8397]"}`;
+	`rounded-sm px-2 py-0.5 text-xs tabular-nums ${active ? "bg-white/15 text-white" : "bg-[#f4f5f7] text-brand-navy/60"}`;
 
 const iconButtonClass =
-	"flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-brand-green ring-1 ring-black/10 transition-colors hover:bg-brand-tint disabled:opacity-50";
+	"flex h-10 w-10 shrink-0 items-center justify-center rounded-sm bg-white text-brand-green ring-1 ring-brand-navy/15 transition-colors hover:bg-brand-tint disabled:opacity-50";
+// The same buttons on the navy most-visited cards
+const invertedIconButtonClass =
+	"flex h-10 w-10 shrink-0 items-center justify-center rounded-sm bg-white/10 text-white transition-colors hover:bg-brand-green disabled:opacity-50";
 
 // "Open" goes to the resource page, share copies that page's link, and the last button
 // opens the file in a new tab (sign-in required)
@@ -71,18 +75,24 @@ function ResourceActions({
 	resource,
 	onOpenInNewTab,
 	busy,
+	inverted = false,
 }: {
 	resource: Resource;
 	onOpenInNewTab: (resource: Resource) => void;
 	busy: boolean;
+	/** Light buttons for the navy cards */
+	inverted?: boolean;
 }) {
 	const copyLink = useCopyLink();
+	const iconClass = inverted ? invertedIconButtonClass : iconButtonClass;
 
 	return (
 		<div className="mt-auto flex gap-2">
 			<Link
 				href={`/resources/${resource.id}`}
-				className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-brand-navy px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-green"
+				className={`inline-flex flex-1 items-center justify-center gap-2 rounded-sm px-4 py-2.5 text-sm font-medium transition-colors ${
+					inverted ? "bg-white text-brand-navy hover:bg-brand-green hover:text-white" : "bg-brand-navy text-white hover:bg-brand-green"
+				}`}
 			>
 				<Eye className="h-4 w-4" />
 				Open
@@ -92,7 +102,7 @@ function ResourceActions({
 				onClick={() => copyLink(`/resources/${resource.id}`)}
 				aria-label="Copy link to this resource"
 				title="Copy link"
-				className={iconButtonClass}
+				className={iconClass}
 			>
 				<Share2 className="h-4 w-4" />
 			</button>
@@ -102,7 +112,7 @@ function ResourceActions({
 				disabled={busy}
 				aria-label="Open file in a new tab"
 				title="Open file in a new tab"
-				className={iconButtonClass}
+				className={iconClass}
 			>
 				{busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <ExternalLink className="h-4 w-4" />}
 			</button>
@@ -112,20 +122,20 @@ function ResourceActions({
 
 // Skeleton component for resource cards
 const ResourceCardSkeleton = () => (
-	<div className="flex flex-col overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-black/5">
-		<Skeleton className="m-2 h-36 rounded-2xl bg-[#eef1f5]" />
+	<div className={`${cardClass} flex flex-col overflow-hidden`}>
+		<Skeleton className={`m-2 h-36 ${skeletonClass}`} />
 		<div className="flex flex-col p-5 pt-3">
 			<div className="mb-3 flex gap-2">
-				<Skeleton className="h-5 w-10 rounded-full bg-[#eef1f5]" />
-				<Skeleton className="h-5 w-20 rounded-full bg-[#eef1f5]" />
+				<Skeleton className={`h-5 w-10 ${skeletonClass}`} />
+				<Skeleton className={`h-5 w-20 ${skeletonClass}`} />
 			</div>
-			<Skeleton className="mb-2 h-6 w-full rounded bg-[#eef1f5]" />
-			<Skeleton className="mb-4 h-6 w-3/4 rounded bg-[#eef1f5]" />
-			<Skeleton className="mb-6 h-4 w-2/3 rounded bg-[#eef1f5]" />
+			<Skeleton className={`mb-2 h-6 w-full ${skeletonClass}`} />
+			<Skeleton className={`mb-4 h-6 w-3/4 ${skeletonClass}`} />
+			<Skeleton className={`mb-6 h-4 w-2/3 ${skeletonClass}`} />
 			<div className="flex gap-2">
-				<Skeleton className="h-10 flex-1 rounded-full bg-[#eef1f5]" />
-				<Skeleton className="h-10 w-10 rounded-full bg-[#eef1f5]" />
-				<Skeleton className="h-10 w-10 rounded-full bg-[#eef1f5]" />
+				<Skeleton className={`h-10 flex-1 ${skeletonClass}`} />
+				<Skeleton className={`h-10 w-10 ${skeletonClass}`} />
+				<Skeleton className={`h-10 w-10 ${skeletonClass}`} />
 			</div>
 		</div>
 	</div>
@@ -136,17 +146,17 @@ const MostVisitedSkeleton = () => (
 	<div className="mt-14 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
 		{Array.from({ length: 6 }).map((_, index) => (
 			<div key={index} className={`${cardClass} p-5 sm:p-6`}>
-				<Skeleton className="mb-4 h-11 w-11 rounded-2xl bg-[#eef1f5]" />
+				<Skeleton className={`mb-4 h-11 w-11 ${skeletonClass}`} />
 				<div className="mb-3 flex gap-2">
-					<Skeleton className="h-5 w-10 rounded-full bg-[#eef1f5]" />
-					<Skeleton className="h-5 w-16 rounded-full bg-[#eef1f5]" />
+					<Skeleton className={`h-5 w-10 ${skeletonClass}`} />
+					<Skeleton className={`h-5 w-16 ${skeletonClass}`} />
 				</div>
-				<Skeleton className="mb-2 h-5 w-full rounded bg-[#eef1f5]" />
-				<Skeleton className="mb-5 h-5 w-3/4 rounded bg-[#eef1f5]" />
+				<Skeleton className={`mb-2 h-5 w-full ${skeletonClass}`} />
+				<Skeleton className={`mb-5 h-5 w-3/4 ${skeletonClass}`} />
 				<div className="flex gap-2">
-					<Skeleton className="h-10 flex-1 rounded-full bg-[#eef1f5]" />
-					<Skeleton className="h-10 w-10 rounded-full bg-[#eef1f5]" />
-					<Skeleton className="h-10 w-10 rounded-full bg-[#eef1f5]" />
+					<Skeleton className={`h-10 flex-1 ${skeletonClass}`} />
+					<Skeleton className={`h-10 w-10 ${skeletonClass}`} />
+					<Skeleton className={`h-10 w-10 ${skeletonClass}`} />
 				</div>
 			</div>
 		))}
@@ -330,9 +340,9 @@ export default function ResourcesPage({ resources, topViewedResources, categorie
 				Previous
 			</button>
 
-			<span className="text-sm text-[#606b80]">
+			<span className="text-sm text-brand-navy/60">
 				{isPageChanging && (
-					<Loader2 className="mr-2 inline-block h-4 w-4 animate-spin text-[#7a8397]" />
+					<Loader2 className="mr-2 inline-block h-4 w-4 animate-spin text-brand-navy/50" />
 				)}
 				Page {pagination.currentPage} of {pagination.totalPages}
 			</span>
@@ -352,52 +362,22 @@ export default function ResourcesPage({ resources, topViewedResources, categorie
 	return (
 		<MotionConfig reducedMotion="user">
 			<div className="relative isolate min-h-screen overflow-x-clip text-brand-navy antialiased">
-				<FrostedColors />
-				<TopNav currentHref="/resources" />
-
-				{/* Page header with search */}
-				<section className="px-4 pb-10 pt-14 text-center sm:px-6 sm:pt-20">
-					<motion.p
-						initial={{ opacity: 0, y: 10 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.6, ease: easeOut, delay: 0.1 }}
-						className="mb-6 inline-flex items-center gap-2 rounded-full bg-white px-3.5 py-1.5 text-xs font-medium text-[#4b5468] shadow-sm ring-1 ring-black/5 sm:px-4"
-					>
-						<span className="h-1.5 w-1.5 rounded-full bg-brand-green" />
-						TGA Global Law Firm LL.P
-					</motion.p>
-					<motion.h1
-						initial={{ opacity: 0, y: 24, filter: "blur(8px)" }}
-						animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-						transition={{ duration: 0.8, ease: easeOut, delay: 0.15 }}
-						className="text-[2.75rem] font-semibold leading-none tracking-tight sm:text-7xl"
-					>
-						Resources
-					</motion.h1>
-					<motion.p
-						initial={{ opacity: 0, y: 16 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.7, ease: easeOut, delay: 0.3 }}
-						className="mx-auto mt-5 max-w-[19rem] text-pretty text-base leading-relaxed text-[#606b80] min-[400px]:max-w-[21rem] sm:max-w-xl sm:text-lg"
-					>
-						Legal guides, documents and materials from our team
-					</motion.p>
-
+				<PageHero
+					currentHref="/resources"
+					label="TGA Global Law Firm LL.P"
+					title="Resources"
+					description="Legal guides, documents and materials from our team"
+				>
 					{/* Search */}
-					<motion.div
-						initial={{ opacity: 0, y: 10 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.6, ease: easeOut, delay: 0.4 }}
-						className="mx-auto mt-8 flex max-w-xl items-center gap-2 rounded-full bg-white p-1.5 pl-5 text-left shadow-sm ring-1 ring-black/5 focus-within:ring-2 focus-within:ring-brand-green/40"
-					>
-						<Search className="h-4 w-4 shrink-0 text-[#9aa3b5]" />
+					<div className="mx-auto flex max-w-xl items-center gap-2 rounded-sm bg-white p-1.5 pl-4 text-left ring-1 ring-brand-navy/15 focus-within:ring-2 focus-within:ring-brand-green/40">
+						<Search className="h-4 w-4 shrink-0 text-brand-navy/40" />
 						<input
 							type="text"
 							placeholder="Search resources..."
 							value={searchTerm}
 							onChange={(e) => handleSearchChange(e.target.value)}
 							onKeyPress={handleSearchKeyPress}
-							className="min-w-0 flex-1 bg-transparent py-2 text-brand-navy placeholder:text-[#9aa3b5] focus:outline-none"
+							className="min-w-0 flex-1 bg-transparent py-2 text-brand-navy placeholder:text-brand-navy/40 focus:outline-none"
 						/>
 						<button
 							type="button"
@@ -405,18 +385,15 @@ export default function ResourcesPage({ resources, topViewedResources, categorie
 								setIsPageChanging(true);
 								updateURL(searchTerm, selectedCategory);
 							}}
-							className="rounded-full bg-brand-navy px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-green sm:px-6"
+							className="rounded-sm bg-brand-navy px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-green"
 						>
 							Search
 						</button>
-					</motion.div>
+					</div>
 
 					{/* Categories */}
-					<motion.div
-						initial={{ opacity: 0, y: 10 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.6, ease: easeOut, delay: 0.5 }}
-						className="mt-5 -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:mx-auto sm:flex-wrap sm:justify-center sm:overflow-visible sm:px-0 sm:pb-0 sm:max-w-4xl"
+					<div
+						className="mt-5 -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:mx-auto sm:flex-wrap sm:justify-center sm:overflow-visible sm:px-0 sm:pb-0"
 						aria-label="Categories"
 					>
 						{/* All Categories Option */}
@@ -449,12 +426,12 @@ export default function ResourcesPage({ resources, topViewedResources, categorie
 								</button>
 							);
 						})}
-					</motion.div>
-				</section>
+					</div>
+				</PageHero>
 
 				{/* Most Visited Section (hidden while searching) */}
 				{!activeQuery && (
-				<Section>
+				<Section tone="muted">
 					<SectionHeading
 						title="Most Visited"
 						description="The documents readers open most often"
@@ -467,28 +444,28 @@ export default function ResourcesPage({ resources, topViewedResources, categorie
 								<Reveal
 									key={resource.id}
 									delay={(index % 3) * 0.06}
-									className={`${cardClass} group flex flex-col p-5 transition-shadow hover:shadow-md sm:p-6`}
+									className="group flex flex-col rounded-sm bg-brand-navy p-5 text-white transition duration-300 hover:-translate-y-1 sm:p-6"
 								>
 									<div className="mb-4 flex items-center justify-between">
-										<span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-brand-tint text-brand-green">
+										<span className="flex h-11 w-11 items-center justify-center rounded-sm bg-white/10 text-brand-tint">
 											<FileText className="h-5 w-5" strokeWidth={1.75} />
 										</span>
-										<span className="text-xs font-medium tabular-nums text-brand-green">
+										<span className="text-xs font-medium tabular-nums text-white/55">
 											{String(index + 1).padStart(2, "0")}
 										</span>
 									</div>
 									<div className="mb-2 flex flex-wrap items-center gap-2">
-										<span className={tagClass}>PDF</span>
-										<span className={tagClass}>{getCategoryName(resource.category_id)}</span>
+										<span className="rounded-sm bg-white/10 px-2.5 py-0.5 text-xs font-medium text-brand-tint">PDF</span>
+										<span className="rounded-sm bg-white/10 px-2.5 py-0.5 text-xs font-medium text-brand-tint">{getCategoryName(resource.category_id)}</span>
 									</div>
 
 									<Link href={`/resources/${resource.id}`}>
-										<h3 className="mb-2 line-clamp-2 font-semibold leading-snug text-brand-navy transition-colors group-hover:text-brand-green">
+										<h3 className="mb-2 line-clamp-2 text-lg font-semibold leading-snug tracking-tight text-white transition-colors group-hover:text-brand-tint">
 											{resource.title}
 										</h3>
 									</Link>
 
-									<div className="mb-5 flex items-center text-sm text-[#7a8397]">
+									<div className="mb-5 flex items-center text-sm text-white/55">
 										<Eye className="mr-1 h-4 w-4" />
 										<span>
 											{resource.view_count.toLocaleString()} views
@@ -499,6 +476,7 @@ export default function ResourcesPage({ resources, topViewedResources, categorie
 										resource={resource}
 										onOpenInNewTab={handleOpenResource}
 										busy={isIncrementingView}
+										inverted
 									/>
 								</Reveal>
 							))}
@@ -508,31 +486,27 @@ export default function ResourcesPage({ resources, topViewedResources, categorie
 				)}
 
 				{/* Results Section */}
-				<Section pattern id="results">
-					<Reveal className={`flex flex-col items-center justify-between gap-2 text-center sm:flex-row sm:text-left ${activeQuery ? "mx-auto max-w-4xl" : ""}`}>
-						<h2 className="text-3xl font-semibold tracking-tight text-brand-navy sm:text-4xl">
-							{activeQuery ? `Results for “${activeQuery}”` : "Results"}
-						</h2>
-						<div className="flex items-center gap-3 text-sm text-[#7a8397]">
-							{busy
+				<Section id="results">
+					<SectionHeading
+						title={activeQuery ? `Results for “${activeQuery}”` : "Results"}
+						description={
+							busy
 								? "Loading..."
 								: activeQuery && pagination
 								? `${pagination.totalItems} resource${Number(pagination.totalItems) !== 1 ? "s" : ""} found`
 								: `${resources.length} resource${
 										resources.length !== 1 ? "s" : ""
-								  } found`}
-							{activeQuery && (
-								<button
-									type="button"
-									onClick={clearSearch}
-									className="inline-flex shrink-0 items-center rounded-full bg-white px-4 py-2 text-sm text-brand-navy ring-1 ring-black/10 transition-colors hover:bg-brand-tint"
-								>
+								  } found`
+						}
+						action={
+							activeQuery ? (
+								<button type="button" onClick={clearSearch} className={secondaryButtonClass}>
 									<X className="mr-1 h-4 w-4" />
 									Clear search
 								</button>
-							)}
-						</div>
-					</Reveal>
+							) : undefined
+						}
+					/>
 
 					{busy ? (
 						<div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -542,13 +516,13 @@ export default function ResourcesPage({ resources, topViewedResources, categorie
 						</div>
 					) : resources.length === 0 ? (
 						<Reveal className="py-16 text-center">
-							<div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-white shadow-sm ring-1 ring-black/5">
-								<FileText className="h-9 w-9 text-[#9aa3b5]" />
+							<div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-sm bg-white ring-1 ring-brand-navy/10">
+								<FileText className="h-9 w-9 text-brand-navy/40" />
 							</div>
 							<h3 className="mb-2 text-xl font-semibold text-brand-navy">
 								No resources found
 							</h3>
-							<p className="text-[#606b80]">
+							<p className="text-brand-navy/60">
 								Try adjusting your search terms or category filter.
 							</p>
 						</Reveal>
@@ -575,9 +549,9 @@ export default function ResourcesPage({ resources, topViewedResources, categorie
 										initial={{ opacity: 0, y: 16 }}
 										animate={{ opacity: 1, y: 0 }}
 										transition={{ duration: 0.45, ease: easeOut, delay: Math.min(index, 8) * 0.04 }}
-										className="group flex flex-col gap-4 rounded-3xl bg-white p-4 shadow-sm ring-1 ring-black/5 transition-shadow hover:shadow-lg sm:flex-row sm:items-center sm:p-5"
+										className="group flex flex-col gap-4 rounded-sm bg-white p-4 ring-1 ring-brand-navy/10 transition hover:ring-brand-navy/25 sm:flex-row sm:items-center sm:p-5"
 									>
-										<span className="hidden h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-brand-navy text-white sm:flex">
+										<span className="hidden h-14 w-14 shrink-0 items-center justify-center rounded-sm bg-brand-navy text-white sm:flex">
 											<FileText className="h-6 w-6" strokeWidth={1.5} />
 										</span>
 										<div className="min-w-0 flex-1">
@@ -591,7 +565,7 @@ export default function ResourcesPage({ resources, topViewedResources, categorie
 												</h3>
 											</Link>
 											{excerptSource && (
-												<p className="mt-1.5 line-clamp-2 text-sm leading-relaxed text-[#606b80]">
+												<p className="mt-1.5 line-clamp-2 text-sm leading-relaxed text-brand-navy/75">
 													<Highlight text={excerptAround(excerptSource, activeQuery)} query={activeQuery} />
 												</p>
 											)}
@@ -616,12 +590,11 @@ export default function ResourcesPage({ resources, topViewedResources, categorie
 									<Reveal
 										key={resource.id}
 										delay={(index % 3) * 0.06}
-										className="group flex flex-col overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-black/5 transition-shadow hover:shadow-lg"
+										className={`${cardClass} group flex flex-col overflow-hidden transition hover:ring-brand-navy/25`}
 									>
 										{/* Document cover */}
-										<div className="relative m-2 flex h-36 items-center justify-center overflow-hidden rounded-2xl bg-brand-navy">
-											<div aria-hidden className="absolute -right-10 -top-12 h-40 w-40 rounded-full bg-brand-green/40 blur-2xl" />
-											<div className="relative flex flex-col items-center gap-1.5 rounded-2xl bg-white/10 px-5 py-4 text-white backdrop-blur-sm transition-transform duration-300 group-hover:scale-105">
+										<div className="relative m-2 flex h-36 items-center justify-center overflow-hidden rounded-sm bg-brand-navy">
+											<div className="relative flex flex-col items-center gap-1.5 rounded-sm bg-white/10 px-5 py-4 text-white ring-1 ring-white/15 transition-transform duration-300 group-hover:scale-105">
 												<FileText className="h-10 w-10" strokeWidth={1.5} />
 												<span className="text-xs font-semibold tracking-wider">PDF</span>
 											</div>
@@ -633,7 +606,7 @@ export default function ResourcesPage({ resources, topViewedResources, categorie
 													<span className={tagClass}>PDF</span>
 													<span className={tagClass}>{getCategoryName(resource.category_id)}</span>
 												</div>
-												<div className="flex shrink-0 items-center text-xs text-[#7a8397]">
+												<div className="flex shrink-0 items-center text-xs text-brand-navy/50">
 													<Eye className="mr-1 h-3 w-3" />
 													{resource.view_count}
 												</div>
@@ -645,16 +618,16 @@ export default function ResourcesPage({ resources, topViewedResources, categorie
 												</h3>
 											</Link>
 
-											<p className="mb-4 line-clamp-2 text-sm leading-relaxed text-[#606b80]">
+											<p className="mb-4 line-clamp-2 text-sm leading-relaxed text-brand-navy/75">
 												{resource.description}
 											</p>
 
-											<div className="mb-5 flex items-center gap-3 text-xs text-[#7a8397]">
+											<div className="mb-5 flex items-center gap-3 text-xs text-brand-navy/50">
 												<span className="flex items-center">
 													<Download className="mr-1 h-3 w-3" />
 													{resource.download_count}
 												</span>
-												<span className="text-[#c3ccd9]">•</span>
+												<span className="text-brand-navy/25">•</span>
 												<span>{new Date(resource.createdAt).toLocaleDateString()}</span>
 											</div>
 

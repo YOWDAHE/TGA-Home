@@ -15,7 +15,7 @@ interface IframePdfViewerProps {
 	className?: string;
 }
 
-/** Just the document: a rounded frame around the browser's PDF view. */
+/** Just the document: a framed box around the browser's PDF view. */
 export default function IframePdfViewer({ resource, className = "" }: IframePdfViewerProps) {
 	const [isLoading, setIsLoading] = useState(true);
 	const { toast } = useToast();
@@ -43,10 +43,10 @@ export default function IframePdfViewer({ resource, className = "" }: IframePdfV
 
 	return (
 		<div
-			className={`relative overflow-hidden rounded-3xl bg-[#525659] shadow-sm ring-1 ring-black/5 ${className}`}
+			className={`relative overflow-hidden rounded-sm bg-[#525659] ring-1 ring-brand-navy/10 ${className}`}
 		>
 			{isLoading && (
-				<div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 bg-white text-[#606b80]">
+				<div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 bg-white text-brand-navy/60">
 					<Loader2 className="h-6 w-6 animate-spin text-brand-green" />
 					<p className="text-sm">Loading document...</p>
 				</div>
@@ -65,7 +65,7 @@ export default function IframePdfViewer({ resource, className = "" }: IframePdfV
 				href={pdfUrl}
 				target="_blank"
 				rel="noopener noreferrer"
-				className="absolute bottom-5 left-1/2 z-20 inline-flex -translate-x-1/2 items-center gap-2 rounded-full bg-brand-navy px-5 py-3 text-sm font-medium text-white shadow-lg shadow-black/20 ring-1 ring-white/10 transition-colors hover:bg-brand-green"
+				className="absolute bottom-5 left-1/2 z-20 inline-flex -translate-x-1/2 items-center gap-2 rounded-sm bg-brand-navy px-5 py-3 text-sm font-medium text-white ring-1 ring-white/10 transition-colors hover:bg-brand-green"
 			>
 				Open resource
 				<ExternalLink className="h-4 w-4" />

@@ -1,41 +1,39 @@
-import React, { useMemo } from "react";
+import React from "react";
 import Section from "./Section";
 import { Partner } from "@/app/types/landing";
 import { convertToApiUrl } from "@/lib/utils";
-import SectionHeading from "./SectionHeading";
 import Reveal from "./Reveal";
+import { labelClass } from "./SectionHeading";
 
 interface PartnersProps {
 	partners: Partner[];
 }
 
+/** Partner logos in a grid divided by hairlines, under a one-line caption. */
 const Partners = React.memo(function Partners({ partners }: PartnersProps) {
-	// Memoize the partners array to prevent unnecessary re-renders
-	const memoizedPartners = useMemo(() => partners, [partners]);
-
 	return (
-		<Section>
-			<SectionHeading
-				title="Our partners"
-				description="Trusted by leading organizations worldwide"
-			/>
+		<Section className="bg-white">
+			<Reveal>
+				<p className={`${labelClass} text-center text-[#4a5368]`}>
+					Trusted by leading organizations worldwide
+				</p>
+			</Reveal>
 
-			<Reveal className="relative mt-14 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]">
-				<div
-					className="inline-flex animate-marquee gap-4 hover:[animation-play-state:paused]"
-					style={{ animationDuration: "30s" }}
-				>
-					{[...memoizedPartners, ...memoizedPartners].map((partner, index) => (
+			{/* Each cell draws its left and top rule; the negative margin hides the outer edges */}
+			<Reveal className="mt-12 overflow-hidden sm:mt-16">
+				<div className="-ml-px -mt-px grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
+					{partners.map((partner) => (
 						<div
-							key={index}
-							className="group flex h-24 w-40 shrink-0 items-center justify-center rounded-2xl bg-white/70 p-5 backdrop-blur-xl sm:h-28 sm:w-52 sm:p-7"
+							key={partner.id}
+							className="group flex h-28 items-center justify-center border-l border-t border-brand-navy/10 p-6 sm:h-36 sm:p-8"
 						>
 							<img
 								src={convertToApiUrl(partner.logo_url) || "/office/placeholder.jpg"}
 								alt={partner.name}
-								width={120}
-								height={80}
-								className="max-h-full max-w-full object-contain opacity-70 grayscale transition-all duration-300 group-hover:opacity-100 group-hover:grayscale-0"
+								width={140}
+								height={70}
+								loading="lazy"
+								className="max-h-14 max-w-[75%] object-contain opacity-60 grayscale transition-all duration-300 group-hover:opacity-100 group-hover:grayscale-0"
 							/>
 						</div>
 					))}

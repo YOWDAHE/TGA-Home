@@ -38,7 +38,7 @@ export function Highlight({ text, query }: { text: string; query: string }) {
 		<>
 			{parts.map((part, index) =>
 				part.toLowerCase() === phrase.toLowerCase() ? (
-					<mark key={index} className="rounded bg-brand-green/15 px-0.5 text-inherit">
+					<mark key={index} className="rounded-sm bg-brand-green/15 px-0.5 text-inherit">
 						{part}
 					</mark>
 				) : (
@@ -53,15 +53,15 @@ export function Highlight({ text, query }: { text: string; query: string }) {
 export function MatchBadges({ labels }: { labels: string[] }) {
 	return (
 		<div className="flex flex-wrap items-center gap-1.5 text-xs">
-			<span className="text-[#7a8397]">Found in</span>
+			<span className="text-brand-navy/50">Found in</span>
 			{labels.length > 0 ? (
 				labels.map((label) => (
-					<span key={label} className="rounded-full bg-brand-tint px-2.5 py-0.5 font-medium text-brand-green">
+					<span key={label} className="rounded-sm bg-brand-tint px-2.5 py-0.5 font-medium text-brand-green">
 						{label}
 					</span>
 				))
 			) : (
-				<span className="rounded-full bg-[#f2f4f8] px-2.5 py-0.5 text-[#4b5468]">Other details</span>
+				<span className="rounded-sm bg-[#f4f5f7] px-2.5 py-0.5 text-brand-navy/75">Other details</span>
 			)}
 		</div>
 	);

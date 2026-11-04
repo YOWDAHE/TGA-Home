@@ -9,6 +9,7 @@ import Hero from "@/components/Sections/Hero";
 import Statistics from "@/components/Sections/Statistics";
 import Services from "@/components/Sections/Services";
 import Partners from "@/components/Sections/Partners";
+import Statement from "@/components/Sections/Statement";
 import News from "@/components/Sections/News";
 import PracticeAreas from "@/components/Sections/PracticeAreas";
 import ContactUs from "@/components/Sections/ContactUs";
@@ -20,6 +21,7 @@ import {
 	ContactUs as ContactUsType,
 	NewsLink,
 	LandingData,
+	HomeContent,
 } from "@/app/types/landing";
 import type { News as NewsType } from "@/app/types/news";
 import type { Resource } from "@/app/actions/resources.actions";
@@ -35,6 +37,7 @@ interface LandingPageProps {
 		practices: Practice[];
 		contactUs: ContactUsType[];
 		newsLinks: NewsLink[];
+		homeContent: HomeContent;
 	};
 	news: NewsType[];
 	resources: Resource[];
@@ -133,17 +136,18 @@ export default function LandingPage({
 		<MotionConfig reducedMotion="user">
 			<div className="relative isolate min-h-screen text-brand-navy antialiased">
 				<FrostedColors />
-				<Hero />
+				<Hero content={data.homeContent.hero} />
+				<Partners partners={data.partners} />
+				<Statement content={data.homeContent.statement} />
 				<div ref={aboutRef}>
-					<AboutUs />
+					<AboutUs content={data.homeContent.about} />
 				</div>
 				<Statistics stats={data.stats} />
 				<div ref={servicesRef} id="services">
-					<Services />
+					<Services content={data.homeContent.services} />
 				</div>
 				<PracticeAreas practices={data.practices} />
 				<News news={news} resources={resources} />
-				<Partners partners={data.partners} />
 				<ContactUs contactUs={data.contactUs} />
 				<Footer contactUs={data.contactUs} />
 
@@ -152,7 +156,7 @@ export default function LandingPage({
 					<Button
 						onClick={scrollToTop}
 						aria-label="Scroll to top"
-						className="fixed bottom-6 right-6 z-50 h-11 w-11 rounded-full bg-brand-navy/90 text-white shadow-lg backdrop-blur hover:bg-brand-green sm:bottom-8 sm:right-8"
+						className="fixed bottom-6 right-6 z-50 h-11 w-11 rounded-sm bg-brand-navy text-white hover:bg-brand-green sm:bottom-8 sm:right-8"
 						size="icon"
 					>
 						<ArrowUp className="w-5 h-5" />

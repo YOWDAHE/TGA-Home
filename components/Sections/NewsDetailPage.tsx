@@ -42,7 +42,6 @@ import { MotionConfig, motion } from "framer-motion";
 import TopNav from "@/components/Sections/TopNav";
 import Footer from "./Footer";
 import Reveal, { easeOut } from "./Reveal";
-import { FrostedColors } from "./Backdrop";
 import { useParams } from "next/navigation";
 import { News, NewsByIdResponse } from "@/app/types/news";
 import { LegalUpdate } from "@/app/types/legal-updates";
@@ -314,9 +313,9 @@ export default function NewsDetailPage({
 	const backLink = (
 		<Link
 			href="/news"
-			className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm text-brand-navy shadow-sm ring-1 ring-black/5 transition-colors hover:bg-brand-tint"
+			className="group inline-flex items-center gap-2 rounded-sm bg-white px-4 py-2 text-sm font-medium text-brand-navy ring-1 ring-brand-navy/15 transition-colors hover:bg-brand-tint"
 		>
-			<ArrowLeft className="h-4 w-4" />
+			<ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
 			News
 		</Link>
 	);
@@ -324,8 +323,7 @@ export default function NewsDetailPage({
 	// Page shell shared by the loading, missing and article views
 	const shell = (children: React.ReactNode) => (
 		<MotionConfig reducedMotion="user">
-			<div className="relative isolate min-h-screen overflow-x-clip text-brand-navy antialiased">
-				<FrostedColors />
+			<div className="relative isolate min-h-screen overflow-x-clip bg-white text-brand-navy antialiased">
 				<TopNav currentHref="/news" />
 				{children}
 				<Footer />
@@ -334,19 +332,19 @@ export default function NewsDetailPage({
 	);
 
 	const smallButton =
-		"inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs transition-colors hover:bg-[#f2f4f8] disabled:opacity-50";
+		"inline-flex items-center gap-1 rounded-sm px-2.5 py-1 text-xs transition-colors hover:bg-brand-tint disabled:opacity-50";
 
 	if (loading) {
 		return shell(
 			<div className="mx-auto max-w-3xl animate-pulse px-4 pb-24 pt-16 sm:px-6">
-				<div className="mb-6 h-9 w-24 rounded-full bg-[#eef1f5]" />
-				<div className="mb-3 h-10 w-full rounded-xl bg-[#eef1f5]" />
-				<div className="mb-8 h-10 w-2/3 rounded-xl bg-[#eef1f5]" />
-				<div className="mb-8 h-80 rounded-3xl bg-[#eef1f5]" />
+				<div className="mb-6 h-9 w-24 rounded-sm bg-brand-tint/50" />
+				<div className="mb-3 h-10 w-full rounded-sm bg-brand-tint/50" />
+				<div className="mb-8 h-10 w-2/3 rounded-sm bg-brand-tint/50" />
+				<div className="mb-8 h-80 rounded-sm bg-brand-tint/50" />
 				<div className="space-y-3">
-					<div className="h-4 rounded bg-[#eef1f5]" />
-					<div className="h-4 w-5/6 rounded bg-[#eef1f5]" />
-					<div className="h-4 w-4/6 rounded bg-[#eef1f5]" />
+					<div className="h-4 rounded-sm bg-brand-tint/50" />
+					<div className="h-4 w-5/6 rounded-sm bg-brand-tint/50" />
+					<div className="h-4 w-4/6 rounded-sm bg-brand-tint/50" />
 				</div>
 			</div>
 		);
@@ -356,7 +354,7 @@ export default function NewsDetailPage({
 		return shell(
 			<div className="px-4 py-28 text-center sm:px-6">
 				<h1 className="mb-3 text-3xl font-semibold tracking-tight">Article not found</h1>
-				<p className="mb-8 text-[#606b80]">
+				<p className="mb-8 text-brand-navy/75">
 					The article you're looking for doesn't exist or has been removed.
 				</p>
 				{backLink}
@@ -383,7 +381,7 @@ export default function NewsDetailPage({
 						initial={{ opacity: 0, y: 10 }}
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ duration: 0.6, ease: easeOut, delay: 0.1 }}
-						className="mt-8 inline-flex items-center gap-1 rounded-full bg-brand-tint px-3 py-1 text-xs font-medium text-brand-green"
+						className="mt-8 inline-flex items-center gap-1 rounded-sm bg-brand-tint px-3 py-1 text-xs font-medium text-brand-green"
 					>
 						<TrendingUp className="h-3 w-3" />
 						Featured
@@ -391,10 +389,10 @@ export default function NewsDetailPage({
 				)}
 
 				<motion.h1
-					initial={{ opacity: 0, y: 24, filter: "blur(8px)" }}
-					animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+					initial={{ opacity: 0, y: 16 }}
+					animate={{ opacity: 1, y: 0 }}
 					transition={{ duration: 0.8, ease: easeOut, delay: 0.15 }}
-					className={`${article.featured ? "mt-4" : "mt-8"} text-balance text-3xl font-semibold leading-[1.1] tracking-tight sm:text-5xl`}
+					className={`${article.featured ? "mt-4" : "mt-8"} text-balance text-3xl font-semibold leading-[1.1] tracking-tight text-brand-navy sm:text-5xl`}
 				>
 					{article.title}
 				</motion.h1>
@@ -403,7 +401,7 @@ export default function NewsDetailPage({
 					initial={{ opacity: 0, y: 10 }}
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ duration: 0.6, ease: easeOut, delay: 0.3 }}
-					className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-[#606b80]"
+					className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-brand-navy/60"
 				>
 					<span className="flex items-center">
 						<Calendar className="mr-1.5 h-4 w-4 text-brand-green" />
@@ -434,7 +432,7 @@ export default function NewsDetailPage({
 							alt={article.title}
 							width={1200}
 							height={600}
-							className="h-[260px] w-full rounded-3xl object-cover shadow-sm ring-1 ring-black/5 sm:h-[480px]"
+							className="h-[260px] w-full rounded-sm bg-brand-tint/50 object-cover ring-1 ring-brand-navy/10 sm:h-[480px]"
 						/>
 					) : (
 						<>
@@ -452,7 +450,7 @@ export default function NewsDetailPage({
 									{getAllVisualContentUrls(article).map(
 										(imageUrl: string, index: number) => (
 											<CarouselItem key={index}>
-												<div className="relative overflow-hidden rounded-3xl ring-1 ring-black/5">
+												<div className="relative overflow-hidden rounded-sm bg-brand-tint/50 ring-1 ring-brand-navy/10">
 													<img
 														src={imageUrl}
 														alt={`${article.title} - Image ${index + 1}`}
@@ -461,7 +459,7 @@ export default function NewsDetailPage({
 														className="h-[260px] w-full object-cover sm:h-[480px]"
 													/>
 													{/* Image counter */}
-													<div className="absolute bottom-4 right-4 rounded-full bg-black/50 px-3 py-1 text-xs font-medium text-white">
+													<div className="absolute bottom-4 right-4 rounded-sm bg-brand-navy/70 px-3 py-1 text-xs font-medium text-white">
 														{index + 1} / {imageCount}
 													</div>
 												</div>
@@ -480,7 +478,7 @@ export default function NewsDetailPage({
 										aria-label={`Show image ${index + 1}`}
 										onClick={() => carouselApi?.scrollTo(index)}
 										className={`h-1.5 rounded-full transition-all duration-500 ${
-											index === slideIndex ? "w-8 bg-brand-green" : "w-1.5 bg-[#c3ccd9] hover:bg-[#9aa5b8]"
+											index === slideIndex ? "w-8 bg-brand-green" : "w-1.5 bg-brand-navy/20 hover:bg-brand-navy/40"
 										}`}
 									/>
 								))}
@@ -496,7 +494,7 @@ export default function NewsDetailPage({
 				<div>
 					<Reveal>
 						<div
-							className="rich-text-content border-t border-black/10 pt-10 text-[#3b4457] [&_h1]:text-brand-navy [&_h2]:text-brand-navy [&_h3]:text-brand-navy [&_h4]:text-brand-navy"
+							className="rich-text-content border-t border-brand-navy/15 pt-10 text-brand-navy/75 [&_h1]:text-brand-navy [&_h2]:text-brand-navy [&_h3]:text-brand-navy [&_h4]:text-brand-navy"
 							dangerouslySetInnerHTML={{ __html: article.content }}
 						/>
 					</Reveal>
@@ -511,7 +509,7 @@ export default function NewsDetailPage({
 									type="button"
 									onClick={() => setOpenTag(tag)}
 									aria-haspopup="dialog"
-									className="rounded-full bg-white px-3 py-1 text-sm text-[#4b5468] ring-1 ring-black/5 transition-colors hover:bg-brand-tint hover:text-brand-green hover:ring-brand-green/20"
+									className="rounded-sm bg-white px-3 py-1 text-sm text-brand-navy/75 ring-1 ring-brand-navy/15 transition-colors hover:bg-brand-tint hover:text-brand-green hover:ring-brand-green/20"
 								>
 									#{tag}
 								</button>
@@ -521,12 +519,12 @@ export default function NewsDetailPage({
 
 					{/* Comments Section */}
 					<section className="mt-14">
-						<h2 className="mb-6 text-2xl font-semibold tracking-tight">
-							Comments <span className="text-[#9aa3b5]">({commentsList.length})</span>
+						<h2 className="mb-6 text-2xl font-semibold tracking-tight text-brand-navy">
+							Comments <span className="text-brand-navy/40">({commentsList.length})</span>
 						</h2>
 
 						{/* Add Comment */}
-						<div className="mb-6 rounded-3xl bg-white p-5 shadow-sm ring-1 ring-black/5 sm:p-6">
+						<div className="mb-6 rounded-sm bg-white p-5 ring-1 ring-brand-navy/10 sm:p-6">
 							<label htmlFor="news-comment" className="mb-2 block text-sm font-medium">
 								Comment
 							</label>
@@ -535,14 +533,14 @@ export default function NewsDetailPage({
 								value={newComment}
 								onChange={(e) => setNewComment(e.target.value)}
 								placeholder={user ? "Share your thoughts..." : "Sign in to leave a comment..."}
-								className="min-h-[110px] w-full resize-y rounded-2xl bg-[#f5f7fa] px-4 py-3 text-sm text-brand-navy placeholder:text-[#9aa3b5] focus:outline-none focus:ring-2 focus:ring-brand-green/40 disabled:opacity-60"
+								className="min-h-[110px] w-full resize-y rounded-sm bg-white px-4 py-3 text-sm text-brand-navy ring-1 ring-brand-navy/15 placeholder:text-brand-navy/40 focus:outline-none focus:ring-2 focus:ring-brand-green/40 disabled:opacity-60"
 								disabled={!user || isPostingComment}
 							/>
 							<button
 								type="button"
 								onClick={handleCommentSubmitWithAuth}
 								disabled={(!!user && !newComment.trim()) || isPostingComment}
-								className="mt-3 inline-flex items-center gap-2 rounded-full bg-brand-navy px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-green disabled:opacity-50"
+								className="mt-3 inline-flex items-center gap-2 rounded-sm bg-brand-navy px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-green disabled:opacity-50"
 							>
 								{isPostingComment ? (
 									<Loader className="h-4 w-4 animate-spin" />
@@ -573,13 +571,13 @@ export default function NewsDetailPage({
 								return (
 									<div
 										key={comment.id}
-										className={`rounded-3xl p-5 shadow-sm ring-1 ${
-											isFlagged ? "bg-orange-50 ring-orange-200" : "bg-white ring-black/5"
+										className={`rounded-sm p-5 ring-1 ${
+											isFlagged ? "bg-orange-50 ring-orange-200" : "bg-white ring-brand-navy/10"
 										}`}
 									>
 										{/* Warning message for flagged comments */}
 										{isFlagged && (
-											<div className="mb-3 rounded-2xl bg-orange-100 p-3">
+											<div className="mb-3 rounded-sm bg-orange-100 p-3">
 												<div className="flex items-center gap-2">
 													<AlertTriangle className="h-4 w-4 text-orange-600" />
 													<span className="text-sm font-medium text-orange-800">
@@ -599,13 +597,13 @@ export default function NewsDetailPage({
 											</span>
 											<div className="min-w-0 flex-1">
 												<div className="mb-1.5 flex flex-wrap items-center gap-2">
-													<span className="text-sm font-medium">{comment.user_name}</span>
-													<span className="text-xs text-[#9aa3b5]">{formatDate(comment.createdAt)}</span>
+													<span className="text-sm font-medium text-brand-navy">{comment.user_name}</span>
+													<span className="text-xs text-brand-navy/50">{formatDate(comment.createdAt)}</span>
 													{isFlagged && (
-														<span className="rounded-full bg-orange-100 px-2 py-0.5 text-xs text-orange-700">Hidden</span>
+														<span className="rounded-sm bg-orange-100 px-2 py-0.5 text-xs text-orange-700">Hidden</span>
 													)}
 													{comment.edited && (
-														<span className="rounded-full bg-[#f2f4f8] px-2 py-0.5 text-xs text-[#4b5468]">Edited</span>
+														<span className="rounded-sm bg-brand-tint px-2 py-0.5 text-xs text-brand-navy/60">Edited</span>
 													)}
 												</div>
 
@@ -615,7 +613,7 @@ export default function NewsDetailPage({
 														<textarea
 															value={editingContent}
 															onChange={(e) => setEditingContent(e.target.value)}
-															className="min-h-[80px] w-full rounded-2xl bg-[#f5f7fa] px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-green/40"
+															className="min-h-[80px] w-full rounded-sm bg-white px-4 py-3 text-sm text-brand-navy ring-1 ring-brand-navy/15 placeholder:text-brand-navy/40 focus:outline-none focus:ring-2 focus:ring-brand-green/40"
 															placeholder="Edit your comment..."
 														/>
 														<div className="mt-2 flex items-center gap-2">
@@ -623,7 +621,7 @@ export default function NewsDetailPage({
 																type="button"
 																onClick={() => handleEditComment(comment.id)}
 																disabled={!editingContent.trim() || isEditingComment}
-																className="inline-flex items-center gap-1 rounded-full bg-brand-navy px-3.5 py-1.5 text-xs font-medium text-white transition-colors hover:bg-brand-green disabled:opacity-50"
+																className="inline-flex items-center gap-1 rounded-sm bg-brand-navy px-3.5 py-1.5 text-xs font-medium text-white transition-colors hover:bg-brand-green disabled:opacity-50"
 															>
 																{isEditingComment ? (
 																	<Loader className="h-3 w-3 animate-spin" />
@@ -636,7 +634,7 @@ export default function NewsDetailPage({
 																type="button"
 																onClick={cancelEdit}
 																disabled={isEditingComment}
-																className="inline-flex items-center gap-1 rounded-full px-3.5 py-1.5 text-xs ring-1 ring-black/10 transition-colors hover:bg-[#f5f7fa] disabled:opacity-50"
+																className="inline-flex items-center gap-1 rounded-sm bg-white px-3.5 py-1.5 text-xs text-brand-navy ring-1 ring-brand-navy/15 transition-colors hover:bg-brand-tint disabled:opacity-50"
 															>
 																<X className="h-3 w-3" />
 																Cancel
@@ -644,10 +642,10 @@ export default function NewsDetailPage({
 														</div>
 													</div>
 												) : (
-													<p className="mb-2 text-sm leading-relaxed text-[#4b5468]">{comment.content}</p>
+													<p className="mb-2 text-sm leading-relaxed text-brand-navy/75">{comment.content}</p>
 												)}
 
-												<div className="-ml-2.5 flex items-center gap-1 text-[#7a8397]">
+												<div className="-ml-2.5 flex items-center gap-1 text-brand-navy/50">
 													<button
 														type="button"
 														onClick={() => handleLikeWithAuth(comment.id)}
@@ -671,7 +669,7 @@ export default function NewsDetailPage({
 																	<MoreVertical className="h-3.5 w-3.5" />
 																</button>
 															</DropdownMenuTrigger>
-															<DropdownMenuContent align="end" className="rounded-2xl">
+															<DropdownMenuContent align="end" className="rounded-sm">
 																<DropdownMenuItem onClick={() => handleEditCommentWithAuth(comment.id)}>
 																	<Edit className="mr-2 h-3 w-3" />
 																	Edit Comment
@@ -707,7 +705,7 @@ export default function NewsDetailPage({
 
 			{/* Delete Confirmation Modal */}
 			<AlertDialog open={showDeleteModal} onOpenChange={setShowDeleteModal}>
-				<AlertDialogContent className="rounded-3xl">
+				<AlertDialogContent className="rounded-sm shadow-sm sm:rounded-sm">
 					<AlertDialogHeader>
 						<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
 						<AlertDialogDescription>
@@ -718,14 +716,14 @@ export default function NewsDetailPage({
 						<AlertDialogCancel
 							onClick={cancelDelete}
 							disabled={deletingCommentId !== null}
-							className="rounded-full"
+							className="rounded-sm"
 						>
 							Cancel
 						</AlertDialogCancel>
 						<AlertDialogAction
 							onClick={confirmDelete}
 							disabled={deletingCommentId !== null}
-							className="rounded-full bg-red-600 hover:bg-red-700 focus:ring-red-600"
+							className="rounded-sm bg-red-600 hover:bg-red-700 focus:ring-red-600"
 						>
 							{deletingCommentId !== null ? (
 								<>

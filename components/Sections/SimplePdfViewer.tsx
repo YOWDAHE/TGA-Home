@@ -40,20 +40,20 @@ export default function SimplePdfViewer({
 	};
 
 	return (
-		<Card className="shadow-lg rounded-lg overflow-hidden">
+		<Card className="overflow-hidden rounded-sm border-0 shadow-none ring-1 ring-brand-navy/10">
 			<CardContent className="p-0">
 				{/* PDF Viewer Header */}
-				<div className="bg-gradient-to-r from-teal-500 to-teal-600 p-4 text-white">
+				<div className="bg-brand-navy p-4 text-white">
 					<div className="flex flex-col md:flex-row items-center justify-between">
 						<div className="flex md:items-center items-start space-x-3">
-							<div className="bg-white/20 backdrop-blur-sm rounded-lg p-2 gap-4 md:gap-0 hidden md:flex">
+							<div className="bg-white/10 rounded-sm p-2 gap-4 md:gap-0 hidden md:flex">
 								<svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
 									<path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
 								</svg>
 							</div>
 							<div className="flex-1">
-								<h1 className="text-xl font-bold">{resource.title}</h1>
-								<p className="text-teal-100 text-sm hidden md:block">PDF Document</p>
+								<h1 className="text-xl font-semibold tracking-tight">{resource.title}</h1>
+								<p className="text-white/60 text-sm hidden md:block">PDF Document</p>
 							</div>
 						</div>
 						<div className="flex md:items-center items-start space-x-2 mt-4 md:mt-0">
@@ -62,7 +62,7 @@ export default function SimplePdfViewer({
 								disabled={isDownloading}
 								variant="outline"
 								size="sm"
-								className="bg-white/20 hover:bg-white/30 border-white/30 text-white"
+								className="rounded-sm bg-white/10 hover:bg-white/20 hover:text-white border-white/20 text-white"
 							>
 								{isDownloading ? (
 									<Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -75,7 +75,7 @@ export default function SimplePdfViewer({
 								onClick={onShare}
 								variant="outline"
 								size="sm"
-								className="bg-white/20 hover:bg-white/30 border-white/30 text-white"
+								className="rounded-sm bg-white/10 hover:bg-white/20 hover:text-white border-white/20 text-white"
 							>
 								<Share2 className="w-4 h-4 mr-1" />
 								Share
@@ -90,10 +90,10 @@ export default function SimplePdfViewer({
 					style={{ height: "calc(100vh - 200px)" }}
 				>
 					{isLoading && (
-						<div className="absolute inset-0 flex items-center justify-center bg-gray-100 z-10">
+						<div className="absolute inset-0 flex items-center justify-center bg-white z-10">
 							<div className="text-center">
-								<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-500 mx-auto mb-2"></div>
-								<p className="text-gray-600">Loading PDF...</p>
+								<Loader2 className="h-6 w-6 animate-spin text-brand-green mx-auto mb-2" />
+								<p className="text-sm text-brand-navy/60">Loading PDF...</p>
 							</div>
 						</div>
 					)}

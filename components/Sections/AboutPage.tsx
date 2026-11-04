@@ -21,11 +21,10 @@ import {
 	ShieldCheck,
 } from "lucide-react";
 import Footer from "./Footer";
-import TopNav from "./TopNav";
+import PageHero from "./PageHero";
 import Section from "./Section";
 import SectionHeading from "./SectionHeading";
 import Reveal, { easeOut } from "./Reveal";
-import { DotPattern, FrostedColors } from "./Backdrop";
 
 const images = Array.from(
 	{ length: 11 },
@@ -119,8 +118,6 @@ const practiceAreas = [
 	{ icon: Gavel, name: "Arbitration & Alternative Dispute Resolution (ADR)" },
 ];
 
-const cardClass = "rounded-3xl bg-white/70 shadow-sm ring-1 ring-black/5 backdrop-blur-xl";
-
 /** Endless, slowly scrolling row of photos; pauses on hover. */
 function PhotoMarquee({ photos, alt, reverse = false }: { photos: string[]; alt: string; reverse?: boolean }) {
 	return (
@@ -133,7 +130,7 @@ function PhotoMarquee({ photos, alt, reverse = false }: { photos: string[]; alt:
 					<div
 						key={idx}
 						aria-hidden={idx >= photos.length}
-						className="relative h-56 w-72 shrink-0 overflow-hidden rounded-3xl bg-[#eef1f5] sm:h-72 sm:w-[26rem]"
+						className="relative h-56 w-72 shrink-0 overflow-hidden rounded-sm bg-brand-tint/50 sm:h-72 sm:w-[26rem]"
 					>
 						<Image
 							src={src}
@@ -181,90 +178,65 @@ export default function AboutPage() {
 	return (
 		<MotionConfig reducedMotion="user">
 			<div className="relative isolate min-h-screen overflow-x-clip text-brand-navy antialiased">
-				<FrostedColors />
-				<TopNav currentHref="/about-us" />
-
-				{/* Intro */}
-				<section className="relative px-4 pb-16 pt-16 sm:px-6 sm:pb-24 sm:pt-24">
-					<div className="mx-auto max-w-4xl text-center">
-						<motion.p
-							initial={{ opacity: 0, y: 10 }}
-							animate={{ opacity: 1, y: 0 }}
-							transition={{ duration: 0.6, ease: easeOut, delay: 0.1 }}
-							className="mb-6 inline-flex items-center gap-2 rounded-full bg-white px-3.5 py-1.5 text-xs font-medium text-[#4b5468] shadow-sm ring-1 ring-black/5 sm:px-4"
-						>
-							<span className="h-1.5 w-1.5 rounded-full bg-brand-green" />
-							About TGA Global Law Firm LLP
-						</motion.p>
-						<motion.h1
-							initial={{ opacity: 0, y: 24, filter: "blur(8px)" }}
-							animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-							transition={{ duration: 0.8, ease: easeOut, delay: 0.15 }}
-							className="text-balance text-[2.75rem] font-semibold leading-[1.02] tracking-tight sm:text-7xl"
-						>
-							Who We Are
-						</motion.h1>
-						<motion.p
-							initial={{ opacity: 0, y: 16 }}
-							animate={{ opacity: 1, y: 0 }}
-							transition={{ duration: 0.7, ease: easeOut, delay: 0.3 }}
-							className="mx-auto mt-6 max-w-[21rem] text-pretty text-base leading-relaxed text-[#606b80] sm:max-w-2xl sm:text-lg"
-						>
+				<PageHero
+					currentHref="/about-us"
+					label="About TGA Global Law Firm LLP"
+					title="Who We Are"
+					description={
+						<>
 							TGA Global Law Firm LLP (formerly Tewodros Getachew Tulu and Associates) is a
 							leading, full-service law firm headquartered in Ethiopia. Officially
 							recognized as a leading law firm in the East African region, we provide
 							elite legal services, strategic counsel, and innovative solutions to
 							complex challenges across the continent and beyond.
-						</motion.p>
-						<motion.div
-							initial={{ opacity: 0, y: 10 }}
-							animate={{ opacity: 1, y: 0 }}
-							transition={{ duration: 0.6, ease: easeOut, delay: 0.45 }}
-							className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row"
+						</>
+					}
+				>
+					<div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
+						<Link
+							href="/#contact"
+							className="group inline-flex items-center justify-center gap-2 rounded-sm bg-brand-navy px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-green"
 						>
-							<Link
-								href="/#contact"
-								className="group inline-flex min-w-[15rem] items-center justify-center gap-2 rounded-full bg-brand-navy px-6 py-3.5 text-sm font-medium text-white shadow-[0_8px_20px_-8px_rgba(11,27,77,0.45)] transition-colors hover:bg-brand-green sm:min-w-0 sm:px-7"
-							>
-								Get Legal Consultation
-								<ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-							</Link>
-						</motion.div>
+							Get Legal Consultation
+							<ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+						</Link>
 					</div>
+				</PageHero>
 
-					{/* Lead photo with the second intro paragraph beside it */}
+				{/* Intro: lead photo with the second paragraph and the firm's numbers beside it */}
+				<section className="relative px-4 pb-16 sm:px-6 sm:pb-24">
 					<motion.div
-						initial={{ opacity: 0, y: 40 }}
+						initial={{ opacity: 0, y: 24 }}
 						animate={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.9, ease: easeOut, delay: 0.5 }}
-						className="mx-auto mt-16 grid max-w-6xl gap-4 lg:grid-cols-5"
+						transition={{ duration: 0.8, ease: easeOut, delay: 0.4 }}
+						className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-12 lg:gap-16"
 					>
-						<div className="relative h-[280px] overflow-hidden rounded-3xl shadow-[0_30px_80px_-40px_rgba(11,27,77,0.5)] sm:h-[440px] lg:col-span-3">
+						<div className="relative h-[280px] overflow-hidden rounded-sm bg-brand-tint/50 sm:h-[440px] lg:col-span-7">
 							<Image
 								src={images[0]}
 								alt="TGA Global Law Firm leadership"
 								fill
 								priority
-								sizes="(min-width: 1024px) 690px, 100vw"
+								sizes="(min-width: 1024px) 640px, 100vw"
 								className="object-cover"
 							/>
 						</div>
-						<div className={`${cardClass} flex flex-col justify-between p-6 sm:p-8 lg:col-span-2`}>
-							<p className="text-pretty leading-relaxed text-[#4b5468]">
+						<div className="flex flex-col justify-between gap-10 lg:col-span-5">
+							<p className="text-pretty text-lg leading-relaxed text-brand-navy/75">
 								For nearly two decades, we have served as the trusted advisor and partner
 								to top-tier national and multinational corporations. From navigating
 								sophisticated transactional matters to managing cross-border investment
 								portfolios, we deliver the precision and foresight needed to thrive in
 								today&apos;s interconnected global economy.
 							</p>
-							<div className="mt-8 grid grid-cols-2 gap-3">
+							<dl className="grid grid-cols-2 border-b border-brand-navy/15">
 								{stats.map((stat) => (
-									<div key={stat.label} className="rounded-2xl bg-white p-4 ring-1 ring-black/5">
-										<p className="text-3xl font-semibold tracking-tight text-brand-navy">{stat.value}</p>
-										<p className="mt-1 text-xs leading-snug text-[#606b80]">{stat.label}</p>
+									<div key={stat.label} className="flex flex-col-reverse border-t border-brand-navy/15 py-5 pr-4">
+										<dt className="mt-1 text-sm leading-snug text-brand-navy/60">{stat.label}</dt>
+										<dd className="text-3xl font-semibold tracking-tight text-brand-navy sm:text-4xl">{stat.value}</dd>
 									</div>
 								))}
-							</div>
+							</dl>
 						</div>
 					</motion.div>
 				</section>
@@ -274,9 +246,10 @@ export default function AboutPage() {
 					<PhotoMarquee photos={images.slice(1)} alt="About Us" />
 				</section>
 
-				{/* Continental Leadership & Influence */}
+				{/* Continental Leadership & Influence: hairline rows, title left and detail right */}
 				<Section>
 					<SectionHeading
+						label="Leadership"
 						title="Continental Leadership & Influence"
 						description={
 							<>
@@ -294,50 +267,44 @@ export default function AboutPage() {
 						}
 						className="sm:max-w-3xl"
 					/>
-					<div className="mt-14 grid gap-4 md:grid-cols-2">
+					<div className="mt-12 border-b border-brand-navy/15 lg:mt-16">
 						{leadershipRoles.map((role, index) => (
-							<Reveal
-								key={role.title}
-								delay={index * 0.06}
-								className={`${cardClass} group p-6 transition-shadow hover:shadow-md sm:p-8 ${
-									index === 0 ? "md:col-span-2" : ""
-								}`}
-							>
-								<span className="text-sm font-medium tabular-nums text-brand-green">
-									{String(index + 1).padStart(2, "0")}
-								</span>
-								<h3 className="mt-3 text-xl font-semibold tracking-tight text-brand-navy">{role.title}</h3>
-								<p className="mt-2 leading-relaxed text-[#606b80]">{role.description}</p>
+							<Reveal key={role.title} delay={Math.min(index, 3) * 0.05}>
+								<div className="grid gap-x-8 gap-y-3 border-t border-brand-navy/15 py-8 lg:grid-cols-12 lg:py-10">
+									<h3 className="text-xl font-semibold leading-snug tracking-tight text-brand-navy sm:text-2xl lg:col-span-5 lg:col-start-2">
+										{role.title}
+									</h3>
+									<p className="leading-relaxed text-brand-navy/75 lg:col-span-5 lg:pt-1">{role.description}</p>
+								</div>
 							</Reveal>
 						))}
 					</div>
 				</Section>
 
 				{/* Shaping the Legal Landscape */}
-				<Section pattern>
-					<div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+				<Section tone="muted">
+					<div className="grid items-start gap-10 lg:grid-cols-2 lg:gap-16">
 						<div>
 							<SectionHeading
 								align="left"
+								label="Legislation"
 								title="Shaping the Legal Landscape"
 								description="TGA Global is more than a legal representative; we are active drivers of legislative evolution. Powered by a vibrant network of elite lawyers both in Ethiopia and abroad, our team plays a definitive role in national and continental legal reforms."
 							/>
 							<Reveal delay={0.1}>
-								<p className="mx-auto mt-4 max-w-[19rem] text-pretty text-center text-base leading-relaxed text-[#606b80] min-[400px]:max-w-[21rem] sm:mx-0 sm:max-w-none sm:text-left sm:text-lg">
+								<p className="mx-auto mt-4 max-w-[19rem] text-pretty text-center text-base leading-relaxed text-brand-navy/75 min-[400px]:max-w-[21rem] sm:mx-0 sm:max-w-none sm:text-left sm:text-lg">
 									Our lawyers have been deeply involved in drafting, revising, and
 									promulgating landmark legislation that defines modern business in the
 									region, including:
 								</p>
 							</Reveal>
 						</div>
-						<ul className="space-y-3">
+						<ul className="border-b border-brand-navy/15">
 							{landmarkLegislation.map((law, index) => (
-								<Reveal key={law} delay={index * 0.08}>
-									<li className="flex items-center gap-4 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-black/5">
-										<span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-tint text-brand-green">
-											<Check className="h-4 w-4" />
-										</span>
-										<span className="font-medium text-brand-navy">{law}</span>
+								<Reveal key={law} delay={index * 0.06}>
+									<li className="flex items-center gap-4 border-t border-brand-navy/15 py-5">
+										<Check className="h-4 w-4 shrink-0 text-brand-green" />
+										<span className="text-lg font-medium tracking-tight text-brand-navy">{law}</span>
 									</li>
 								</Reveal>
 							))}
@@ -345,72 +312,67 @@ export default function AboutPage() {
 					</div>
 				</Section>
 
-				{/* Global Footprint & Alliances */}
-				<section className="px-3 py-8 sm:px-6 sm:py-12">
-					<Reveal className="relative isolate mx-auto max-w-7xl overflow-hidden rounded-[28px] bg-brand-navy px-5 py-16 text-white sm:rounded-[36px] sm:px-10 sm:py-24">
-						<div aria-hidden className="absolute -left-24 -top-32 -z-10 h-80 w-80 rounded-full bg-brand-green/35 blur-3xl" />
-						<div aria-hidden className="absolute -bottom-40 -right-20 -z-10 h-96 w-96 rounded-full bg-brand-green/25 blur-3xl" />
-						<div className="mx-auto max-w-3xl text-center">
-							<h2 className="mx-auto max-w-[16rem] text-balance text-3xl font-semibold tracking-tight min-[400px]:max-w-[18rem] sm:max-w-none sm:text-5xl">
-								A Distinctive Global Footprint & Elite Alliances
-							</h2>
-							<p className="mx-auto mt-4 max-w-[19rem] text-pretty text-base leading-relaxed text-white/70 min-[400px]:max-w-[21rem] sm:max-w-none sm:text-lg">
-								We maintain a powerful, active presence across all five regions of Africa,
-								uniquely bridging the gap between local jurisdictions and international
-								commerce. Our global reach is reinforced by unparalleled milestones and
-								strategic partnerships:
-							</p>
-						</div>
-						<div className="mx-auto mt-14 grid max-w-6xl gap-4 md:grid-cols-3">
+				{/* Global Footprint & Alliances: a solid navy band */}
+				<Section tone="navy">
+					<div>
+						<SectionHeading
+							inverted
+							label="Global reach"
+							title="A Distinctive Global Footprint & Elite Alliances"
+							description="We maintain a powerful, active presence across all five regions of Africa, uniquely bridging the gap between local jurisdictions and international commerce. Our global reach is reinforced by unparalleled milestones and strategic partnerships:"
+							className="sm:max-w-3xl"
+						/>
+						<div className="mt-12 grid gap-4 md:grid-cols-3 lg:mt-16">
 							{alliances.map(({ icon: Icon, title, description }, index) => (
 								<Reveal
 									key={title}
-									delay={0.1 + index * 0.08}
-									className="rounded-3xl bg-white/[0.06] p-6 ring-1 ring-white/10 transition-colors hover:bg-white/[0.09] sm:p-8"
+									delay={index * 0.08}
+									className="relative overflow-hidden rounded-sm bg-white/[0.06] p-6 ring-1 ring-white/10 transition-colors duration-300 hover:bg-white/[0.1] sm:p-8"
 								>
-									<span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10 text-brand-tint">
-										<Icon className="h-6 w-6" strokeWidth={1.75} />
-									</span>
-									<h3 className="mt-6 text-xl font-semibold tracking-tight">{title}</h3>
+									<span aria-hidden className="absolute inset-x-0 top-0 h-0.5 bg-brand-green" />
+									<Icon className="h-6 w-6 text-brand-tint" strokeWidth={1.5} />
+									<h3 className="mt-6 text-xl font-semibold tracking-tight text-white">{title}</h3>
 									<p className="mt-3 leading-relaxed text-white/65">{description}</p>
 								</Reveal>
 							))}
 						</div>
-					</Reveal>
-				</section>
+					</div>
+				</Section>
 
-				{/* Practice Areas */}
+				{/* Practice Areas: a hairline grid, like the partner logos on the home page */}
 				<Section>
 					<SectionHeading
+						label="Practice areas"
 						title="Our Practice Areas"
 						description="We offer comprehensive legal counsel across a diversified spectrum of practice areas, ensuring our clients are protected at every stage of their operations:"
 						className="sm:max-w-3xl"
 					/>
-					<div className="mt-14 flex flex-wrap justify-center gap-4">
-						{practiceAreas.map(({ icon: Icon, name }, index) => (
-							<Reveal
-								key={name}
-								delay={index * 0.05}
-								className={`${cardClass} group flex w-full items-center gap-4 p-5 transition-all hover:-translate-y-0.5 hover:bg-white hover:shadow-md sm:block sm:w-[calc(50%-0.5rem)] sm:p-6 lg:w-[calc(25%-0.75rem)]`}
-							>
-								<span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-brand-tint text-brand-green transition-colors duration-300 group-hover:bg-brand-green group-hover:text-white sm:mb-5">
-									<Icon className="h-5 w-5" strokeWidth={1.75} />
-								</span>
-								<p className="font-medium leading-snug text-brand-navy">{name}</p>
-							</Reveal>
-						))}
-					</div>
+					{/* Each cell draws its left and top rule; the negative margin hides the outer edges */}
+					<Reveal className="mt-12 overflow-hidden lg:mt-16">
+						<div className="-ml-px -mt-px grid sm:grid-cols-2 lg:grid-cols-4">
+							{practiceAreas.map(({ icon: Icon, name }) => (
+								<div
+									key={name}
+									className="group flex items-center gap-4 border-l border-t border-brand-navy/10 p-6 sm:block sm:min-h-[11rem] sm:p-8"
+								>
+									<Icon
+										className="h-6 w-6 shrink-0 text-brand-green transition-transform duration-300 group-hover:-translate-y-0.5"
+										strokeWidth={1.5}
+									/>
+									<p className="font-medium leading-snug text-brand-navy sm:mt-6 sm:text-lg">{name}</p>
+								</div>
+							))}
+						</div>
+					</Reveal>
 				</Section>
 
-				{/* Commitment & What Sets Us Apart */}
-				<Section pattern>
-					<div className="grid gap-4 md:grid-cols-2">
-						<Reveal className="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-black/5 sm:p-10">
-							<span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-navy text-white">
-								<ShieldCheck className="h-6 w-6" strokeWidth={1.75} />
-							</span>
+				{/* Commitment & What Sets Us Apart: two columns under a hairline */}
+				<Section tone="muted">
+					<div className="grid gap-x-16 gap-y-12 md:grid-cols-2">
+						<Reveal className="border-t border-brand-navy/15 pt-8">
+							<ShieldCheck className="h-6 w-6 text-brand-green" strokeWidth={1.5} />
 							<h3 className="mt-6 text-2xl font-semibold tracking-tight text-brand-navy sm:text-3xl">Our Commitment</h3>
-							<p className="mt-4 leading-relaxed text-[#606b80]">
+							<p className="mt-4 leading-relaxed text-brand-navy/75">
 								At TGA Global, we blend deep local insight with a sophisticated global
 								perspective to protect your interests with absolute integrity, excellence,
 								and premium legal service. Our expertise spans structuring complex
@@ -420,12 +382,10 @@ export default function AboutPage() {
 								cross-border investment and trade disputes.
 							</p>
 						</Reveal>
-						<Reveal delay={0.1} className="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-black/5 sm:p-10">
-							<span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-green text-white">
-								<Gem className="h-6 w-6" strokeWidth={1.75} />
-							</span>
+						<Reveal delay={0.1} className="border-t border-brand-navy/15 pt-8">
+							<Gem className="h-6 w-6 text-brand-green" strokeWidth={1.5} />
 							<h3 className="mt-6 text-2xl font-semibold tracking-tight text-brand-navy sm:text-3xl">What Sets Us Apart</h3>
-							<p className="mt-4 leading-relaxed text-[#606b80]">
+							<p className="mt-4 leading-relaxed text-brand-navy/75">
 								Our firm is built on two foundational pillars:{" "}
 								<span className="font-medium text-brand-green">uncompromising integrity</span>{" "}
 								and{" "}
@@ -444,7 +404,7 @@ export default function AboutPage() {
 				{/* <div className="mt-16 flex flex-col items-center">
 					<div className="text-center mb-16">
 						<h2 className="text-2xl md:text-4xl font-bold mb-4">OUR EMPLOYEES</h2>
-						<div className="w-24 h-1 bg-black/50 mx-auto rounded-full"></div>
+						<div className="w-24 h-1 bg-black/50 mx-auto rounded-sm"></div>
 					</div>
 
 					<div className="max-w-4xl text-center mb-16">
@@ -457,7 +417,7 @@ export default function AboutPage() {
 						{employees.map((employee, index) => (
 							<div
 								key={index}
-								className="bg-white rounded-xl overflow-hidden transition-all duration-300"
+								className="bg-white rounded-sm overflow-hidden transition-all duration-300"
 							>
 								<div className="relative h-64 w-auto bg-blue-200">
 									<Image
@@ -471,7 +431,7 @@ export default function AboutPage() {
 									/>
 								</div>
 								<div className="p-6 text-center">
-									<h3 className="text-gray-800 mb-2">
+									<h3 className="text-brand-navy mb-2">
 										{employee.name}
 									</h3>
 								</div>
@@ -484,6 +444,7 @@ export default function AboutPage() {
 				<section className="relative isolate scroll-mt-20 py-16 sm:py-24">
 					<div className="px-4 sm:px-6">
 						<SectionHeading
+							label="Offices"
 							title="Our Offices"
 							description="With strategically located offices, we are positioned to serve clients efficiently and effectively. Each location is equipped to deliver the highest standard of legal service, ensuring consistency, confidentiality, and professionalism. Explore our offices to see where we can best support your legal needs."
 							className="sm:max-w-3xl"
@@ -494,8 +455,7 @@ export default function AboutPage() {
 
 				{/* Disclosures */}
 				<section className="relative isolate scroll-mt-20 px-4 pb-16 sm:px-6" id="disclosure">
-					<DotPattern className="-z-10" />
-					<Reveal className="mx-auto max-w-4xl rounded-3xl bg-white/70 p-6 text-center text-sm leading-relaxed text-[#606b80] ring-1 ring-black/5 backdrop-blur-xl sm:p-10">
+					<Reveal className="mx-auto max-w-4xl border-t border-brand-navy/15 pt-10 text-center text-sm leading-relaxed text-brand-navy/60">
 						<h2 className="text-lg font-semibold tracking-tight text-brand-navy">
 							Global Reach & Legal Disclosures
 						</h2>

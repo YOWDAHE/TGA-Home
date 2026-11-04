@@ -82,13 +82,7 @@ export default async function page({ searchParams }: PageProps) {
     )
   } catch (error) {
     console.error('Error fetching resources:', error);
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Error Loading Resources</h1>
-          <p className="text-gray-600">Failed to load resources. Please try again later.</p>
-        </div>
-      </div>
-    );
+    // Hand over to app/error.tsx, which offers a retry
+    throw error;
   }
 }

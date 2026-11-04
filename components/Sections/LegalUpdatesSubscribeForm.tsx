@@ -49,14 +49,14 @@ export default function LegalUpdatesSubscribeForm({ compact = false }: LegalUpda
   };
 
   const inputClass =
-    "w-full rounded-xl border border-[#e3e8ef] bg-white px-4 py-3 text-sm text-brand-navy shadow-sm placeholder:text-[#9aa3b5] transition-all focus:border-brand-green focus:outline-none focus:ring-4 focus:ring-brand-tint disabled:opacity-60";
+    "w-full rounded-sm border-0 bg-white px-4 py-3 text-sm text-brand-navy ring-1 ring-brand-navy/15 placeholder:text-brand-navy/40 transition focus:outline-none focus:ring-2 focus:ring-brand-green/40 disabled:opacity-60";
 
   if (submitted) {
     return (
-      <div className={`rounded-3xl bg-brand-tint text-center ring-1 ring-brand-green/15 ${compact ? "p-5" : "p-7"}`}>
+      <div className={`rounded-sm bg-brand-tint text-center ring-1 ring-brand-green/15 ${compact ? "p-5" : "p-7"}`}>
         <CheckCircle className="mx-auto mb-3 h-10 w-10 text-brand-green" />
         <h3 className="mb-2 font-semibold text-brand-navy">Almost there!</h3>
-        <p className="text-sm text-[#606b80]">
+        <p className="text-sm text-brand-navy/75">
           Check your inbox and click the confirmation link to start receiving legal updates.
         </p>
       </div>
@@ -64,9 +64,8 @@ export default function LegalUpdatesSubscribeForm({ compact = false }: LegalUpda
   }
 
   return (
-    <div className={`relative isolate overflow-hidden rounded-3xl bg-brand-navy text-white ${compact ? "p-5" : "p-7"}`}>
-      <div aria-hidden className="absolute -right-16 -top-20 -z-10 h-48 w-48 rounded-full bg-brand-green/40 blur-3xl" />
-      <span className="mb-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-white/10 text-brand-tint">
+    <div className={`rounded-sm bg-brand-navy text-white ${compact ? "p-5" : "p-7"}`}>
+      <span className="mb-4 flex h-11 w-11 items-center justify-center rounded-sm bg-white/10 text-brand-tint">
         <Mail className="h-5 w-5" />
       </span>
       <h3 className={`font-semibold tracking-tight ${compact ? "text-base" : "text-xl"}`}>
@@ -95,13 +94,13 @@ export default function LegalUpdatesSubscribeForm({ compact = false }: LegalUpda
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             disabled={loading}
-            className={`${inputClass} ${errors.email ? "border-red-400" : ""}`}
+            className={`${inputClass} ${errors.email ? "ring-2 ring-red-400" : ""}`}
           />
           {errors.email && <p className="mt-1.5 text-xs text-red-300">{errors.email}</p>}
         </div>
         <button
           type="submit"
-          className="inline-flex w-full items-center justify-center rounded-full bg-white py-3 text-sm font-medium text-brand-navy transition-colors hover:bg-brand-tint disabled:opacity-60"
+          className="inline-flex w-full items-center justify-center rounded-sm bg-white py-3 text-sm font-medium text-brand-navy transition-colors hover:bg-brand-tint disabled:opacity-60"
           disabled={loading}
         >
           {loading ? (

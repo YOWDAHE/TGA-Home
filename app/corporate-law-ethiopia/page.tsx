@@ -1,6 +1,13 @@
 import { Metadata } from "next";
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import { pageMetadata } from "@/lib/seo";
+import { homeFont } from "@/app/fonts";
+import PageHero from "@/components/Sections/PageHero";
+import Section from "@/components/Sections/Section";
+import SectionHeading from "@/components/Sections/SectionHeading";
+import Reveal from "@/components/Sections/Reveal";
+import Footer from "@/components/Sections/Footer";
 
 export const metadata: Metadata = {
 	...pageMetadata({
@@ -20,178 +27,117 @@ export const metadata: Metadata = {
 	],
 };
 
+const services = [
+	{
+		title: "Business Registration Ethiopia",
+		description: "Complete business registration services including company formation, licensing, and regulatory compliance for Ethiopian businesses."
+	},
+	{
+		title: "Commercial Law Ethiopia",
+		description: "Expert commercial law services covering contracts, transactions, mergers & acquisitions, and corporate governance."
+	},
+	{
+		title: "Corporate Governance",
+		description: "Comprehensive corporate governance advisory, board structuring, and compliance management for Ethiopian corporations."
+	},
+	{
+		title: "Mergers & Acquisitions",
+		description: "Strategic M&A services, due diligence, and transaction structuring for Ethiopian and international businesses."
+	},
+	{
+		title: "International Business Law",
+		description: "Cross-border legal services, international trade law, and foreign investment advisory for global businesses in Ethiopia."
+	},
+	{
+		title: "Regulatory Compliance",
+		description: "Ethiopian regulatory compliance, licensing, and ongoing legal support for corporate entities."
+	}
+];
+
+const reasons = [
+	{
+		title: "#1 Law Firm in Ethiopia",
+		description: "Recognized as the leading law firm in Ethiopia with unmatched expertise in corporate and commercial law."
+	},
+	{
+		title: "International Law Firm Ethiopia",
+		description: "Global legal network with presence in 52 jurisdictions, providing international business law expertise."
+	},
+	{
+		title: "Top African Lawyers",
+		description: "Led by Tewodros Getachew Tulu, President of PALU, representing the highest standards in African legal practice."
+	},
+	{
+		title: "Business Law Firm Addis Ababa",
+		description: "Strategic location in Addis Ababa with deep understanding of Ethiopian business environment and regulations."
+	}
+];
+
 export default function CorporateLawEthiopia() {
 	return (
-		<div className="min-h-screen bg-gray-50">
-			{/* Hero Section */}
-			<section className="bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 text-white py-10">
-				<div className="flex items-center justify-center lg:gap-10 gap-4 left-0 w-full top-10 text-sm lg:text-base py-10">
-					<Link href="/">Home</Link>
-					<Link href="/about-us">About</Link>
-					<Link href="#services" className="hidden lg:flex">
-						Services
-					</Link>
-					<Link href="/resources">Resources</Link>
-					<Link href="/news">News</Link>
-					<Link href="#contact">Contact</Link>
-				</div>
-				<div className="container mx-auto px-4">
-					<div className="max-w-4xl mx-auto text-center">
-						<h1 className="text-4xl md:text-6xl font-bold mb-6">
-							Corporate Lawyers Ethiopia
-						</h1>
-						<h2 className="text-2xl md:text-3xl font-semibold mb-8 text-teal-400">
-							Business Law Firm Addis Ababa - #1 Law Firm in Ethiopia
-						</h2>
-						<p className="text-xl mb-8">
-							Leading corporate legal services in Ethiopia. Expert business
-							registration, commercial law, and corporate governance for local and
-							international businesses.
-						</p>
-					</div>
-				</div>
-			</section>
-
-			{/* Services Section */}
-			<section className="py-16">
-				<div className="container mx-auto px-4">
-					<div className="max-w-6xl mx-auto">
-						<h2 className="text-3xl font-bold text-center mb-12">
-							Corporate Law Services Ethiopia
-						</h2>
-
-						<div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-							<div className="bg-white p-6 rounded-lg shadow-lg">
-								<h3 className="text-xl font-semibold mb-4 text-teal-600">
-									Business Registration Ethiopia
-								</h3>
-								<p className="text-gray-600">
-									Complete business registration services including company formation,
-									licensing, and regulatory compliance for Ethiopian businesses.
-								</p>
-							</div>
-
-							<div className="bg-white p-6 rounded-lg shadow-lg">
-								<h3 className="text-xl font-semibold mb-4 text-teal-600">
-									Commercial Law Ethiopia
-								</h3>
-								<p className="text-gray-600">
-									Expert commercial law services covering contracts, transactions,
-									mergers & acquisitions, and corporate governance.
-								</p>
-							</div>
-
-							<div className="bg-white p-6 rounded-lg shadow-lg">
-								<h3 className="text-xl font-semibold mb-4 text-teal-600">
-									Corporate Governance
-								</h3>
-								<p className="text-gray-600">
-									Comprehensive corporate governance advisory, board structuring, and
-									compliance management for Ethiopian corporations.
-								</p>
-							</div>
-
-							<div className="bg-white p-6 rounded-lg shadow-lg">
-								<h3 className="text-xl font-semibold mb-4 text-teal-600">
-									Mergers & Acquisitions
-								</h3>
-								<p className="text-gray-600">
-									Strategic M&A services, due diligence, and transaction structuring for
-									Ethiopian and international businesses.
-								</p>
-							</div>
-
-							<div className="bg-white p-6 rounded-lg shadow-lg">
-								<h3 className="text-xl font-semibold mb-4 text-teal-600">
-									International Business Law
-								</h3>
-								<p className="text-gray-600">
-									Cross-border legal services, international trade law, and foreign
-									investment advisory for global businesses in Ethiopia.
-								</p>
-							</div>
-
-							<div className="bg-white p-6 rounded-lg shadow-lg">
-								<h3 className="text-xl font-semibold mb-4 text-teal-600">
-									Regulatory Compliance
-								</h3>
-								<p className="text-gray-600">
-									Ethiopian regulatory compliance, licensing, and ongoing legal support
-									for corporate entities.
-								</p>
-							</div>
-						</div>
-					</div>
-				</div>
-			</section>
-
-			{/* Why Choose Us Section */}
-			<section className="bg-white py-16">
-				<div className="container mx-auto px-4">
-					<div className="max-w-4xl mx-auto text-center">
-						<h2 className="text-3xl font-bold mb-8">
-							Why Choose TGA Global Law Firm LL.P for Corporate Law Ethiopia?
-						</h2>
-
-						<div className="grid md:grid-cols-2 gap-8 text-left">
-							<div>
-								<h3 className="text-xl font-semibold mb-4 text-teal-600">
-									#1 Law Firm in Ethiopia
-								</h3>
-								<p className="text-gray-600 mb-6">
-									Recognized as the leading law firm in Ethiopia with unmatched expertise
-									in corporate and commercial law.
-								</p>
-							</div>
-
-							<div>
-								<h3 className="text-xl font-semibold mb-4 text-teal-600">
-									International Law Firm Ethiopia
-								</h3>
-								<p className="text-gray-600 mb-6">
-									Global legal network with presence in 52 jurisdictions, providing
-									international business law expertise.
-								</p>
-							</div>
-
-							<div>
-								<h3 className="text-xl font-semibold mb-4 text-teal-600">
-									Top African Lawyers
-								</h3>
-								<p className="text-gray-600 mb-6">
-									Led by Tewodros Getachew Tulu, President of PALU, representing the
-									highest standards in African legal practice.
-								</p>
-							</div>
-
-							<div>
-								<h3 className="text-xl font-semibold mb-4 text-teal-600">
-									Business Law Firm Addis Ababa
-								</h3>
-								<p className="text-gray-600 mb-6">
-									Strategic location in Addis Ababa with deep understanding of Ethiopian
-									business environment and regulations.
-								</p>
-							</div>
-						</div>
-					</div>
-				</div>
-			</section>
-
-			{/* CTA Section */}
-			<section className="bg-teal-600 text-white py-16">
-				<div className="container mx-auto px-4 text-center">
-					<h2 className="text-3xl font-bold mb-6">
-						Ready to Work with Leading Corporate Lawyers Ethiopia?
+		<div className={homeFont.className}>
+			<div className="min-h-screen bg-white text-brand-navy antialiased">
+				<PageHero
+					currentHref="/"
+					label="Practice area"
+					title="Corporate Lawyers Ethiopia"
+					description="Leading corporate legal services in Ethiopia. Expert business registration, commercial law, and corporate governance for local and international businesses."
+				>
+					<h2 className="text-sm font-medium text-brand-green sm:text-base">
+						Business Law Firm Addis Ababa - #1 Law Firm in Ethiopia
 					</h2>
-					<p className="text-xl mb-8">
-						Contact TGA Global Law Firm LL.P for expert corporate legal services in Ethiopia
-					</p>
-					<button className="bg-white text-teal-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
-						Contact Our Corporate Lawyers
-					</button>
-				</div>
-			</section>
+				</PageHero>
+
+				{/* Services */}
+				<Section id="services">
+					<SectionHeading title="Corporate Law Services Ethiopia" />
+					<div className="mt-12 grid gap-4 sm:grid-cols-2 lg:mt-16 lg:grid-cols-3">
+						{services.map((service, index) => (
+							<Reveal key={service.title} delay={(index % 3) * 0.06} className="h-full">
+								<div className="h-full rounded-sm bg-white p-6 ring-1 ring-brand-navy/10 transition-transform duration-300 hover:-translate-y-1 hover:ring-brand-navy/25">
+									<h3 className="text-lg font-semibold leading-snug tracking-tight text-brand-navy sm:text-xl">
+										{service.title}
+									</h3>
+									<p className="mt-2 text-sm leading-relaxed text-brand-navy/75">{service.description}</p>
+								</div>
+							</Reveal>
+						))}
+					</div>
+				</Section>
+
+				{/* Why choose us */}
+				<Section tone="muted">
+					<SectionHeading title="Why Choose TGA Global Law Firm LL.P for Corporate Law Ethiopia?" />
+					<div className="mx-auto mt-12 grid max-w-4xl gap-x-10 gap-y-8 text-left md:grid-cols-2 lg:mt-16">
+						{reasons.map((reason, index) => (
+							<Reveal key={reason.title} delay={(index % 2) * 0.06} className="border-t border-brand-navy/15 pt-5">
+								<h3 className="text-lg font-semibold tracking-tight text-brand-navy">{reason.title}</h3>
+								<p className="mt-2 leading-relaxed text-brand-navy/75">{reason.description}</p>
+							</Reveal>
+						))}
+					</div>
+				</Section>
+
+				{/* Call to action */}
+				<Section tone="navy">
+					<SectionHeading
+						inverted
+						title="Ready to Work with Leading Corporate Lawyers Ethiopia?"
+						description="Contact TGA Global Law Firm LL.P for expert corporate legal services in Ethiopia"
+						action={
+							<Link
+								href="/#contact"
+								className="group inline-flex items-center gap-2 rounded-sm bg-white px-5 py-2.5 text-sm font-medium text-brand-navy transition-colors hover:bg-brand-tint"
+							>
+								Contact Our Corporate Lawyers
+								<ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+							</Link>
+						}
+					/>
+				</Section>
+
+				<Footer />
+			</div>
 		</div>
 	);
 }

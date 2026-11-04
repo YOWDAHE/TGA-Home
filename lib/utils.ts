@@ -92,3 +92,13 @@ export function convertToApiUrl(url: string | { secure_url?: string }): string {
 
   return url;
 }
+
+/** Image for the written home page sections: photos that ship with this site ("/Images/…") as they
+ *  are, photos uploaded in the admin through this site's uploads proxy. */
+export function homeImageUrl(url: string): string {
+  if (!url) return '/office/placeholder.jpg';
+  const uploaded = url.split('?')[0].split('/landing/uploads/home/')[1];
+  if (uploaded) return `/api/uploads/home/${uploaded.split('/')[0]}`;
+  if (url.startsWith('/')) return url;
+  return convertToApiUrl(url);
+}

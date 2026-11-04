@@ -1,6 +1,13 @@
 import { Metadata } from 'next';
-import Link from 'next/link';
 import { pageMetadata } from "@/lib/seo";
+import Link from "next/link";
+import { ArrowRight, Check, Quote } from "lucide-react";
+import { homeFont } from "@/app/fonts";
+import PageHero from "@/components/Sections/PageHero";
+import Section from "@/components/Sections/Section";
+import SectionHeading from "@/components/Sections/SectionHeading";
+import Reveal from "@/components/Sections/Reveal";
+import Footer from "@/components/Sections/Footer";
 
 export const metadata: Metadata = {
   ...pageMetadata({
@@ -20,273 +27,211 @@ export const metadata: Metadata = {
   ],
 };
 
+const services = [
+	{
+		title: "Diaspora Property Lawyers Ethiopia",
+		description: "Expert property legal services for Ethiopian diaspora including property purchase, sale, management, and investment in Ethiopia."
+	},
+	{
+		title: "Cross-Border Legal Services Ethiopia",
+		description: "International legal services for diaspora including business setup, investment advisory, and cross-border transactions."
+	},
+	{
+		title: "Ethiopian Diaspora Legal Help",
+		description: "Remote legal consultations, document preparation, and representation services for Ethiopian diaspora worldwide."
+	},
+	{
+		title: "Investment Advisory",
+		description: "Legal guidance for diaspora investments in Ethiopia including real estate, business ventures, and financial investments."
+	},
+	{
+		title: "Business Setup Services",
+		description: "Complete legal support for diaspora business setup in Ethiopia including registration, licensing, and compliance."
+	},
+	{
+		title: "Inheritance & Succession",
+		description: "Legal services for inheritance, property succession, and estate planning for Ethiopian diaspora families."
+	}
+];
+
+const serviceLists = [
+	{
+		title: "Property Management for Diaspora",
+		items: [
+			"Remote property management services",
+			"Property maintenance and repairs",
+			"Rental property legal support",
+			"Property tax and compliance",
+			"Property insurance and protection"
+		]
+	},
+	{
+		title: "Investment Legal Support",
+		items: [
+			"Investment legal advisory",
+			"Due diligence services",
+			"Contract review and negotiation",
+			"Regulatory compliance",
+			"Risk assessment and mitigation"
+		]
+	},
+	{
+		title: "Remote Legal Services",
+		items: [
+			"Video consultations",
+			"Document preparation",
+			"Legal opinion services",
+			"Power of attorney",
+			"Legal representation"
+		]
+	},
+	{
+		title: "Family Legal Services",
+		items: [
+			"Family law matters",
+			"Inheritance planning",
+			"Property succession",
+			"Guardianship services",
+			"Family business legal support"
+		]
+	}
+];
+
+const reasons = [
+	{
+		title: "#1 Law Firm in Ethiopia",
+		description: "Recognized as the leading law firm in Ethiopia with extensive experience serving Ethiopian diaspora worldwide."
+	},
+	{
+		title: "International Legal Network",
+		description: "Global legal network with presence in 52 jurisdictions, providing seamless cross-border legal services."
+	},
+	{
+		title: "Diaspora Property Lawyers Ethiopia",
+		description: "Specialized property legal services for Ethiopian diaspora with deep understanding of local property laws."
+	},
+	{
+		title: "Cross-Border Legal Services Ethiopia",
+		description: "Expert cross-border legal services including business setup, investment advisory, and international transactions."
+	}
+];
+
+const testimonials = [
+	{
+		quote: "TGA Global Law Firm LL.P provided excellent legal services for my property investment in Ethiopia. Their diaspora legal help was invaluable.",
+		author: "Ethiopian Diaspora Client"
+	},
+	{
+		quote: "The cross-border legal services were seamless. They handled everything remotely and kept me informed throughout the process.",
+		author: "International Client"
+	}
+];
+
 export default function DiasporaLegalServices() {
-  return (
-			<div className="min-h-screen bg-gray-50">
-				{/* Hero Section */}
-				<section className="bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 text-white pb-20">
-					<div className="flex items-center justify-center lg:gap-10 gap-4 left-0 w-full top-10 text-sm lg:text-base py-10">
-						<Link href="/">Home</Link>
-						<Link href="/about-us">About</Link>
-						<Link href="#services" className="hidden lg:flex">
-							Services
-						</Link>
-						<Link href="/resources">Resources</Link>
-						<Link href="/news">News</Link>
-						<Link href="#contact">Contact</Link>
+	return (
+		<div className={homeFont.className}>
+			<div className="min-h-screen bg-white text-brand-navy antialiased">
+				<PageHero
+					currentHref="/"
+					label="Practice area"
+					title="Legal Services for Diaspora Ethiopians"
+					description="Comprehensive legal services for Ethiopian diaspora worldwide. Property management, investment advisory, and cross-border legal support."
+				>
+					<h2 className="text-sm font-medium text-brand-green sm:text-base">
+						Ethiopian Diaspora Legal Help - #1 Law Firm in Ethiopia
+					</h2>
+				</PageHero>
+
+				{/* Services */}
+				<Section id="services">
+					<SectionHeading title="Ethiopian Diaspora Legal Services" />
+					<div className="mt-12 grid gap-4 sm:grid-cols-2 lg:mt-16 lg:grid-cols-3">
+						{services.map((service, index) => (
+							<Reveal key={service.title} delay={(index % 3) * 0.06} className="h-full">
+								<div className="h-full rounded-sm bg-white p-6 ring-1 ring-brand-navy/10 transition-transform duration-300 hover:-translate-y-1 hover:ring-brand-navy/25">
+									<h3 className="text-lg font-semibold leading-snug tracking-tight text-brand-navy sm:text-xl">
+										{service.title}
+									</h3>
+									<p className="mt-2 text-sm leading-relaxed text-brand-navy/75">{service.description}</p>
+								</div>
+							</Reveal>
+						))}
 					</div>
-					<div className="container mx-auto px-4">
-						<div className="max-w-4xl mx-auto text-center">
-							<h1 className="text-4xl md:text-6xl font-bold mb-6">
-								Legal Services for Diaspora Ethiopians
-							</h1>
-							<h2 className="text-2xl md:text-3xl font-semibold mb-8 text-teal-400">
-								Ethiopian Diaspora Legal Help - #1 Law Firm in Ethiopia
-							</h2>
-							<p className="text-xl mb-8">
-								Comprehensive legal services for Ethiopian diaspora worldwide. Property
-								management, investment advisory, and cross-border legal support.
-							</p>
-						</div>
-					</div>
-				</section>
+				</Section>
 
-				{/* Services Section */}
-				<section className="py-16">
-					<div className="container mx-auto px-4">
-						<div className="max-w-6xl mx-auto">
-							<h2 className="text-3xl font-bold text-center mb-12">
-								Ethiopian Diaspora Legal Services
-							</h2>
-
-							<div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-								<div className="bg-white p-6 rounded-lg shadow-lg">
-									<h3 className="text-xl font-semibold mb-4 text-teal-600">
-										Diaspora Property Lawyers Ethiopia
-									</h3>
-									<p className="text-gray-600">
-										Expert property legal services for Ethiopian diaspora including
-										property purchase, sale, management, and investment in Ethiopia.
-									</p>
-								</div>
-
-								<div className="bg-white p-6 rounded-lg shadow-lg">
-									<h3 className="text-xl font-semibold mb-4 text-teal-600">
-										Cross-Border Legal Services Ethiopia
-									</h3>
-									<p className="text-gray-600">
-										International legal services for diaspora including business setup,
-										investment advisory, and cross-border transactions.
-									</p>
-								</div>
-
-								<div className="bg-white p-6 rounded-lg shadow-lg">
-									<h3 className="text-xl font-semibold mb-4 text-teal-600">
-										Ethiopian Diaspora Legal Help
-									</h3>
-									<p className="text-gray-600">
-										Remote legal consultations, document preparation, and representation
-										services for Ethiopian diaspora worldwide.
-									</p>
-								</div>
-
-								<div className="bg-white p-6 rounded-lg shadow-lg">
-									<h3 className="text-xl font-semibold mb-4 text-teal-600">
-										Investment Advisory
-									</h3>
-									<p className="text-gray-600">
-										Legal guidance for diaspora investments in Ethiopia including real
-										estate, business ventures, and financial investments.
-									</p>
-								</div>
-
-								<div className="bg-white p-6 rounded-lg shadow-lg">
-									<h3 className="text-xl font-semibold mb-4 text-teal-600">
-										Business Setup Services
-									</h3>
-									<p className="text-gray-600">
-										Complete legal support for diaspora business setup in Ethiopia
-										including registration, licensing, and compliance.
-									</p>
-								</div>
-
-								<div className="bg-white p-6 rounded-lg shadow-lg">
-									<h3 className="text-xl font-semibold mb-4 text-teal-600">
-										Inheritance & Succession
-									</h3>
-									<p className="text-gray-600">
-										Legal services for inheritance, property succession, and estate
-										planning for Ethiopian diaspora families.
-									</p>
-								</div>
-							</div>
-						</div>
-					</div>
-				</section>
-
-				{/* Specialized Services Section */}
-				<section className="bg-white py-16">
-					<div className="container mx-auto px-4">
-						<div className="max-w-4xl mx-auto">
-							<h2 className="text-3xl font-bold text-center mb-12">
-								Specialized Diaspora Legal Services
-							</h2>
-
-							<div className="grid md:grid-cols-2 gap-8">
-								<div className="bg-teal-50 p-6 rounded-lg">
-									<h3 className="text-xl font-semibold mb-4 text-teal-600">
-										Property Management for Diaspora
-									</h3>
-									<ul className="text-gray-600 space-y-2">
-										<li>• Remote property management services</li>
-										<li>• Property maintenance and repairs</li>
-										<li>• Rental property legal support</li>
-										<li>• Property tax and compliance</li>
-										<li>• Property insurance and protection</li>
+				{/* Specialized services */}
+				<Section tone="muted">
+					<SectionHeading title="Specialized Diaspora Legal Services" />
+					<div className="mx-auto mt-12 grid max-w-4xl gap-4 md:grid-cols-2 lg:mt-16">
+						{serviceLists.map((list, index) => (
+							<Reveal key={list.title} delay={(index % 2) * 0.06} className="h-full">
+								<div className="h-full rounded-sm bg-white p-6 ring-1 ring-brand-navy/10">
+									<h3 className="text-lg font-semibold tracking-tight text-brand-navy">{list.title}</h3>
+									<ul className="mt-4 space-y-2.5">
+										{list.items.map((item) => (
+											<li key={item} className="flex items-start gap-3 text-sm leading-relaxed text-brand-navy/75">
+												<Check className="mt-0.5 h-4 w-4 shrink-0 text-brand-green" />
+												{item}
+											</li>
+										))}
 									</ul>
 								</div>
-
-								<div className="bg-teal-50 p-6 rounded-lg">
-									<h3 className="text-xl font-semibold mb-4 text-teal-600">
-										Investment Legal Support
-									</h3>
-									<ul className="text-gray-600 space-y-2">
-										<li>• Investment legal advisory</li>
-										<li>• Due diligence services</li>
-										<li>• Contract review and negotiation</li>
-										<li>• Regulatory compliance</li>
-										<li>• Risk assessment and mitigation</li>
-									</ul>
-								</div>
-
-								<div className="bg-teal-50 p-6 rounded-lg">
-									<h3 className="text-xl font-semibold mb-4 text-teal-600">
-										Remote Legal Services
-									</h3>
-									<ul className="text-gray-600 space-y-2">
-										<li>• Video consultations</li>
-										<li>• Document preparation</li>
-										<li>• Legal opinion services</li>
-										<li>• Power of attorney</li>
-										<li>• Legal representation</li>
-									</ul>
-								</div>
-
-								<div className="bg-teal-50 p-6 rounded-lg">
-									<h3 className="text-xl font-semibold mb-4 text-teal-600">
-										Family Legal Services
-									</h3>
-									<ul className="text-gray-600 space-y-2">
-										<li>• Family law matters</li>
-										<li>• Inheritance planning</li>
-										<li>• Property succession</li>
-										<li>• Guardianship services</li>
-										<li>• Family business legal support</li>
-									</ul>
-								</div>
-							</div>
-						</div>
+							</Reveal>
+						))}
 					</div>
-				</section>
+				</Section>
 
-				{/* Why Choose Us Section */}
-				<section className="bg-gray-100 py-16">
-					<div className="container mx-auto px-4">
-						<div className="max-w-4xl mx-auto text-center">
-							<h2 className="text-3xl font-bold mb-8">
-								Why Choose TGA Global Law Firm LL.P for Diaspora Legal Services?
-							</h2>
-
-							<div className="grid md:grid-cols-2 gap-8 text-left">
-								<div>
-									<h3 className="text-xl font-semibold mb-4 text-teal-600">
-										#1 Law Firm in Ethiopia
-									</h3>
-									<p className="text-gray-600 mb-6">
-										Recognized as the leading law firm in Ethiopia with extensive
-										experience serving Ethiopian diaspora worldwide.
-									</p>
-								</div>
-
-								<div>
-									<h3 className="text-xl font-semibold mb-4 text-teal-600">
-										International Legal Network
-									</h3>
-									<p className="text-gray-600 mb-6">
-										Global legal network with presence in 52 jurisdictions, providing
-										seamless cross-border legal services.
-									</p>
-								</div>
-
-								<div>
-									<h3 className="text-xl font-semibold mb-4 text-teal-600">
-										Diaspora Property Lawyers Ethiopia
-									</h3>
-									<p className="text-gray-600 mb-6">
-										Specialized property legal services for Ethiopian diaspora with deep
-										understanding of local property laws.
-									</p>
-								</div>
-
-								<div>
-									<h3 className="text-xl font-semibold mb-4 text-teal-600">
-										Cross-Border Legal Services Ethiopia
-									</h3>
-									<p className="text-gray-600 mb-6">
-										Expert cross-border legal services including business setup,
-										investment advisory, and international transactions.
-									</p>
-								</div>
-							</div>
-						</div>
+				{/* Why choose us */}
+				<Section>
+					<SectionHeading title="Why Choose TGA Global Law Firm LL.P for Diaspora Legal Services?" />
+					<div className="mx-auto mt-12 grid max-w-4xl gap-x-10 gap-y-8 text-left md:grid-cols-2 lg:mt-16">
+						{reasons.map((reason, index) => (
+							<Reveal key={reason.title} delay={(index % 2) * 0.06} className="border-t border-brand-navy/15 pt-5">
+								<h3 className="text-lg font-semibold tracking-tight text-brand-navy">{reason.title}</h3>
+								<p className="mt-2 leading-relaxed text-brand-navy/75">{reason.description}</p>
+							</Reveal>
+						))}
 					</div>
-				</section>
+				</Section>
 
-				{/* Testimonials Section */}
-				<section className="bg-white py-16">
-					<div className="container mx-auto px-4">
-						<div className="max-w-4xl mx-auto text-center">
-							<h2 className="text-3xl font-bold mb-12">
-								What Ethiopian Diaspora Say About Our Services
-							</h2>
-
-							<div className="grid md:grid-cols-2 gap-8">
-								<div className="bg-gray-50 p-6 rounded-lg">
-									<p className="text-gray-600 mb-4 italic">
-										"TGA Global Law Firm LL.P provided excellent legal services for my property
-										investment in Ethiopia. Their diaspora legal help was invaluable."
-									</p>
-									<p className="font-semibold text-teal-600">
-										- Ethiopian Diaspora Client
-									</p>
-								</div>
-
-								<div className="bg-gray-50 p-6 rounded-lg">
-									<p className="text-gray-600 mb-4 italic">
-										"The cross-border legal services were seamless. They handled
-										everything remotely and kept me informed throughout the process."
-									</p>
-									<p className="font-semibold text-teal-600">- International Client</p>
-								</div>
-							</div>
-						</div>
+				{/* Testimonials */}
+				<Section tone="muted">
+					<SectionHeading title="What Ethiopian Diaspora Say About Our Services" />
+					<div className="mx-auto mt-12 grid max-w-4xl gap-4 md:grid-cols-2 lg:mt-16">
+						{testimonials.map((testimonial, index) => (
+							<Reveal key={testimonial.author} delay={index * 0.06} className="h-full">
+								<figure className="flex h-full flex-col rounded-sm bg-white p-6 ring-1 ring-brand-navy/10">
+									<Quote className="h-5 w-5 text-brand-green" />
+									<blockquote className="mt-4 flex-1 leading-relaxed text-brand-navy/75">
+										&ldquo;{testimonial.quote}&rdquo;
+									</blockquote>
+									<figcaption className="mt-4 text-sm font-medium text-brand-navy">- {testimonial.author}</figcaption>
+								</figure>
+							</Reveal>
+						))}
 					</div>
-				</section>
+				</Section>
 
-				{/* CTA Section */}
-				<section className="bg-teal-600 text-white py-16">
-					<div className="container mx-auto px-4 text-center">
-						<h2 className="text-3xl font-bold mb-6">
-							Need Legal Services for Diaspora Ethiopians?
-						</h2>
-						<p className="text-xl mb-8">
-							Contact TGA Global Law Firm LL.P for comprehensive Ethiopian diaspora legal help
-						</p>
-						<button className="bg-white text-teal-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
-							Contact Our Diaspora Legal Team
-						</button>
-					</div>
-				</section>
+				{/* Call to action */}
+				<Section tone="navy">
+					<SectionHeading
+						inverted
+						title="Need Legal Services for Diaspora Ethiopians?"
+						description="Contact TGA Global Law Firm LL.P for comprehensive Ethiopian diaspora legal help"
+						action={
+							<Link
+								href="/#contact"
+								className="group inline-flex items-center gap-2 rounded-sm bg-white px-5 py-2.5 text-sm font-medium text-brand-navy transition-colors hover:bg-brand-tint"
+							>
+								Contact Our Diaspora Legal Team
+								<ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+							</Link>
+						}
+					/>
+				</Section>
+
+				<Footer />
 			</div>
-		);
+		</div>
+	);
 }

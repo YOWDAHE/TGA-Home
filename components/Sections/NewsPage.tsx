@@ -38,11 +38,10 @@ import {
 } from "@/app/types/news";
 import { convertToApiUrl } from "@/lib/utils";
 import Footer from "./Footer";
-import TopNav from "./TopNav";
+import PageHero from "./PageHero";
 import Section from "./Section";
 import SectionHeading from "./SectionHeading";
 import Reveal, { easeOut } from "./Reveal";
-import { FrostedColors } from "./Backdrop";
 import { Highlight, MatchBadges, excerptAround, matchedFields } from "./SearchMatch";
 import { MotionConfig, motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
@@ -57,17 +56,17 @@ interface NewsQueryParams {
 	category?: string;
 }
 
-const cardClass = "rounded-3xl bg-white/70 shadow-sm ring-1 ring-black/5 backdrop-blur-xl";
+const cardClass = "rounded-sm bg-white ring-1 ring-brand-navy/10";
 const columnHeading = "mb-5 text-center text-2xl font-semibold tracking-tight text-brand-navy sm:text-left";
 const pagerClass =
-	"inline-flex items-center rounded-full bg-white px-4 py-2 text-sm text-brand-navy ring-1 ring-black/10 transition-colors hover:bg-brand-tint disabled:pointer-events-none disabled:opacity-40";
+	"inline-flex items-center rounded-sm bg-white px-4 py-2 text-sm text-brand-navy ring-1 ring-brand-navy/15 transition-colors hover:bg-brand-tint disabled:pointer-events-none disabled:opacity-40";
 
 // Category filters are pills; the selected one is filled navy
 const chipClass = (active: boolean) =>
-	`shrink-0 rounded-full px-4 py-2 text-sm transition-colors ${
+	`shrink-0 rounded-sm px-4 py-2 text-sm transition-colors ${
 		active
 			? "bg-brand-navy text-white"
-			: "bg-white/80 text-[#4b5468] ring-1 ring-black/5 hover:bg-white hover:text-brand-navy"
+			: "bg-white text-brand-navy ring-1 ring-brand-navy/15 hover:bg-brand-tint"
 	}`;
 
 // Article bodies are HTML; excerpts show plain text
@@ -294,60 +293,31 @@ export default function NewsPage({
 	return (
 		<MotionConfig reducedMotion="user">
 			<div className="relative isolate min-h-screen overflow-x-clip text-brand-navy antialiased">
-				<FrostedColors />
-				<TopNav currentHref="/news" />
-
-				{/* Page header */}
-				<section className="px-4 pb-10 pt-14 text-center sm:px-6 sm:pt-20">
-					<motion.p
-						initial={{ opacity: 0, y: 10 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.6, ease: easeOut, delay: 0.1 }}
-						className="mb-6 inline-flex items-center gap-2 rounded-full bg-white px-3.5 py-1.5 text-xs font-medium text-[#4b5468] shadow-sm ring-1 ring-black/5 sm:px-4"
-					>
-						<span className="h-1.5 w-1.5 rounded-full bg-brand-green" />
-						TGA Global Law Firm LL.P
-					</motion.p>
-					<motion.h1
-						initial={{ opacity: 0, y: 24, filter: "blur(8px)" }}
-						animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-						transition={{ duration: 0.8, ease: easeOut, delay: 0.15 }}
-						className="text-[2.75rem] font-semibold leading-none tracking-tight sm:text-7xl"
-					>
-						News
-					</motion.h1>
-					<motion.p
-						initial={{ opacity: 0, y: 16 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.7, ease: easeOut, delay: 0.3 }}
-						className="mx-auto mt-5 max-w-[19rem] text-pretty text-base leading-relaxed text-[#606b80] min-[400px]:max-w-[21rem] sm:max-w-xl sm:text-lg"
-					>
-						Stay updated with the latest legal insights and industry developments
-					</motion.p>
-					<motion.div
-						initial={{ opacity: 0, y: 10 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.6, ease: easeOut, delay: 0.4 }}
-						className="mx-auto mt-8 flex max-w-xl items-center gap-2 rounded-full bg-white p-1.5 pl-5 text-left shadow-sm ring-1 ring-black/5 focus-within:ring-2 focus-within:ring-brand-green/40"
-					>
-						<Search className="h-4 w-4 shrink-0 text-[#9aa3b5]" />
+				<PageHero
+					currentHref="/news"
+					label="TGA Global Law Firm LL.P"
+					title="News"
+					description="Stay updated with the latest legal insights and industry developments"
+				>
+					<div className="mx-auto flex max-w-xl items-center gap-2 rounded-sm bg-white p-1.5 pl-5 text-left ring-1 ring-brand-navy/15 focus-within:ring-2 focus-within:ring-brand-green/40">
+						<Search className="h-4 w-4 shrink-0 text-brand-navy/40" />
 						<input
 							type="search"
 							placeholder="Search news..."
 							value={searchInput}
 							onChange={handleSearchInputChange}
 							onKeyDown={handleSearchKeyPress}
-							className="min-w-0 flex-1 bg-transparent py-2 text-brand-navy placeholder:text-[#9aa3b5] focus:outline-none [&::-webkit-search-cancel-button]:hidden"
+							className="min-w-0 flex-1 bg-transparent py-2 text-brand-navy placeholder:text-brand-navy/40 focus:outline-none [&::-webkit-search-cancel-button]:hidden"
 						/>
 						<button
 							type="button"
 							onClick={handleSearch}
-							className="rounded-full bg-brand-navy px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-green sm:px-6"
+							className="rounded-sm bg-brand-navy px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-green sm:px-6"
 						>
 							Search
 						</button>
-					</motion.div>
-				</section>
+					</div>
+				</PageHero>
 
 				{activeQuery ? (
 					/* Search results only: the curated sections stay hidden while searching */
@@ -358,7 +328,7 @@ export default function NewsPage({
 									<h2 className="text-2xl font-semibold tracking-tight text-brand-navy sm:text-3xl">
 										Results for “{activeQuery}”
 									</h2>
-									<p className="mt-1 text-sm text-[#7a8397]">
+									<p className="mt-1 text-sm text-brand-navy/50">
 										{isLoading
 											? "Searching..."
 											: `${getPaginationInfo()?.totalItems ?? getCurrentNewsItems().length} ${
@@ -369,7 +339,7 @@ export default function NewsPage({
 								<button
 									type="button"
 									onClick={clearSearch}
-									className="inline-flex shrink-0 items-center rounded-full bg-white px-4 py-2 text-sm text-brand-navy ring-1 ring-black/10 transition-colors hover:bg-brand-tint"
+									className="inline-flex shrink-0 items-center rounded-sm bg-white px-4 py-2 text-sm text-brand-navy ring-1 ring-brand-navy/15 transition-colors hover:bg-brand-tint"
 								>
 									<X className="mr-1 h-4 w-4" />
 									Clear search
@@ -390,17 +360,17 @@ export default function NewsPage({
 							</div>
 
 							{isLoading ? (
-								<div className="flex items-center justify-center py-20 text-[#606b80]">
+								<div className="flex items-center justify-center py-20 text-brand-navy/75">
 									<Loader2 className="h-6 w-6 animate-spin text-brand-green" />
 									<span className="ml-2">Searching...</span>
 								</div>
 							) : getCurrentNewsItems().length === 0 ? (
 								<div className="py-20 text-center">
-									<div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-white shadow-sm ring-1 ring-black/5">
-										<Search className="h-8 w-8 text-[#9aa3b5]" />
+									<div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-sm bg-white ring-1 ring-brand-navy/10">
+										<Search className="h-8 w-8 text-brand-navy/40" />
 									</div>
 									<h3 className="mb-2 text-xl font-semibold text-brand-navy">No stories found</h3>
-									<p className="text-[#606b80]">Try a different phrase or another category.</p>
+									<p className="text-brand-navy/75">Try a different phrase or another category.</p>
 								</div>
 							) : (
 								<ul className="mt-8 space-y-3">
@@ -421,9 +391,9 @@ export default function NewsPage({
 											>
 												<Link
 													href={`/news/${article.id}`}
-													className="group flex gap-4 overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-black/5 transition-shadow hover:shadow-lg sm:gap-5"
+													className="group flex gap-4 overflow-hidden rounded-sm bg-white ring-1 ring-brand-navy/10 transition-[box-shadow,transform] duration-300 hover:-translate-y-1 hover:ring-brand-navy/25 sm:gap-5"
 												>
-													<div className="relative min-h-[7.5rem] w-28 shrink-0 self-stretch overflow-hidden max-h-48 bg-[#eef1f5] sm:min-h-[9rem] sm:w-48">
+													<div className="relative min-h-[7.5rem] w-28 shrink-0 self-stretch overflow-hidden max-h-48 bg-brand-tint/50 sm:min-h-[9rem] sm:w-48">
 														<img
 															src={getImageUrl(article)}
 															alt={article.title}
@@ -437,10 +407,10 @@ export default function NewsPage({
 														<h3 className="mt-2 line-clamp-2 font-semibold leading-snug tracking-tight text-brand-navy transition-colors group-hover:text-brand-green sm:text-lg">
 															<Highlight text={article.title} query={activeQuery} />
 														</h3>
-														<p className="mt-1.5 line-clamp-2 text-sm leading-relaxed text-[#606b80]">
+														<p className="mt-1.5 line-clamp-2 text-sm leading-relaxed text-brand-navy/75">
 															<Highlight text={excerptAround(text, activeQuery)} query={activeQuery} />
 														</p>
-														<p className="mt-2 text-xs text-[#7a8397]">{formatNewsMetaDate(article)}</p>
+														<p className="mt-2 text-xs text-brand-navy/50">{formatNewsMetaDate(article)}</p>
 													</div>
 												</Link>
 											</motion.li>
@@ -460,7 +430,7 @@ export default function NewsPage({
 										<ChevronLeft className="mr-1 h-4 w-4" />
 										Previous
 									</button>
-									<span className="text-sm text-[#606b80]">
+									<span className="text-sm text-brand-navy/75">
 										Page {getPaginationInfo()?.currentPage} of {getPaginationInfo()?.totalPages}
 									</span>
 									<button
@@ -487,19 +457,19 @@ export default function NewsPage({
 						className="mx-auto grid max-w-6xl grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-12"
 					>
 						{/* Left - Browse News */}
-						<div className={`${cardClass} order-2 p-4 sm:p-5 md:order-1 lg:col-span-3`}>
-							<p className="mb-3 px-1 text-sm font-medium text-brand-navy">Just in</p>
-							<div className="flex max-h-64 flex-col gap-2 overflow-y-auto md:max-h-96">
+						<div className="order-2 md:order-1 lg:col-span-3">
+							<p className="pb-4 text-xs font-medium uppercase tracking-[0.18em] text-brand-green">Just in</p>
+							<div className="flex flex-col border-b border-brand-navy/15">
 								{latest.slice(0, 3).map((article) => (
 									<Link
 										href={`/news/${article.id}`}
 										key={article.id}
-										className="rounded-2xl bg-white p-3 ring-1 ring-black/5 transition-shadow hover:shadow-md"
+										className="group border-t border-brand-navy/15 py-4"
 									>
-										<h4 className="mb-1.5 line-clamp-2 text-sm font-medium text-brand-navy">
+										<h4 className="mb-1.5 line-clamp-2 font-medium leading-snug text-brand-navy transition-colors group-hover:text-brand-green">
 											{article.title}
 										</h4>
-										<div className="flex items-center gap-3 text-xs text-[#7a8397]">
+										<div className="flex items-center gap-3 text-xs text-brand-navy/50">
 											<span>{formatDate(article.createdAt)}</span>
 											<span className="flex items-center">
 												<Eye className="mr-1 h-3 w-3" />
@@ -520,14 +490,14 @@ export default function NewsPage({
 										loop: true,
 									}}
 									setApi={setCarouselApi}
-									className="h-full w-full overflow-hidden rounded-3xl"
+									className="h-full w-full overflow-hidden rounded-sm"
 								>
 									<CarouselContent>
 										{featured.map((article) => (
 											<CarouselItem key={article.id}>
 												<Link
 													href={`/news/${article.id}`}
-													className="group relative block h-[320px] overflow-hidden rounded-3xl bg-[#eef1f5] md:h-[400px] lg:h-[460px]"
+													className="group relative block h-[320px] overflow-hidden rounded-sm bg-brand-tint/50 md:h-[400px] lg:h-[460px]"
 												>
 													<img
 														src={getImageUrl(article)}
@@ -536,7 +506,7 @@ export default function NewsPage({
 													/>
 													<div className="absolute inset-0 bg-gradient-to-t from-brand-navy/90 via-brand-navy/30 to-transparent" />
 													<div className="absolute inset-x-0 bottom-0 p-5 text-white sm:p-7">
-														<span className="mb-3 inline-flex rounded-full bg-white/15 px-3 py-1 text-xs backdrop-blur-md">
+														<span className="mb-3 inline-flex rounded-sm bg-brand-green px-2.5 py-0.5 text-xs font-medium text-white">
 															Featured
 														</span>
 														<h3 className="mb-2 line-clamp-2 text-xl font-semibold tracking-tight sm:text-2xl">
@@ -561,18 +531,18 @@ export default function NewsPage({
 						</div>
 
 						{/* Right - Latest & Trending Tabs */}
-						<div className={`${cardClass} order-3 p-4 sm:p-5 lg:col-span-3`}>
+						<div className="order-3 lg:col-span-3">
 							<Tabs defaultValue="latest" className="w-full">
-								<TabsList className="mb-4 grid h-auto w-full grid-cols-2 rounded-full bg-[#eef1f5] p-1">
+								<TabsList className="flex h-auto w-full justify-start gap-6 rounded-none bg-transparent p-0 pb-4">
 									<TabsTrigger
 										value="latest"
-										className="rounded-full py-1.5 text-xs data-[state=active]:bg-brand-navy data-[state=active]:text-white md:text-sm"
+										className="rounded-none bg-transparent p-0 text-xs font-medium uppercase tracking-[0.18em] text-brand-navy/45 shadow-none transition-colors hover:text-brand-navy data-[state=active]:bg-transparent data-[state=active]:text-brand-green data-[state=active]:shadow-none"
 									>
 										Latest
 									</TabsTrigger>
 									<TabsTrigger
 										value="trending"
-										className="rounded-full py-1.5 text-xs data-[state=active]:bg-brand-navy data-[state=active]:text-white md:text-sm"
+										className="rounded-none bg-transparent p-0 text-xs font-medium uppercase tracking-[0.18em] text-brand-navy/45 shadow-none transition-colors hover:text-brand-navy data-[state=active]:bg-transparent data-[state=active]:text-brand-green data-[state=active]:shadow-none"
 									>
 										Trending
 									</TabsTrigger>
@@ -585,26 +555,26 @@ export default function NewsPage({
 									<TabsContent
 										key={tab.value}
 										value={tab.value}
-										className="mt-0 flex max-h-64 flex-col gap-2 overflow-y-auto md:max-h-96"
+										className="mt-0 flex flex-col border-b border-brand-navy/15"
 									>
 										{tab.items.slice(0, 4).map((article) => (
 											<Link
 												href={`/news/${article.id}`}
 												key={article.id}
-												className="flex gap-3 overflow-hidden rounded-2xl bg-white ring-1 ring-black/5 transition-shadow hover:shadow-md"
+												className="group flex items-start gap-4 border-t border-brand-navy/15 py-4"
 											>
-												<div className="relative min-h-[4.25rem] w-16 shrink-0 self-stretch overflow-hidden max-h-48 bg-[#eef1f5]">
+												<div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-sm bg-brand-tint/50">
 													<img
 														src={getImageUrl(article)}
 														alt={article.title}
 														className="absolute inset-0 h-full w-full object-cover"
 													/>
 												</div>
-												<div className="min-w-0 flex-1 py-2.5 pr-3">
-													<h4 className="mb-1 line-clamp-2 text-sm font-medium text-brand-navy">
+												<div className="min-w-0 flex-1">
+													<h4 className="mb-1 line-clamp-2 text-sm font-medium leading-snug text-brand-navy transition-colors group-hover:text-brand-green">
 														{article.title}
 													</h4>
-													<div className="flex items-center gap-3 text-xs text-[#7a8397]">
+													<div className="flex items-center gap-3 text-xs text-brand-navy/50">
 														<span>{formatDate(tab.date(article))}</span>
 														<span className="flex items-center">
 															<Eye className="mr-1 h-3 w-3" />
@@ -623,7 +593,7 @@ export default function NewsPage({
 
 				{/* Featured Articles */}
 				{featured.length > 0 && (
-					<Section pattern>
+					<Section tone="muted">
 						<SectionHeading
 							title="Featured Stories"
 							description="Our pick of the stories worth your time"
@@ -633,9 +603,9 @@ export default function NewsPage({
 								<Reveal
 									key={article.id}
 									delay={index * 0.08}
-									className="group flex flex-col overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-black/5 transition-shadow hover:shadow-lg"
+									className="group flex flex-col overflow-hidden rounded-sm bg-white ring-1 ring-brand-navy/10 transition-[box-shadow,transform] duration-300 hover:-translate-y-1 hover:ring-brand-navy/25"
 								>
-									<div className="relative h-60 overflow-hidden bg-[#eef1f5]">
+									<div className="relative h-60 overflow-hidden bg-brand-tint/50">
 										<img
 											src={getImageUrl(article)}
 											alt={article.title}
@@ -644,14 +614,14 @@ export default function NewsPage({
 											className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
 										/>
 										{trending.some((t) => t.id === article.id) && (
-											<span className="absolute right-3 top-3 inline-flex items-center rounded-full bg-white/90 px-2.5 py-1 text-xs font-medium text-brand-green backdrop-blur">
+											<span className="absolute right-3 top-3 inline-flex items-center rounded-sm bg-white px-2.5 py-1 text-xs font-medium text-brand-green">
 												<TrendingUp className="mr-1 h-3 w-3" />
 												Trending
 											</span>
 										)}
 									</div>
 									<div className="flex flex-1 flex-col p-5">
-										<div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-[#7a8397]">
+										<div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-brand-navy/50">
 											<span className="flex items-center">
 												<Calendar className="mr-1 h-3 w-3" />
 												{formatDate(article.published_date)}
@@ -668,17 +638,17 @@ export default function NewsPage({
 										<h3 className="mb-2 line-clamp-2 text-lg font-semibold tracking-tight text-brand-navy">
 											{article.title}
 										</h3>
-										<p className="mb-4 line-clamp-2 text-sm leading-relaxed text-[#606b80]">
+										<p className="mb-4 line-clamp-2 text-sm leading-relaxed text-brand-navy/75">
 											{stripHtml(article.content)}
 										</p>
-										<p className="mb-5 flex items-center text-xs text-[#7a8397]">
+										<p className="mb-5 flex items-center text-xs text-brand-navy/50">
 											<User className="mr-1 h-3 w-3" />
 											TGA Global Law Firm LL.P
 										</p>
 										<div className="mt-auto flex items-center justify-between">
 											<Link
 												href={`/news/${article.id}`}
-												className="group/btn inline-flex items-center gap-1.5 rounded-full bg-brand-navy px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-green"
+												className="group/btn inline-flex items-center gap-1.5 rounded-sm bg-brand-navy px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-green"
 											>
 												Read More
 												<ChevronRight className="h-4 w-4 transition-transform group-hover/btn:translate-x-0.5" />
@@ -687,7 +657,7 @@ export default function NewsPage({
 												type="button"
 												onClick={() => handleShare(article)}
 												aria-label="Copy link"
-												className="flex h-10 w-10 items-center justify-center rounded-full text-[#7a8397] ring-1 ring-black/10 transition-colors hover:bg-brand-tint hover:text-brand-green"
+												className="flex h-10 w-10 items-center justify-center rounded-sm bg-white text-brand-navy/60 ring-1 ring-brand-navy/15 transition-colors hover:bg-brand-tint hover:text-brand-green"
 											>
 												<Share2 className="h-4 w-4" />
 											</button>
@@ -710,9 +680,9 @@ export default function NewsPage({
 									<Link
 										href={`/news/${article.id}`}
 										key={article.id}
-										className={`${cardClass} group flex gap-4 overflow-hidden transition-shadow hover:shadow-md`}
+										className={`${cardClass} group flex gap-4 overflow-hidden transition-shadow hover:ring-brand-navy/25`}
 									>
-										<div className="relative min-h-[7rem] w-28 shrink-0 self-stretch overflow-hidden max-h-48 bg-[#eef1f5] sm:w-36">
+										<div className="relative min-h-[7rem] w-28 shrink-0 self-stretch overflow-hidden max-h-48 bg-brand-tint/50 sm:w-36">
 											<img
 												src={getImageUrl(article)}
 												alt={article.title}
@@ -723,7 +693,7 @@ export default function NewsPage({
 											<h3 className="mb-2 line-clamp-2 font-medium text-brand-navy">
 												{article.title}
 											</h3>
-											<div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-[#7a8397]">
+											<div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-brand-navy/50">
 												<span className="hidden sm:inline">TGA Global Law Firm LL.P</span>
 												<span>{formatDate(article.createdAt)}</span>
 												<span>{getReadTime(article.read_minutes)}</span>
@@ -742,7 +712,7 @@ export default function NewsPage({
 									<Link
 										href={`/news/${article.id}`}
 										key={article.id}
-										className={`${cardClass} flex items-start gap-3 p-4 transition-shadow hover:shadow-md`}
+										className={`${cardClass} flex items-start gap-3 p-4 transition-shadow hover:ring-brand-navy/25`}
 									>
 										<span className="text-sm font-semibold tabular-nums text-brand-green">
 											{String(index + 1).padStart(2, "0")}
@@ -751,7 +721,7 @@ export default function NewsPage({
 											<h4 className="mb-1.5 line-clamp-2 text-sm font-medium text-brand-navy">
 												{article.title}
 											</h4>
-											<div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-[#7a8397]">
+											<div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-brand-navy/50">
 												<span className="flex items-center">
 													<Eye className="mr-1 h-3 w-3" />
 													{article.view_count.toLocaleString()}
@@ -775,15 +745,15 @@ export default function NewsPage({
 									<Link
 										href={`/news/${article.id}`}
 										key={article.id}
-										className={`${cardClass} p-4 transition-shadow hover:shadow-md`}
+										className={`${cardClass} p-4 transition-shadow hover:ring-brand-navy/25`}
 									>
 										<h4 className="mb-1.5 line-clamp-2 text-sm font-medium text-brand-navy">
 											{article.title}
 										</h4>
-										<p className="mb-2 line-clamp-2 text-xs leading-relaxed text-[#606b80]">
+										<p className="mb-2 line-clamp-2 text-xs leading-relaxed text-brand-navy/75">
 											{stripHtml(article.content)}
 										</p>
-										<div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-[#7a8397]">
+										<div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-brand-navy/50">
 											<span>{formatDate(article.published_date)}</span>
 											<span className="flex items-center">
 												<Eye className="mr-1 h-3 w-3" />
@@ -799,7 +769,7 @@ export default function NewsPage({
 
 				{/* Other News (Videos & External Links) Section */}
 				{others.length > 0 && (
-					<Section pattern>
+					<Section tone="muted">
 						<SectionHeading
 							title="External Content & Videos"
 							description="Discover curated videos, external articles, and multimedia content from trusted sources"
@@ -812,7 +782,7 @@ export default function NewsPage({
 										description={other.description}
 										link={other.link}
 										createdAt={other.createdAt}
-										className="h-full overflow-hidden rounded-3xl transition-all duration-300 group-hover:shadow-xl"
+										className="h-full overflow-hidden rounded-sm shadow-none hover:shadow-none ring-1 ring-brand-navy/10 transition-all duration-300 group-hover:ring-brand-navy/25"
 									/>
 								</Reveal>
 							))}
@@ -829,19 +799,19 @@ export default function NewsPage({
 
 					{/* Search and Filter Section */}
 					<Reveal className="mx-auto mt-10 max-w-3xl">
-						<div className="flex items-center gap-2 rounded-full bg-white p-1.5 pl-5 shadow-sm ring-1 ring-black/5 focus-within:ring-2 focus-within:ring-brand-green/40">
-							<Search className="h-4 w-4 shrink-0 text-[#9aa3b5]" />
+						<div className="flex items-center gap-2 rounded-sm bg-white p-1.5 pl-5 ring-1 ring-brand-navy/15 focus-within:ring-2 focus-within:ring-brand-green/40">
+							<Search className="h-4 w-4 shrink-0 text-brand-navy/40" />
 							<input
 								placeholder="Search news..."
 								value={searchInput}
 								onChange={handleSearchInputChange}
 								onKeyPress={handleSearchKeyPress}
-								className="min-w-0 flex-1 bg-transparent py-2 text-brand-navy placeholder:text-[#9aa3b5] focus:outline-none"
+								className="min-w-0 flex-1 bg-transparent py-2 text-brand-navy placeholder:text-brand-navy/40 focus:outline-none"
 							/>
 							<button
 								type="button"
 								onClick={handleSearch}
-								className="rounded-full bg-brand-navy px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-green sm:px-6"
+								className="rounded-sm bg-brand-navy px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-green sm:px-6"
 							>
 								Search
 							</button>
@@ -871,7 +841,7 @@ export default function NewsPage({
 											void fetchNewsByQuery(1, undefined, { q: "" });
 										}
 									}}
-									className="inline-flex shrink-0 items-center rounded-full bg-red-50 px-4 py-2 text-sm text-red-600 ring-1 ring-red-100 transition-colors hover:bg-red-100"
+									className="inline-flex shrink-0 items-center rounded-sm bg-red-50 px-4 py-2 text-sm text-red-600 ring-1 ring-red-100 transition-colors hover:bg-red-100"
 								>
 									<X className="mr-1 h-4 w-4" />
 									Reset filters
@@ -882,7 +852,7 @@ export default function NewsPage({
 
 					{/* News Grid */}
 					{isLoading ? (
-						<div className="flex items-center justify-center py-16 text-[#606b80]">
+						<div className="flex items-center justify-center py-16 text-brand-navy/75">
 							<Loader2 className="h-6 w-6 animate-spin text-brand-green" />
 							<span className="ml-2">Loading...</span>
 						</div>
@@ -892,9 +862,9 @@ export default function NewsPage({
 								<Reveal key={article.id} delay={(index % 3) * 0.06}>
 									<Link
 										href={`/news/${article.id}`}
-										className="group flex h-full flex-col overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-black/5 transition-shadow hover:shadow-lg"
+										className="group flex h-full flex-col overflow-hidden rounded-sm bg-white ring-1 ring-brand-navy/10 transition-[box-shadow,transform] duration-300 hover:-translate-y-1 hover:ring-brand-navy/25"
 									>
-										<div className="h-60 overflow-hidden bg-[#eef1f5]">
+										<div className="h-60 overflow-hidden bg-brand-tint/50">
 											<img
 												src={getImageUrl(article)}
 												alt={article.title}
@@ -907,10 +877,10 @@ export default function NewsPage({
 											<h3 className="mb-2 line-clamp-2 font-semibold tracking-tight text-brand-navy">
 												{article.title}
 											</h3>
-											<p className="mb-4 line-clamp-2 text-sm leading-relaxed text-[#606b80]">
+											<p className="mb-4 line-clamp-2 text-sm leading-relaxed text-brand-navy/75">
 												{stripHtml(article.content)}
 											</p>
-											<div className="mt-auto flex items-center justify-between gap-3 text-xs text-[#7a8397]">
+											<div className="mt-auto flex items-center justify-between gap-3 text-xs text-brand-navy/50">
 												<span className="truncate">TGA Global Law Firm LL.P</span>
 												<span className="shrink-0">{formatNewsMetaDate(article)}</span>
 											</div>
@@ -934,7 +904,7 @@ export default function NewsPage({
 								Previous
 							</button>
 
-							<span className="text-sm text-[#606b80]">
+							<span className="text-sm text-brand-navy/75">
 								Page {getPaginationInfo()?.currentPage} of{" "}
 								{getPaginationInfo()?.totalPages}
 							</span>

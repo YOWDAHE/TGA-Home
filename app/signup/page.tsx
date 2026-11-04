@@ -1,5 +1,6 @@
 import SignupForm from "@/components/auth/SignupForm";
 import React from "react";
+import { homeFont } from "@/app/fonts";
 import type { Metadata } from 'next'
 import { pageMetadata } from '@/lib/seo'
 
@@ -12,5 +13,9 @@ export const metadata: Metadata = pageMetadata({
 })
 
 export default function SignupPage() {
-	return <SignupForm />;
+	return (
+		<div className={homeFont.className}>
+			<SignupForm />
+		</div>
+	);
 } 

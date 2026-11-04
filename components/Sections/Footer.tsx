@@ -42,7 +42,7 @@ export default function Footer({ contactUs }: FooterProps) {
 
 	return (
 		<footer className="px-3 pb-3 pt-8 sm:px-6 sm:pb-6">
-			<div className="relative isolate mx-auto max-w-7xl overflow-hidden rounded-[28px] bg-brand-navy px-6 pb-8 pt-12 text-white sm:rounded-[36px] sm:px-12 sm:pt-16">
+			<div className="relative isolate mx-auto max-w-7xl overflow-hidden rounded-sm bg-brand-navy px-6 pb-8 pt-12 text-white sm:px-12 sm:pt-16">
 				{/* Soft emerald glow */}
 				<div
 					aria-hidden
@@ -61,7 +61,7 @@ export default function Footer({ contactUs }: FooterProps) {
 							alt="TGA Global Law Firm LL.P"
 							width={164}
 							height={76}
-							className="mb-8 h-16 w-auto rounded-2xl bg-white px-4 py-2.5"
+							className="mb-8 h-16 w-auto rounded-sm bg-white px-4 py-2.5"
 						/>
 						<p className="text-balance text-3xl font-semibold tracking-tight sm:text-4xl">
 							Committed to excellence in legal services across Ethiopia and Africa.
@@ -70,14 +70,14 @@ export default function Footer({ contactUs }: FooterProps) {
 					<div className="flex shrink-0 flex-col gap-3 sm:flex-row">
 						<Link
 							href="/#contact"
-							className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full bg-white px-6 py-3 text-sm font-medium text-brand-navy transition-colors hover:bg-brand-tint"
+							className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-sm bg-white px-6 py-3 text-sm font-medium text-brand-navy transition-colors hover:bg-brand-tint"
 						>
 							Get in touch
 							<ArrowUpRight className="h-4 w-4" />
 						</Link>
 						<a
 							href="mailto:info@tgagloballawfirm.com"
-							className="inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-medium text-white ring-1 ring-white/25 transition-colors hover:bg-white/10"
+							className="inline-flex items-center justify-center rounded-sm px-6 py-3 text-sm font-medium text-white ring-1 ring-white/25 transition-colors hover:bg-white/10"
 						>
 							info@tgagloballawfirm.com
 						</a>

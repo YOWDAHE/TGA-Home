@@ -1,6 +1,13 @@
 import { Metadata } from 'next';
-import Link from 'next/link';
 import { pageMetadata } from "@/lib/seo";
+import Link from "next/link";
+import { ArrowRight, Check } from "lucide-react";
+import { homeFont } from "@/app/fonts";
+import PageHero from "@/components/Sections/PageHero";
+import Section from "@/components/Sections/Section";
+import SectionHeading from "@/components/Sections/SectionHeading";
+import Reveal from "@/components/Sections/Reveal";
+import Footer from "@/components/Sections/Footer";
 
 export const metadata: Metadata = {
   ...pageMetadata({
@@ -20,218 +27,162 @@ export const metadata: Metadata = {
   ],
 };
 
+const services = [
+	{
+		title: "Property Transactions",
+		description: "Complete legal support for property purchases, sales, transfers, and real estate transactions in Ethiopia."
+	},
+	{
+		title: "Land Law Ethiopia",
+		description: "Expert land law services including land registration, title verification, and land use regulations."
+	},
+	{
+		title: "Real Estate Lawyers Ethiopia Diaspora",
+		description: "Specialized legal services for Ethiopian diaspora including property management and investment in Ethiopia."
+	},
+	{
+		title: "Property Disputes",
+		description: "Resolution of property disputes, boundary conflicts, and real estate litigation in Ethiopian courts."
+	},
+	{
+		title: "Real Estate Development",
+		description: "Legal advisory for real estate development projects, zoning compliance, and construction law in Ethiopia."
+	},
+	{
+		title: "Property Investment",
+		description: "Legal guidance for property investment, rental agreements, and real estate portfolio management in Ethiopia."
+	}
+];
+
+const serviceLists = [
+	{
+		title: "Diaspora Property Lawyers Ethiopia",
+		items: [
+			"Property purchase and sale for diaspora",
+			"Property management and maintenance",
+			"Rental property legal services",
+			"Inheritance and property succession",
+			"Cross-border property transactions"
+		]
+	},
+	{
+		title: "Ethiopian Diaspora Legal Help",
+		items: [
+			"Remote legal consultations",
+			"Document preparation and review",
+			"Power of attorney services",
+			"Property investment advisory",
+			"Legal representation in Ethiopia"
+		]
+	}
+];
+
+const reasons = [
+	{
+		title: "#1 Law Firm in Ethiopia",
+		description: "Recognized as the leading law firm in Ethiopia with extensive experience in real estate and property law."
+	},
+	{
+		title: "Real Estate Law Ethiopia Experts",
+		description: "Deep understanding of Ethiopian real estate laws, regulations, and local property market dynamics."
+	},
+	{
+		title: "Real Estate Lawyers Ethiopia Diaspora",
+		description: "Specialized services for Ethiopian diaspora with remote consultation and local representation capabilities."
+	},
+	{
+		title: "International Legal Network",
+		description: "Global legal network with presence in 52 jurisdictions, providing cross-border real estate legal services."
+	}
+];
+
 export default function RealEstateLawEthiopia() {
-  return (
-			<div className="min-h-screen bg-gray-50">
-				{/* Hero Section */}
-				<section className="bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 text-white py-20">
-					<div className="flex items-center justify-center lg:gap-10 gap-4 left-0 w-full top-10 text-sm lg:text-base pb-10">
-						<Link href="/">Home</Link>
-						<Link href="/about-us">About</Link>
-						<Link href="#services" className="hidden lg:flex">
-							Services
-						</Link>
-						<Link href="/resources">Resources</Link>
-						<Link href="/news">News</Link>
-						<Link href="#contact">Contact</Link>
+	return (
+		<div className={homeFont.className}>
+			<div className="min-h-screen bg-white text-brand-navy antialiased">
+				<PageHero
+					currentHref="/"
+					label="Practice area"
+					title="Real Estate Lawyers Ethiopia"
+					description="Expert real estate legal services in Ethiopia. Property transactions, land disputes, and real estate law expertise for local and diaspora clients."
+				>
+					<h2 className="text-sm font-medium text-brand-green sm:text-base">
+						Real Estate Law Ethiopia - #1 Law Firm in Ethiopia
+					</h2>
+				</PageHero>
+
+				{/* Services */}
+				<Section id="services">
+					<SectionHeading title="Real Estate Law Services Ethiopia" />
+					<div className="mt-12 grid gap-4 sm:grid-cols-2 lg:mt-16 lg:grid-cols-3">
+						{services.map((service, index) => (
+							<Reveal key={service.title} delay={(index % 3) * 0.06} className="h-full">
+								<div className="h-full rounded-sm bg-white p-6 ring-1 ring-brand-navy/10 transition-transform duration-300 hover:-translate-y-1 hover:ring-brand-navy/25">
+									<h3 className="text-lg font-semibold leading-snug tracking-tight text-brand-navy sm:text-xl">
+										{service.title}
+									</h3>
+									<p className="mt-2 text-sm leading-relaxed text-brand-navy/75">{service.description}</p>
+								</div>
+							</Reveal>
+						))}
 					</div>
-					<div className="container mx-auto px-4">
-						<div className="max-w-4xl mx-auto text-center">
-							<h1 className="text-4xl md:text-6xl font-bold mb-6">
-								Real Estate Lawyers Ethiopia
-							</h1>
-							<h2 className="text-2xl md:text-3xl font-semibold mb-8 text-teal-400">
-								Real Estate Law Ethiopia - #1 Law Firm in Ethiopia
-							</h2>
-							<p className="text-xl mb-8">
-								Expert real estate legal services in Ethiopia. Property transactions,
-								land disputes, and real estate law expertise for local and diaspora
-								clients.
-							</p>
-						</div>
-					</div>
-				</section>
+				</Section>
 
-				{/* Services Section */}
-				<section className="py-16">
-					<div className="container mx-auto px-4">
-						<div className="max-w-6xl mx-auto">
-							<h2 className="text-3xl font-bold text-center mb-12">
-								Real Estate Law Services Ethiopia
-							</h2>
-
-							<div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-								<div className="bg-white p-6 rounded-lg shadow-lg">
-									<h3 className="text-xl font-semibold mb-4 text-teal-600">
-										Property Transactions
-									</h3>
-									<p className="text-gray-600">
-										Complete legal support for property purchases, sales, transfers, and
-										real estate transactions in Ethiopia.
-									</p>
-								</div>
-
-								<div className="bg-white p-6 rounded-lg shadow-lg">
-									<h3 className="text-xl font-semibold mb-4 text-teal-600">
-										Land Law Ethiopia
-									</h3>
-									<p className="text-gray-600">
-										Expert land law services including land registration, title
-										verification, and land use regulations.
-									</p>
-								</div>
-
-								<div className="bg-white p-6 rounded-lg shadow-lg">
-									<h3 className="text-xl font-semibold mb-4 text-teal-600">
-										Real Estate Lawyers Ethiopia Diaspora
-									</h3>
-									<p className="text-gray-600">
-										Specialized legal services for Ethiopian diaspora including property
-										management and investment in Ethiopia.
-									</p>
-								</div>
-
-								<div className="bg-white p-6 rounded-lg shadow-lg">
-									<h3 className="text-xl font-semibold mb-4 text-teal-600">
-										Property Disputes
-									</h3>
-									<p className="text-gray-600">
-										Resolution of property disputes, boundary conflicts, and real estate
-										litigation in Ethiopian courts.
-									</p>
-								</div>
-
-								<div className="bg-white p-6 rounded-lg shadow-lg">
-									<h3 className="text-xl font-semibold mb-4 text-teal-600">
-										Real Estate Development
-									</h3>
-									<p className="text-gray-600">
-										Legal advisory for real estate development projects, zoning
-										compliance, and construction law in Ethiopia.
-									</p>
-								</div>
-
-								<div className="bg-white p-6 rounded-lg shadow-lg">
-									<h3 className="text-xl font-semibold mb-4 text-teal-600">
-										Property Investment
-									</h3>
-									<p className="text-gray-600">
-										Legal guidance for property investment, rental agreements, and real
-										estate portfolio management in Ethiopia.
-									</p>
-								</div>
-							</div>
-						</div>
-					</div>
-				</section>
-
-				{/* Diaspora Services Section */}
-				<section className="bg-white py-16">
-					<div className="container mx-auto px-4">
-						<div className="max-w-4xl mx-auto">
-							<h2 className="text-3xl font-bold text-center mb-12">
-								Real Estate Lawyers Ethiopia Diaspora Services
-							</h2>
-
-							<div className="grid md:grid-cols-2 gap-8">
-								<div className="bg-teal-50 p-6 rounded-lg">
-									<h3 className="text-xl font-semibold mb-4 text-teal-600">
-										Diaspora Property Lawyers Ethiopia
-									</h3>
-									<ul className="text-gray-600 space-y-2">
-										<li>• Property purchase and sale for diaspora</li>
-										<li>• Property management and maintenance</li>
-										<li>• Rental property legal services</li>
-										<li>• Inheritance and property succession</li>
-										<li>• Cross-border property transactions</li>
+				{/* Specialized services */}
+				<Section tone="muted">
+					<SectionHeading title="Real Estate Lawyers Ethiopia Diaspora Services" />
+					<div className="mx-auto mt-12 grid max-w-4xl gap-4 md:grid-cols-2 lg:mt-16">
+						{serviceLists.map((list, index) => (
+							<Reveal key={list.title} delay={(index % 2) * 0.06} className="h-full">
+								<div className="h-full rounded-sm bg-white p-6 ring-1 ring-brand-navy/10">
+									<h3 className="text-lg font-semibold tracking-tight text-brand-navy">{list.title}</h3>
+									<ul className="mt-4 space-y-2.5">
+										{list.items.map((item) => (
+											<li key={item} className="flex items-start gap-3 text-sm leading-relaxed text-brand-navy/75">
+												<Check className="mt-0.5 h-4 w-4 shrink-0 text-brand-green" />
+												{item}
+											</li>
+										))}
 									</ul>
 								</div>
-
-								<div className="bg-teal-50 p-6 rounded-lg">
-									<h3 className="text-xl font-semibold mb-4 text-teal-600">
-										Ethiopian Diaspora Legal Help
-									</h3>
-									<ul className="text-gray-600 space-y-2">
-										<li>• Remote legal consultations</li>
-										<li>• Document preparation and review</li>
-										<li>• Power of attorney services</li>
-										<li>• Property investment advisory</li>
-										<li>• Legal representation in Ethiopia</li>
-									</ul>
-								</div>
-							</div>
-						</div>
+							</Reveal>
+						))}
 					</div>
-				</section>
+				</Section>
 
-				{/* Why Choose Us Section */}
-				<section className="bg-gray-100 py-16">
-					<div className="container mx-auto px-4">
-						<div className="max-w-4xl mx-auto text-center">
-							<h2 className="text-3xl font-bold mb-8">
-								Why Choose TGA Global Law Firm LL.P for Real Estate Law Ethiopia?
-							</h2>
-
-							<div className="grid md:grid-cols-2 gap-8 text-left">
-								<div>
-									<h3 className="text-xl font-semibold mb-4 text-teal-600">
-										#1 Law Firm in Ethiopia
-									</h3>
-									<p className="text-gray-600 mb-6">
-										Recognized as the leading law firm in Ethiopia with extensive
-										experience in real estate and property law.
-									</p>
-								</div>
-
-								<div>
-									<h3 className="text-xl font-semibold mb-4 text-teal-600">
-										Real Estate Law Ethiopia Experts
-									</h3>
-									<p className="text-gray-600 mb-6">
-										Deep understanding of Ethiopian real estate laws, regulations, and
-										local property market dynamics.
-									</p>
-								</div>
-
-								<div>
-									<h3 className="text-xl font-semibold mb-4 text-teal-600">
-										Real Estate Lawyers Ethiopia Diaspora
-									</h3>
-									<p className="text-gray-600 mb-6">
-										Specialized services for Ethiopian diaspora with remote consultation
-										and local representation capabilities.
-									</p>
-								</div>
-
-								<div>
-									<h3 className="text-xl font-semibold mb-4 text-teal-600">
-										International Legal Network
-									</h3>
-									<p className="text-gray-600 mb-6">
-										Global legal network with presence in 52 jurisdictions, providing
-										cross-border real estate legal services.
-									</p>
-								</div>
-							</div>
-						</div>
+				{/* Why choose us */}
+				<Section>
+					<SectionHeading title="Why Choose TGA Global Law Firm LL.P for Real Estate Law Ethiopia?" />
+					<div className="mx-auto mt-12 grid max-w-4xl gap-x-10 gap-y-8 text-left md:grid-cols-2 lg:mt-16">
+						{reasons.map((reason, index) => (
+							<Reveal key={reason.title} delay={(index % 2) * 0.06} className="border-t border-brand-navy/15 pt-5">
+								<h3 className="text-lg font-semibold tracking-tight text-brand-navy">{reason.title}</h3>
+								<p className="mt-2 leading-relaxed text-brand-navy/75">{reason.description}</p>
+							</Reveal>
+						))}
 					</div>
-				</section>
+				</Section>
 
-				{/* CTA Section */}
-				<section className="bg-teal-600 text-white py-16">
-					<div className="container mx-auto px-4 text-center">
-						<h2 className="text-3xl font-bold mb-6">
-							Need Expert Real Estate Lawyers Ethiopia?
-						</h2>
-						<p className="text-xl mb-8">
-							Contact TGA Global Law Firm LL.P for comprehensive real estate legal services in
-							Ethiopia
-						</p>
-						<button className="bg-white text-teal-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
-							Contact Our Real Estate Lawyers
-						</button>
-					</div>
-				</section>
+				{/* Call to action */}
+				<Section tone="navy">
+					<SectionHeading
+						inverted
+						title="Need Expert Real Estate Lawyers Ethiopia?"
+						description="Contact TGA Global Law Firm LL.P for comprehensive real estate legal services in Ethiopia"
+						action={
+							<Link
+								href="/#contact"
+								className="group inline-flex items-center gap-2 rounded-sm bg-white px-5 py-2.5 text-sm font-medium text-brand-navy transition-colors hover:bg-brand-tint"
+							>
+								Contact Our Real Estate Lawyers
+								<ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+							</Link>
+						}
+					/>
+				</Section>
+
+				<Footer />
 			</div>
-		);
+		</div>
+	);
 }

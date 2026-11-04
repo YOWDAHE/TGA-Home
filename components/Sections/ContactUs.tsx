@@ -90,7 +90,7 @@ export default function ContactUs({ contactUs }: ContactUsProps) {
 	};
 
 	const inputClass = (hasError: boolean) =>
-		`w-full rounded-xl border bg-white px-4 py-3.5 shadow-sm text-brand-navy placeholder:text-[#9aa3b5] transition-all focus:outline-none focus:ring-4 ${
+		`w-full rounded-sm border bg-white px-4 py-3.5 shadow-sm text-brand-navy placeholder:text-[#9aa3b5] transition-all focus:outline-none focus:ring-4 ${
 			hasError
 				? "border-red-300 focus:border-red-400 focus:ring-red-100"
 				: "border-[#e3e8ef] focus:border-brand-green focus:ring-brand-tint"
@@ -157,12 +157,12 @@ export default function ContactUs({ contactUs }: ContactUsProps) {
 
 	return (
 		<Section id="contact" pattern>
-			<Reveal className="max-w-3xl text-center sm:text-left">
+			<Reveal className="mx-auto max-w-3xl text-center">
 				<p className="text-sm font-medium text-brand-green">Contact us</p>
-				<h2 className="mx-auto mt-3 max-w-[16rem] text-balance text-3xl min-[400px]:max-w-[18rem] sm:mx-0 sm:max-w-none font-semibold tracking-tight text-brand-navy sm:text-5xl">
+				<h2 className="mx-auto mt-3 max-w-[16rem] text-balance text-3xl min-[400px]:max-w-[18rem] sm:max-w-none font-semibold tracking-tight text-brand-navy sm:text-5xl">
 					Get in touch for premium legal services
 				</h2>
-				<p className="mx-auto mt-4 max-w-[19rem] text-pretty text-base leading-relaxed text-[#606b80] min-[400px]:max-w-[21rem] sm:mx-0 sm:max-w-none sm:text-lg">
+				<p className="mx-auto mt-4 max-w-[19rem] text-pretty text-base leading-relaxed text-[#606b80] min-[400px]:max-w-[21rem] sm:max-w-2xl sm:text-lg">
 					Get in touch with us for premium business service, we will promptly
 					respond to all your enquiries.
 				</p>
@@ -170,7 +170,7 @@ export default function ContactUs({ contactUs }: ContactUsProps) {
 
 			<div className="mt-12 grid gap-10 lg:grid-cols-2 lg:gap-12">
 				{/* Message form */}
-				<Reveal className="rounded-3xl bg-[#f5f7fa]/90 p-6 ring-1 ring-black/5 backdrop-blur-xl sm:p-8">
+				<Reveal className="rounded-sm bg-[#f5f7fa]/90 p-6 ring-1 ring-black/5 backdrop-blur-xl sm:p-8">
 					<h3 className="text-2xl font-semibold tracking-tight text-brand-navy">Send us a message</h3>
 
 					<form onSubmit={handleSubmit} className="mt-6 space-y-5">
@@ -222,7 +222,7 @@ export default function ContactUs({ contactUs }: ContactUsProps) {
 						<button
 							type="submit"
 							disabled={isSubmitting}
-							className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-brand-navy px-8 py-3.5 font-medium text-white transition-colors hover:bg-brand-green disabled:cursor-not-allowed disabled:opacity-50"
+							className="inline-flex w-full items-center justify-center gap-2 rounded-sm bg-brand-navy px-8 py-3.5 font-medium text-white transition-colors hover:bg-brand-green disabled:cursor-not-allowed disabled:opacity-50"
 						>
 							{isSubmitting ? (
 								<>
@@ -251,7 +251,7 @@ export default function ContactUs({ contactUs }: ContactUsProps) {
 						))}
 					</ul>
 
-					<div className="relative mt-8 min-h-[440px] flex-1 overflow-hidden rounded-3xl ring-1 ring-black/5">
+					<div className="relative mt-8 min-h-[440px] flex-1 overflow-hidden rounded-sm ring-1 ring-black/5">
 						<iframe
 							title="tga location"
 							src="https://www.google.com/maps/embed/v1/place?q=dembel%20city%20center&key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8"
@@ -263,7 +263,7 @@ export default function ContactUs({ contactUs }: ContactUsProps) {
 						></iframe>
 
 						{/* Office card over the map; the map is taller than its frame so the pin stays above this card */}
-						<div className="absolute inset-x-3 bottom-3 rounded-2xl bg-white/95 p-5 shadow-lg ring-1 ring-black/5 backdrop-blur sm:inset-x-5 sm:bottom-5 sm:p-6">
+						<div className="absolute inset-x-3 bottom-3 rounded-sm bg-white/95 p-5 shadow-lg ring-1 ring-black/5 backdrop-blur sm:inset-x-5 sm:bottom-5 sm:p-6">
 							<h4 className="text-xl font-semibold tracking-tight text-brand-navy">Visit our office</h4>
 							<div className="mt-3 flex items-start gap-3 text-sm">
 								<MapPin className="mt-0.5 h-5 w-5 shrink-0 text-brand-green" strokeWidth={1.75} />
@@ -276,7 +276,7 @@ export default function ContactUs({ contactUs }: ContactUsProps) {
 								href="https://www.google.com/maps/search/?api=1&query=dembel%20city%20center"
 								target="_blank"
 								rel="noopener noreferrer"
-								className="group mt-4 inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium text-brand-navy ring-1 ring-black/10 transition-colors hover:bg-brand-tint"
+								className="group mt-4 inline-flex items-center gap-2 rounded-sm px-4 py-2.5 text-sm font-medium text-brand-navy ring-1 ring-black/10 transition-colors hover:bg-brand-tint"
 							>
 								Get directions
 								<ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />

@@ -29,8 +29,8 @@ export default async function page() {
 		const newsResponse = await getNewsByQuery({ limit: 4, sortBy: 'published_date', order: 'desc' });
 		const resourcesResponse = await getResources({ limit: 4 });
 
-		if (!landingData.data) {
-			return <div>Loading...</div>;
+		if (!landingData.data?.homeContent) {
+			throw new Error("Landing page data is missing");
 		}
 
 		return (
@@ -44,6 +44,7 @@ export default async function page() {
 		);
 	} catch (error) {
 		console.error('Error fetching page data:', error);
-		return <div>Error loading page data:</div>;
+		// Hand over to app/error.tsx, which offers a retry
+		throw error;
 	}
 }

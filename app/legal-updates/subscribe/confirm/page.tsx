@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { confirmSubscription } from "@/app/actions/legal-updates.actions";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { CheckCircle, XCircle } from "lucide-react";
-import TopNav from "@/components/Sections/TopNav";
+import { ArrowRight, CheckCircle, XCircle } from "lucide-react";
+import PageHero from "@/components/Sections/PageHero";
+import Footer from "@/components/Sections/Footer";
+import { homeFont } from "@/app/fonts";
 import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/seo";
 
@@ -21,26 +21,56 @@ interface PageProps {
   searchParams: Promise<{ token?: string }>;
 }
 
+const buttonClass =
+  "group inline-flex items-center gap-2 rounded-sm bg-brand-navy px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-green";
+
+function StatusPage({
+  success,
+  title,
+  message,
+  email,
+  cta,
+}: {
+  success: boolean;
+  title: string;
+  message: string;
+  email?: string;
+  cta: string;
+}) {
+  return (
+    <div className={`${homeFont.className} min-h-screen bg-white text-brand-navy antialiased`}>
+      <PageHero currentHref="/legal-updates" label="TGA Global Law Firm LL.P" title={title} description={message}>
+        <div className="flex flex-col items-center gap-6">
+          {email && <p className="text-sm text-brand-navy/50">{email}</p>}
+          <span
+            className={`flex h-12 w-12 items-center justify-center rounded-sm ring-1 ${
+              success ? "bg-brand-tint text-brand-green ring-brand-green/15" : "bg-red-50 text-red-600 ring-red-200"
+            }`}
+          >
+            {success ? <CheckCircle className="h-6 w-6" /> : <XCircle className="h-6 w-6" />}
+          </span>
+          <Link href="/legal-updates" className={buttonClass}>
+            {cta}
+            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+          </Link>
+        </div>
+      </PageHero>
+      <Footer />
+    </div>
+  );
+}
+
 export default async function ConfirmSubscriptionPage({ searchParams }: PageProps) {
   const { token } = await searchParams;
 
   if (!token) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <TopNav currentHref="/legal-updates" />
-        <div className="container mx-auto px-4 py-16 max-w-md">
-          <Card>
-            <CardContent className="p-8 text-center">
-              <XCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
-              <h1 className="text-xl font-bold mb-2">Invalid Link</h1>
-              <p className="text-gray-600 mb-6">This confirmation link is invalid or has expired.</p>
-              <Link href="/legal-updates">
-                <Button className="bg-teal-600 hover:bg-teal-700">Back to Legal Updates</Button>
-              </Link>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+      <StatusPage
+        success={false}
+        title="Invalid Link"
+        message="This confirmation link is invalid or has expired."
+        cta="Back to Legal Updates"
+      />
     );
   }
 
@@ -59,31 +89,12 @@ export default async function ConfirmSubscriptionPage({ searchParams }: PageProp
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <TopNav currentHref="/legal-updates" />
-      <div className="container mx-auto px-4 py-16 max-w-md">
-        <Card>
-          <CardContent className="p-8 text-center">
-            {success ? (
-              <>
-                <CheckCircle className="w-12 h-12 text-teal-600 mx-auto mb-4" />
-                <h1 className="text-xl font-bold mb-2">Subscription Confirmed!</h1>
-                <p className="text-gray-600 mb-2">{message}</p>
-                {email && <p className="text-sm text-gray-500 mb-6">{email}</p>}
-              </>
-            ) : (
-              <>
-                <XCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
-                <h1 className="text-xl font-bold mb-2">Confirmation Failed</h1>
-                <p className="text-gray-600 mb-6">{message}</p>
-              </>
-            )}
-            <Link href="/legal-updates">
-              <Button className="bg-teal-600 hover:bg-teal-700">Browse Legal Updates</Button>
-            </Link>
-          </CardContent>
-        </Card>
-      </div>
-    </div>
+    <StatusPage
+      success={success}
+      title={success ? "Subscription Confirmed!" : "Confirmation Failed"}
+      message={message}
+      email={success ? email : undefined}
+      cta="Browse Legal Updates"
+    />
   );
 }

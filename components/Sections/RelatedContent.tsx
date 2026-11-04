@@ -8,6 +8,7 @@ import type { Resource } from "@/app/actions/resources.actions";
 import { convertToApiUrl } from "@/lib/utils";
 import { CONTENT_TYPE_LABELS } from "@/lib/content-types";
 import Reveal from "./Reveal";
+import SectionHeading from "./SectionHeading";
 
 export { CONTENT_TYPE_LABELS };
 
@@ -19,7 +20,7 @@ export const CONTENT_TYPE_COLORS: Record<string, string> = {
 };
 
 const cardClass =
-	"group flex h-full flex-col rounded-3xl bg-white shadow-sm ring-1 ring-black/5 transition-shadow hover:shadow-lg";
+	"group flex h-full flex-col rounded-sm bg-white ring-1 ring-brand-navy/10 transition-[box-shadow,transform] duration-300 hover:-translate-y-1 hover:ring-brand-navy/25";
 const titleClass =
 	"line-clamp-2 font-semibold leading-snug tracking-tight text-brand-navy transition-colors group-hover:text-brand-green";
 
@@ -34,12 +35,8 @@ const formatDate = (date?: string | Date | null) => {
 function Row({ title, children, last }: { title: string; children: React.ReactNode; last?: boolean }) {
 	return (
 		<section className={`mx-auto max-w-6xl px-4 sm:px-6 ${last ? "pb-20 sm:pb-28" : "pb-16 sm:pb-20"}`}>
-			<Reveal>
-				<h2 className="mb-6 text-center text-2xl font-semibold tracking-tight text-brand-navy sm:text-left sm:text-3xl">
-					{title}
-				</h2>
-			</Reveal>
-			<div className="grid gap-4 md:grid-cols-3">{children}</div>
+			<SectionHeading title={title} />
+			<div className="mt-10 grid gap-4 md:grid-cols-3">{children}</div>
 		</section>
 	);
 }
@@ -48,15 +45,15 @@ function UpdateCard({ item }: { item: LegalUpdate }) {
 	return (
 		<Link href={`/legal-updates/${item.slug}`} className={`${cardClass} p-6`}>
 			<span
-				className={`mb-4 inline-flex self-start rounded-full px-3 py-1 text-xs font-medium ${
-					CONTENT_TYPE_COLORS[item.content_type] || "bg-[#f2f4f8] text-[#4b5468]"
+				className={`mb-4 inline-flex self-start rounded-sm px-3 py-1 text-xs font-medium ${
+					CONTENT_TYPE_COLORS[item.content_type] || "bg-brand-tint/50 text-brand-navy/60"
 				}`}
 			>
 				{CONTENT_TYPE_LABELS[item.content_type] || item.content_type}
 			</span>
 			<h3 className={`${titleClass} mb-2 text-lg`}>{item.title}</h3>
-			{item.summary && <p className="mb-5 line-clamp-2 text-sm leading-relaxed text-[#606b80]">{item.summary}</p>}
-			<div className="mt-auto flex items-center justify-between text-xs text-[#7a8397]">
+			{item.summary && <p className="mb-5 line-clamp-2 text-sm leading-relaxed text-brand-navy/75">{item.summary}</p>}
+			<div className="mt-auto flex items-center justify-between text-xs text-brand-navy/50">
 				<span className="flex items-center">
 					<Calendar className="mr-1 h-3 w-3" />
 					{formatDate(item.published_date)}
@@ -70,7 +67,7 @@ function UpdateCard({ item }: { item: LegalUpdate }) {
 function NewsCard({ item }: { item: News }) {
 	return (
 		<Link href={`/news/${item.id}`} className={`${cardClass} overflow-hidden`}>
-			<div className="h-56 overflow-hidden bg-[#eef1f5]">
+			<div className="h-56 overflow-hidden bg-brand-tint/50">
 				<img
 					src={item.visual_content?.length ? convertToApiUrl(item.visual_content[0]) : "/placeholder.jpg"}
 					alt={item.title}
@@ -81,7 +78,7 @@ function NewsCard({ item }: { item: News }) {
 			</div>
 			<div className="flex flex-1 flex-col p-5">
 				<h3 className={`${titleClass} mb-3`}>{item.title}</h3>
-				<span className="mt-auto flex items-center text-xs text-[#7a8397]">
+				<span className="mt-auto flex items-center text-xs text-brand-navy/50">
 					<Calendar className="mr-1 h-3 w-3" />
 					{formatDate(item.published_date ?? item.createdAt)}
 				</span>
@@ -93,14 +90,14 @@ function NewsCard({ item }: { item: News }) {
 function ResourceCard({ item }: { item: Resource }) {
 	return (
 		<Link href={`/resources/${item.id}`} className={`${cardClass} p-6`}>
-			<span className="mb-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-brand-navy text-white">
+			<span className="mb-4 flex h-11 w-11 items-center justify-center rounded-sm bg-brand-tint text-brand-green">
 				<FileText className="h-5 w-5" strokeWidth={1.75} />
 			</span>
 			<h3 className={`${titleClass} mb-2 text-lg`}>{item.title}</h3>
 			{item.description && (
-				<p className="mb-5 line-clamp-2 text-sm leading-relaxed text-[#606b80]">{item.description}</p>
+				<p className="mb-5 line-clamp-2 text-sm leading-relaxed text-brand-navy/75">{item.description}</p>
 			)}
-			<div className="mt-auto flex items-center justify-between text-xs text-[#7a8397]">
+			<div className="mt-auto flex items-center justify-between text-xs text-brand-navy/50">
 				<span className="flex items-center gap-3">
 					<span className="flex items-center">
 						<Calendar className="mr-1 h-3 w-3" />

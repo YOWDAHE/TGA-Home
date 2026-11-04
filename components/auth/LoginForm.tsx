@@ -10,6 +10,13 @@ import { signIn } from "@/app/actions/auth.actions";
 import { useAuth } from "@/contexts/AuthContext";
 import Link from "next/link";
 
+const cardClass = "rounded-sm border-0 bg-white shadow-none ring-1 ring-brand-navy/10";
+const labelClass = "text-sm font-medium text-brand-navy";
+const inputClass =
+	"mt-1.5 rounded-sm border-0 bg-white text-brand-navy ring-1 ring-brand-navy/15 ring-offset-0 placeholder:text-brand-navy/40 focus-visible:ring-2 focus-visible:ring-brand-green/40 focus-visible:ring-offset-0";
+const submitClass =
+	"h-auto w-full rounded-sm bg-brand-navy px-5 py-2.5 text-sm font-medium text-white hover:bg-brand-green";
+
 export default function LoginForm() {
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
@@ -44,31 +51,32 @@ export default function LoginForm() {
 	};
 
 	return (
-		<div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+		<div className="flex min-h-screen items-center justify-center bg-[#f4f5f7] px-4 py-12 text-brand-navy antialiased sm:px-6 lg:px-8">
 			<div className="max-w-md w-full space-y-8">
 				<div>
-					<h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+					<h2 className="mt-6 text-center text-3xl font-semibold tracking-tight text-brand-navy">
 						Sign in to your account
 					</h2>
-					<p className="mt-2 text-center text-sm text-gray-600">
+					<p className="mt-2 text-center text-sm text-brand-navy/60">
 						Or{" "}
 						<Link
 							href="/signup"
-							className="font-medium text-teal-600 hover:text-teal-500"
+							className="font-medium text-brand-green hover:text-brand-navy"
 						>
 							create a new account
 						</Link>
 					</p>
 				</div>
-				<Card>
+				<Card className={cardClass}>
 					<CardHeader>
-						<CardTitle className="text-center">Login</CardTitle>
+						<CardTitle className="text-center text-xl font-semibold tracking-tight text-brand-navy">Login</CardTitle>
 					</CardHeader>
 					<CardContent>
 						<form onSubmit={handleSubmit} className="space-y-4">
 							<div>
-								<Label htmlFor="username">Username</Label>
+								<Label htmlFor="username" className={labelClass}>Username</Label>
 								<Input
+									className={inputClass}
 									id="username"
 									type="text"
 									value={username}
@@ -78,8 +86,9 @@ export default function LoginForm() {
 								/>
 							</div>
 							<div>
-								<Label htmlFor="password">Password</Label>
+								<Label htmlFor="password" className={labelClass}>Password</Label>
 								<Input
+									className={inputClass}
 									id="password"
 									type="password"
 									value={password}
@@ -90,7 +99,7 @@ export default function LoginForm() {
 							</div>
 							<Button
 								type="submit"
-								className="w-full bg-teal-600 hover:bg-teal-700"
+								className={submitClass}
 								disabled={isLoading}
 							>
 								{isLoading ? "Signing in..." : "Sign in"}

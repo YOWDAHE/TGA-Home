@@ -64,5 +64,30 @@ export interface LandingPageResponse {
     practices: Practice[];
     contactUs: ContactUs[];
     newsLinks: NewsLink[];
+    homeContent: HomeContent;
+  };
+}
+
+// Written home page sections, edited in the admin. Long text is HTML from its rich-text editor.
+export interface HomeContent {
+  hero: {
+    label: string;
+    slides: Array<{ title: string; text: string }>;
+    highlight: { value: string; word: string; caption: string };
+  };
+  statement: { html: string };
+  about: {
+    label: string;
+    title: string;
+    description: string;
+    lists: Array<{ title: string; html: string }>;
+    milestones: { label: string; slides: Array<{ html: string; images: string[] }> };
+    partner: { label: string; name: string; photo: string; bio: string };
+  };
+  services: {
+    label: string;
+    title: string;
+    description: string;
+    items: Array<{ title: string; html: string }>;
   };
 } 

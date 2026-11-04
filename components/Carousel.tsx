@@ -167,8 +167,7 @@ export default function Carousel<T>({
 			// Center card
 			style = {
 				transform: `perspective(1000px) rotateY(0deg) scale(1) ${dragTransform}`,
-				boxShadow: "0 4px 32px rgba(0,0,0,0.3)",
-				backgroundColor: "rgba(35, 39, 51, 1)",
+				backgroundColor: "#0B1B4D",
 				transition: isDragging ? "none" : "transform 0.5s, filter 0.5s, background-color 1s",
 			};
 			zIndex = 10;
@@ -176,7 +175,7 @@ export default function Carousel<T>({
 			// Left 1 (mirror right 1)
 			style = {
 				transform: `perspective(1000px) rotateY(-25deg) scale(1.1) translateX(-400px) ${dragTransform}`,
-				backgroundColor: "rgba(95, 99, 111, 1)",
+				backgroundColor: "#3a4670",
 				// filter: "blur(2px)",
 				transition: isDragging ? "none" : "transform 0.5s, filter 0.5s, background-color 1s",
 			};
@@ -185,7 +184,7 @@ export default function Carousel<T>({
 			// Right 1
 			style = {
 				transform: `perspective(1000px) rotateY(30deg) scale(0.9) translateX(300px) ${dragTransform}`,
-				backgroundColor: "rgba(95, 99, 111, 1)",
+				backgroundColor: "#3a4670",
 				// filter: "blur(2px)",
 				transition: isDragging ? "none" : "transform 0.5s, filter 0.5s, background-color 1s",
 			};
@@ -194,7 +193,7 @@ export default function Carousel<T>({
 			// Left 2 (mirror right 2)
 			style = {
 				transform: `perspective(1000px) rotateY(-25deg) scale(0.9) translateX(-700px) ${dragTransform}`,
-				backgroundColor: "rgba(155, 159, 171, 1)",
+				backgroundColor: "#8a92ab",
 				// filter: "blur(10px)",
 				transition: isDragging ? "none" : "transform 0.5s, filter 0.5s, background-color 1s",
 			};
@@ -203,7 +202,7 @@ export default function Carousel<T>({
 			// Right 2
 			style = {
 				transform: `perspective(1000px) rotateY(45deg) scale(0.8) translateX(600px) ${dragTransform}`,
-				backgroundColor: "rgba(155, 159, 171, 1)",
+				backgroundColor: "#8a92ab",
 				// filter: "blur(10px)",
 				transition: isDragging
 					? "none"
@@ -226,9 +225,10 @@ export default function Carousel<T>({
 				<button
 					onClick={prevCard}
 					name="scroll left"
-					className="text-white text-3xl font-bold px-4 py-2 rounded transition absolute left-20 z-20"
+					aria-label="Previous"
+					className="absolute left-0 z-20 flex h-11 w-11 items-center justify-center rounded-sm bg-white text-brand-navy ring-1 ring-brand-navy/15 transition-colors hover:bg-brand-navy hover:text-white xl:left-4"
 				>
-					<ArrowLeft color="black" />
+					<ArrowLeft className="h-5 w-5" />
 				</button>
 				<div 
 					ref={carouselRef}
@@ -249,7 +249,7 @@ export default function Carousel<T>({
 						return (
 							<div
 								key={idx}
-								className={`absolute rounded-xl overflow-hidden shadow-lg min-w-64 min-h-40 flex items-center justify-center transition-all duration-500`}
+								className={`absolute rounded-sm overflow-hidden min-w-64 min-h-40 flex items-center justify-center transition-all duration-500`}
 								style={{
 									...style,
 									left: "50%",
@@ -282,9 +282,10 @@ export default function Carousel<T>({
 				<button
 					onClick={nextCard}
 					name="scroll right"
-					className="text-white text-3xl font-bold px-4 py-2 rounded transition absolute right-20 z-20"
+					aria-label="Next"
+					className="absolute right-0 z-20 flex h-11 w-11 items-center justify-center rounded-sm bg-white text-brand-navy ring-1 ring-brand-navy/15 transition-colors hover:bg-brand-navy hover:text-white xl:right-4"
 				>
-					<ArrowRight color="black" />
+					<ArrowRight className="h-5 w-5" />
 				</button>
 			</div>
 		</div>

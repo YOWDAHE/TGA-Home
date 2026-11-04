@@ -39,29 +39,29 @@ export default function AuthRequiredModal({
 
 	return (
 		<Dialog open={isOpen} onOpenChange={onClose}>
-			<DialogContent className="sm:max-w-md">
+			<DialogContent className="rounded-sm border-0 shadow-none ring-1 ring-brand-navy/10 sm:max-w-md sm:rounded-sm">
 				<DialogHeader className="text-center">
-					<div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-teal-50">
-						<Lock className="h-8 w-8 text-teal-600" />
+					<div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-sm bg-brand-tint">
+						<Lock className="h-8 w-8 text-brand-green" />
 					</div>
-					<DialogTitle className="text-xl font-semibold text-gray-900">
+					<DialogTitle className="text-xl font-semibold tracking-tight text-brand-navy">
 						Authentication Required
 					</DialogTitle>
-					<DialogDescription className="text-gray-600">
+					<DialogDescription className="text-brand-navy/75">
 						You need to be signed in to {action}. Join our community to engage with others!
 					</DialogDescription>
 				</DialogHeader>
 
 				<div className="space-y-4">
-					<Card className="border-teal-100 bg-teal-50/50">
+					<Card className="rounded-sm border-0 bg-brand-tint/50 shadow-none ring-1 ring-brand-navy/10">
 						<CardContent className="p-4">
 							<div className="flex items-start space-x-3">
-								<MessageCircle className="h-5 w-5 text-teal-600 mt-0.5" />
+								<MessageCircle className="mt-0.5 h-5 w-5 text-brand-green" />
 								<div className="flex-1">
-									<h4 className="font-medium text-gray-900 mb-1">
+									<h4 className="mb-1 font-medium text-brand-navy">
 										Why sign in?
 									</h4>
-									<p className="text-sm text-gray-600">
+									<p className="text-sm text-brand-navy/75">
 										Connect with our community, share your thoughts, and stay updated with the latest discussions.
 									</p>
 								</div>
@@ -73,7 +73,7 @@ export default function AuthRequiredModal({
 						<Button
 							onClick={handleLogin}
 							disabled={isLoading}
-							className="w-full bg-teal-600 hover:bg-teal-700 text-white"
+							className="h-auto w-full rounded-sm bg-brand-navy px-5 py-2.5 text-white hover:bg-brand-green"
 						>
 							<LogIn className="h-4 w-4 mr-2" />
 							{isLoading ? "Redirecting..." : "Sign In"}
@@ -83,7 +83,7 @@ export default function AuthRequiredModal({
 							onClick={handleSignup}
 							disabled={isLoading}
 							variant="outline"
-							className="w-full border-teal-200 text-teal-700 hover:bg-teal-50"
+							className="h-auto w-full rounded-sm border-0 bg-white px-5 py-2.5 text-brand-navy ring-1 ring-brand-navy/15 hover:bg-brand-tint hover:text-brand-navy"
 						>
 							<UserPlus className="h-4 w-4 mr-2" />
 							{isLoading ? "Redirecting..." : "Create Account"}
@@ -95,7 +95,7 @@ export default function AuthRequiredModal({
 					<Button
 						variant="ghost"
 						onClick={onClose}
-						className="w-full sm:w-auto text-gray-500 hover:text-gray-700"
+						className="w-full rounded-sm text-brand-navy/60 hover:bg-brand-tint/50 hover:text-brand-navy sm:w-auto"
 					>
 						Maybe Later
 					</Button>

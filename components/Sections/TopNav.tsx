@@ -15,13 +15,16 @@ import {
 import { easeOut } from "./Reveal";
 import MobileMenu, { menuLinks } from "./MobileMenu";
 
-// Each nav link is its own frosted pill; the current page is filled navy
-const pillClass = (active: boolean) =>
-	`rounded-full px-4 py-2 shadow-sm ring-1 backdrop-blur-md transition-colors ${
+// Plain text links; the current page gets a green rule underneath
+const linkClass = (active: boolean) =>
+	`relative py-2 transition-colors after:absolute after:inset-x-0 after:-bottom-px after:h-0.5 after:transition-colors ${
 		active
-			? "bg-brand-navy text-white ring-brand-navy"
-			: "bg-white/70 text-[#4b5468] ring-black/5 hover:bg-white hover:text-brand-navy"
+			? "text-brand-navy after:bg-brand-green"
+			: "text-[#4b5468] after:bg-transparent hover:text-brand-navy hover:after:bg-brand-navy/20"
 	}`;
+
+const iconButtonClass =
+	"h-10 w-10 items-center justify-center rounded-sm text-brand-navy ring-1 ring-brand-navy/15 transition-colors hover:bg-[#f4f5f7]";
 
 /** Round account button for large screens: sign-in links, or the signed-in user with logout. */
 function AccountMenu() {
@@ -32,11 +35,11 @@ function AccountMenu() {
 		<DropdownMenu>
 			<DropdownMenuTrigger
 				aria-label={user ? "Account" : "Log in or sign up"}
-				className="hidden h-11 w-11 items-center justify-center rounded-full bg-white/80 text-sm font-medium text-brand-navy shadow-sm ring-1 ring-black/5 backdrop-blur-md transition-colors hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-green lg:flex"
+				className={`hidden text-sm font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-green lg:flex ${iconButtonClass}`}
 			>
 				{user ? user.username.charAt(0).toUpperCase() : <User className="h-5 w-5" />}
 			</DropdownMenuTrigger>
-			<DropdownMenuContent align="end" sideOffset={8} className="w-56 rounded-2xl p-1.5">
+			<DropdownMenuContent align="end" sideOffset={8} className="w-56 rounded-sm p-1.5">
 				{user ? (
 					<>
 						<div className="px-3 py-2">
@@ -44,20 +47,20 @@ function AccountMenu() {
 							<p className="truncate text-xs text-[#7a8397]">{user.email}</p>
 						</div>
 						<DropdownMenuSeparator />
-						<DropdownMenuItem onClick={logout} className="rounded-xl text-red-600">
+						<DropdownMenuItem onClick={logout} className="rounded-sm text-red-600">
 							<LogOut className="mr-2 h-4 w-4" />
 							Logout
 						</DropdownMenuItem>
 					</>
 				) : (
 					<>
-						<DropdownMenuItem asChild className="rounded-xl">
+						<DropdownMenuItem asChild className="rounded-sm">
 							<Link href="/login">
 								<LogIn className="mr-2 h-4 w-4" />
 								Login
 							</Link>
 						</DropdownMenuItem>
-						<DropdownMenuItem asChild className="rounded-xl">
+						<DropdownMenuItem asChild className="rounded-sm">
 							<Link href="/signup">
 								<UserPlus className="mr-2 h-4 w-4" />
 								Sign Up
@@ -70,7 +73,7 @@ function AccountMenu() {
 	);
 }
 
-// Past this point the bar may hide, and it gets a frosted background
+// Past this point the bar may hide, and it gets a solid background
 const SCROLLED_AFTER = 80;
 // Ignore tiny scroll jitters (trackpads, momentum) before changing direction
 const DIRECTION_THRESHOLD = 8;
@@ -108,16 +111,20 @@ function useHideOnScroll() {
 	return { hidden, scrolled };
 }
 
-/** Logo, pill navigation and contact button at the top of the redesigned pages; a burger and drawer on small screens.
- *  Fixed to the top: it slides away while scrolling down and comes back when scrolling up. */
-export default function TopNav({ currentHref }: { currentHref: string }) {
+/** Logo, text navigation and contact button at the top of the redesigned pages; a burger and drawer on small screens.
+ *  Fixed to the top: it slides away while scrolling down and comes back when scrolling up.
+ *  With `overlay` it is see-through over the page top (for the home hero) until the page scrolls. */
+// Frosted glass: translucent white with a background blur
+const frosted = "bg-white/70 backdrop-blur-md";
+
+export default function TopNav({ currentHref, overlay = false }: { currentHref: string; overlay?: boolean }) {
 	const [menuOpen, setMenuOpen] = useState(false);
 	const { hidden, scrolled } = useHideOnScroll();
 
 	return (
 		<>
 			{/* Holds the bar's place in the page so content starts below it */}
-			<div aria-hidden className="h-16 shrink-0" />
+			{!overlay && <div aria-hidden className="h-16 shrink-0" />}
 
 			<motion.header
 				initial={false}
@@ -125,8 +132,8 @@ export default function TopNav({ currentHref }: { currentHref: string }) {
 				transition={{ duration: 0.35, ease: easeOut }}
 				className={`fixed inset-x-0 top-0 z-50 transition-[background-color,box-shadow,padding] duration-300 ${
 					scrolled
-						? "bg-white/75 py-3 shadow-[0_1px_0_rgba(11,27,77,0.06),0_8px_24px_-12px_rgba(11,27,77,0.18)] backdrop-blur-xl"
-						: "pb-3 pt-5"
+						? `border-b border-brand-navy/10 py-3 ${frosted}`
+						: `border-b border-transparent pb-3 pt-5 ${overlay ? "bg-transparent" : frosted}`
 				}`}
 			>
 			<motion.div
@@ -144,13 +151,13 @@ export default function TopNav({ currentHref }: { currentHref: string }) {
 						className="h-8 w-auto sm:h-10"
 					/>
 				</Link>
-				<nav className="hidden items-center gap-2 text-sm lg:flex">
+				<nav className="hidden items-center gap-7 text-sm lg:flex">
 					{menuLinks.map((link) => (
 						<Link
 							key={link.label}
 							href={link.href}
 							aria-current={link.href === currentHref ? "page" : undefined}
-							className={pillClass(link.href === currentHref)}
+							className={linkClass(link.href === currentHref)}
 						>
 							{link.label}
 						</Link>
@@ -159,7 +166,7 @@ export default function TopNav({ currentHref }: { currentHref: string }) {
 				<div className="flex items-center gap-2">
 					<Link
 						href="/#contact"
-						className="hidden rounded-full bg-brand-navy px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-green sm:inline-flex"
+						className="hidden rounded-sm bg-brand-navy px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-green sm:inline-flex"
 					>
 						Contact us
 					</Link>
@@ -169,7 +176,7 @@ export default function TopNav({ currentHref }: { currentHref: string }) {
 						onClick={() => setMenuOpen(true)}
 						aria-label="Open menu"
 						aria-expanded={menuOpen}
-						className="flex h-11 w-11 items-center justify-center rounded-full bg-white/80 text-brand-navy shadow-sm ring-1 ring-black/5 backdrop-blur-md transition-colors hover:bg-white lg:hidden"
+						className={`flex lg:hidden ${iconButtonClass}`}
 					>
 						<Menu className="h-5 w-5" />
 					</button>

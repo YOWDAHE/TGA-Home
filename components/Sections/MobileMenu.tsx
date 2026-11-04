@@ -59,7 +59,7 @@ export default function MobileMenu({ open, onClose, currentHref = "/" }: MobileM
 			{open && (
 				<div className="fixed inset-0 z-[60]" role="dialog" aria-modal="true" aria-label="Menu">
 					<motion.div
-						className="absolute inset-0 bg-brand-navy/30 backdrop-blur-sm"
+						className="absolute inset-0 bg-brand-navy/40"
 						initial={{ opacity: 0 }}
 						animate={{ opacity: 1 }}
 						exit={{ opacity: 0 }}
@@ -72,14 +72,8 @@ export default function MobileMenu({ open, onClose, currentHref = "/" }: MobileM
 						initial="hidden"
 						animate="show"
 						exit="exit"
-						className="absolute inset-y-2 right-2 flex w-[min(calc(100%-1rem),400px)] flex-col overflow-hidden rounded-[28px] bg-white shadow-2xl"
+						className="absolute inset-y-0 right-0 flex w-[min(100%,400px)] flex-col overflow-hidden bg-white"
 					>
-						{/* Soft brand glow */}
-						<div
-							aria-hidden
-							className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-brand-green/15 blur-3xl"
-						/>
-
 						<motion.div variants={item} className="flex items-center justify-between p-5">
 							<img
 								src="/logo.svg"
@@ -92,7 +86,7 @@ export default function MobileMenu({ open, onClose, currentHref = "/" }: MobileM
 								type="button"
 								onClick={onClose}
 								aria-label="Close menu"
-								className="flex h-11 w-11 items-center justify-center rounded-full bg-[#f2f4f8] text-brand-navy transition-colors hover:bg-brand-tint"
+								className="flex h-10 w-10 items-center justify-center rounded-sm text-brand-navy ring-1 ring-brand-navy/15 transition-colors hover:bg-[#f4f5f7]"
 							>
 								<X className="h-5 w-5" />
 							</button>
@@ -100,7 +94,7 @@ export default function MobileMenu({ open, onClose, currentHref = "/" }: MobileM
 
 						<nav className="relative flex-1 overflow-y-auto px-5 pt-2">
 							<ul>
-								{menuLinks.map((link, index) => {
+								{menuLinks.map((link) => {
 									const active = link.href === currentHref;
 									return (
 										<motion.li key={link.href} variants={item}>
@@ -109,9 +103,6 @@ export default function MobileMenu({ open, onClose, currentHref = "/" }: MobileM
 												onClick={onClose}
 												className="group flex items-center gap-4 border-b border-[#eef1f5] py-4"
 											>
-												<span className="w-6 text-xs font-medium tabular-nums text-brand-green">
-													{String(index + 1).padStart(2, "0")}
-												</span>
 												<span
 													className={`flex-1 text-2xl font-semibold tracking-tight transition-colors ${
 														active ? "text-brand-navy" : "text-[#7a8397] group-hover:text-brand-navy"
@@ -120,7 +111,7 @@ export default function MobileMenu({ open, onClose, currentHref = "/" }: MobileM
 													{link.label}
 												</span>
 												{active ? (
-													<span className="h-2 w-2 rounded-full bg-brand-green" />
+													<span className="h-0.5 w-5 bg-brand-green" />
 												) : (
 													<ArrowUpRight className="h-5 w-5 text-[#b4bccb] transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-brand-green" />
 												)}
@@ -133,8 +124,8 @@ export default function MobileMenu({ open, onClose, currentHref = "/" }: MobileM
 							{/* Account */}
 							<motion.div variants={item} className="mt-6">
 								{user ? (
-									<div className="flex items-center gap-3 rounded-2xl bg-[#f5f7fa] p-3">
-										<span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-navy text-sm font-medium text-white">
+									<div className="flex items-center gap-3 border border-brand-navy/10 p-3">
+										<span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-sm bg-brand-navy text-sm font-medium text-white">
 											{user.username.charAt(0).toUpperCase()}
 										</span>
 										<div className="min-w-0 flex-1">
@@ -148,7 +139,7 @@ export default function MobileMenu({ open, onClose, currentHref = "/" }: MobileM
 												onClose();
 											}}
 											aria-label="Logout"
-											className="flex h-9 w-9 items-center justify-center rounded-full text-red-600 transition-colors hover:bg-red-50"
+											className="flex h-9 w-9 items-center justify-center rounded-sm text-red-600 transition-colors hover:bg-red-50"
 										>
 											<LogOut className="h-4 w-4" />
 										</button>
@@ -158,14 +149,14 @@ export default function MobileMenu({ open, onClose, currentHref = "/" }: MobileM
 										<Link
 											href="/login"
 											onClick={onClose}
-											className="rounded-full py-3 text-center text-sm font-medium text-brand-navy ring-1 ring-black/10 transition-colors hover:bg-[#f5f7fa]"
+											className="rounded-sm py-3 text-center text-sm font-medium text-brand-navy ring-1 ring-brand-navy/15 transition-colors hover:bg-[#f4f5f7]"
 										>
 											Login
 										</Link>
 										<Link
 											href="/signup"
 											onClick={onClose}
-											className="rounded-full bg-brand-tint py-3 text-center text-sm font-medium text-brand-green transition-colors hover:bg-brand-green hover:text-white"
+											className="rounded-sm bg-brand-tint py-3 text-center text-sm font-medium text-brand-green transition-colors hover:bg-brand-green hover:text-white"
 										>
 											Sign Up
 										</Link>
@@ -178,10 +169,10 @@ export default function MobileMenu({ open, onClose, currentHref = "/" }: MobileM
 							<Link
 								href="/#contact"
 								onClick={onClose}
-								className="group flex items-center justify-between rounded-full bg-brand-navy py-2 pl-6 pr-2 font-medium text-white transition-colors hover:bg-brand-green"
+								className="group flex items-center justify-between rounded-sm bg-brand-navy py-2 pl-6 pr-2 font-medium text-white transition-colors hover:bg-brand-green"
 							>
 								Get Legal Consultation
-								<span className="flex h-10 w-10 items-center justify-center rounded-full bg-white/15">
+								<span className="flex h-10 w-10 items-center justify-center">
 									<ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
 								</span>
 							</Link>

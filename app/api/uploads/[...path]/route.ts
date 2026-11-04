@@ -15,8 +15,8 @@ export async function GET(
     const pathSegments = (await params).path;
     const path = pathSegments.join('/');
     const backendUrl =
-      pathSegments[0] === 'partners' && pathSegments.length >= 2
-        ? `${BACKEND_URL}/api/landing/uploads/partners/${pathSegments[1]}`
+      (pathSegments[0] === 'partners' || pathSegments[0] === 'home') && pathSegments.length >= 2
+        ? `${BACKEND_URL}/api/landing/uploads/${pathSegments[0]}/${pathSegments[1]}`
         : // The backend's public /uploads folder, reached over the internal network.
           // PUBLIC_API_URL points at /api-backend, whose /uploads is the login-only admin API.
           `${BACKEND_URL}/uploads/${path}`;

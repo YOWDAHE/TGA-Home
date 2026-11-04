@@ -5,3 +5,4 @@ export const homeFont = Geist({
 	subsets: ["latin"],
 	display: "swap",
 });
+

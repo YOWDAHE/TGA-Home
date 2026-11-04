@@ -17,12 +17,11 @@ import {
 } from "lucide-react";
 import { LegalUpdate, LegalUpdateCategory } from "@/app/types/legal-updates";
 import { MotionConfig, motion } from "framer-motion";
-import TopNav from "./TopNav";
+import PageHero from "./PageHero";
 import Footer from "./Footer";
 import Section from "./Section";
 import SectionHeading from "./SectionHeading";
 import Reveal, { easeOut } from "./Reveal";
-import { FrostedColors } from "./Backdrop";
 import LegalUpdatesSubscribeForm from "./LegalUpdatesSubscribeForm";
 import { Highlight, MatchBadges, excerptAround, matchedFields } from "./SearchMatch";
 
@@ -35,7 +34,7 @@ const CONTENT_TYPE_LABELS: Record<string, string> = {
 
 const CONTENT_TYPE_COLORS: Record<string, string> = {
   alert: "bg-red-50 text-red-700",
-  analysis: "bg-[#eef1fb] text-brand-navy",
+  analysis: "bg-brand-navy/5 text-brand-navy",
   guide: "bg-amber-50 text-amber-700",
   update: "bg-brand-tint text-brand-green",
 };
@@ -50,29 +49,29 @@ interface LegalUpdatesPageProps {
 }
 
 const pagerClass =
-  "inline-flex items-center rounded-full bg-white px-4 py-2 text-sm text-brand-navy ring-1 ring-black/10 transition-colors hover:bg-brand-tint disabled:pointer-events-none disabled:opacity-40";
+  "inline-flex items-center rounded-sm bg-white px-4 py-2 text-sm text-brand-navy ring-1 ring-brand-navy/15 transition-colors hover:bg-brand-tint disabled:pointer-events-none disabled:opacity-40";
 
-// Content-type filters are pills; the selected one is filled navy
+// Content-type filters are square chips; the selected one is filled navy
 const chipClass = (active: boolean) =>
-  `shrink-0 rounded-full px-4 py-2 text-sm transition-colors disabled:opacity-60 ${
+  `shrink-0 rounded-sm px-4 py-2 text-sm transition-colors disabled:opacity-60 ${
     active
       ? "bg-brand-navy text-white"
-      : "bg-white/80 text-[#4b5468] ring-1 ring-black/5 hover:bg-white hover:text-brand-navy"
+      : "bg-white text-brand-navy ring-1 ring-brand-navy/15 hover:bg-brand-tint"
   }`;
 
 const typeBadge = (type: string) =>
-  `inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${CONTENT_TYPE_COLORS[type] || "bg-[#f2f4f8] text-[#4b5468]"}`;
+  `inline-flex rounded-sm px-2.5 py-0.5 text-xs font-medium ${CONTENT_TYPE_COLORS[type] || "bg-brand-tint/50 text-brand-navy/75"}`;
 
 // Update bodies are HTML; excerpts and matching use plain text
 const stripHtml = (html: string) =>
   (html ?? "").replace(/<[^>]*>/g, " ").replace(/&nbsp;/g, " ").replace(/\s+/g, " ").trim();
 
 const CardSkeleton = () => (
-  <div className="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-black/5">
-    <Skeleton className="mb-4 h-5 w-24 rounded-full bg-[#eef1f5]" />
-    <Skeleton className="mb-2 h-6 w-full rounded bg-[#eef1f5]" />
-    <Skeleton className="mb-4 h-4 w-3/4 rounded bg-[#eef1f5]" />
-    <Skeleton className="h-4 w-1/2 rounded bg-[#eef1f5]" />
+  <div className="rounded-sm bg-white p-6 ring-1 ring-brand-navy/10">
+    <Skeleton className="mb-4 h-5 w-24 rounded-sm bg-brand-tint/50" />
+    <Skeleton className="mb-2 h-6 w-full rounded-sm bg-brand-tint/50" />
+    <Skeleton className="mb-4 h-4 w-3/4 rounded-sm bg-brand-tint/50" />
+    <Skeleton className="h-4 w-1/2 rounded-sm bg-brand-tint/50" />
   </div>
 );
 
@@ -141,69 +140,36 @@ export default function LegalUpdatesPage({
 
   return (
     <MotionConfig reducedMotion="user">
-      <div className="relative isolate min-h-screen overflow-x-clip text-brand-navy antialiased">
-        <FrostedColors />
-        <TopNav currentHref="/legal-updates" />
-
-        {/* Page header with search and filters */}
-        <section className="px-4 pb-6 pt-14 text-center sm:px-6 sm:pt-20">
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: easeOut, delay: 0.1 }}
-            className="mb-6 inline-flex items-center gap-2 rounded-full bg-white px-3.5 py-1.5 text-xs font-medium text-[#4b5468] shadow-sm ring-1 ring-black/5 sm:px-4"
-          >
-            <Scale className="h-3.5 w-3.5 text-brand-green" />
-            Client alerts & analysis
-          </motion.p>
-          <motion.h1
-            initial={{ opacity: 0, y: 24, filter: "blur(8px)" }}
-            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            transition={{ duration: 0.8, ease: easeOut, delay: 0.15 }}
-            className="mx-auto max-w-[16rem] text-balance text-[2.75rem] font-semibold leading-none tracking-tight sm:max-w-none sm:text-7xl"
-          >
-            Legal Updates
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, ease: easeOut, delay: 0.3 }}
-            className="mx-auto mt-5 max-w-[19rem] text-pretty text-base leading-relaxed text-[#606b80] min-[400px]:max-w-[21rem] sm:max-w-xl sm:text-lg"
-          >
-            Stay informed with client alerts, regulatory updates, and legal analysis from TGA Global Law Firm.
-          </motion.p>
-
-          <motion.form
+      <div className="relative isolate min-h-screen overflow-x-clip bg-white text-brand-navy antialiased">
+        <PageHero
+          currentHref="/legal-updates"
+          label="TGA Global Law Firm LL.P"
+          title="Legal Updates"
+          description="Stay informed with client alerts, regulatory updates, and legal analysis from TGA Global Law Firm."
+        >
+          <form
             onSubmit={handleSearch}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: easeOut, delay: 0.4 }}
-            className="mx-auto mt-8 flex max-w-xl items-center gap-2 rounded-full bg-white p-1.5 pl-5 text-left shadow-sm ring-1 ring-black/5 focus-within:ring-2 focus-within:ring-brand-green/40"
+            className="mx-auto flex max-w-xl items-center gap-2 rounded-sm bg-white p-1.5 pl-4 text-left ring-1 ring-brand-navy/15 focus-within:ring-2 focus-within:ring-brand-green/40"
           >
-            <Search className="h-4 w-4 shrink-0 text-[#9aa3b5]" />
+            <Search className="h-4 w-4 shrink-0 text-brand-navy/40" />
             <input
               type="search"
               placeholder="Search legal updates..."
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               disabled={loading}
-              className="min-w-0 flex-1 bg-transparent py-2 text-brand-navy placeholder:text-[#9aa3b5] focus:outline-none [&::-webkit-search-cancel-button]:hidden"
+              className="min-w-0 flex-1 bg-transparent py-2 text-brand-navy placeholder:text-brand-navy/40 focus:outline-none [&::-webkit-search-cancel-button]:hidden"
             />
             <button
               type="submit"
               disabled={loading}
-              className="inline-flex min-w-[5.5rem] items-center justify-center rounded-full bg-brand-navy px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-green disabled:opacity-60 sm:px-6"
+              className="inline-flex min-w-[5.5rem] items-center justify-center rounded-sm bg-brand-navy px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-green disabled:opacity-60"
             >
               {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Search"}
             </button>
-          </motion.form>
+          </form>
 
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: easeOut, delay: 0.5 }}
-            className="-mx-4 mt-5 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:mx-auto sm:flex-wrap sm:justify-center sm:overflow-visible sm:px-0 sm:pb-0"
-          >
+          <div className="-mx-4 mt-5 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:mx-auto sm:flex-wrap sm:justify-center sm:overflow-visible sm:px-0 sm:pb-0">
             {["", "alert", "analysis", "guide", "update"].map((type) => (
               <button
                 key={type || "all"}
@@ -218,8 +184,8 @@ export default function LegalUpdatesPage({
                 {type ? CONTENT_TYPE_LABELS[type] : "All"}
               </button>
             ))}
-          </motion.div>
-        </section>
+          </div>
+        </PageHero>
 
         {activeQuery ? (
           /* Search results only: featured updates and the sidebar stay hidden while searching */
@@ -230,7 +196,7 @@ export default function LegalUpdatesPage({
                   <h2 className="text-2xl font-semibold tracking-tight text-brand-navy sm:text-3xl">
                     Results for “{activeQuery}”
                   </h2>
-                  <p className="mt-1 text-sm text-[#7a8397]">
+                  <p className="mt-1 text-sm text-brand-navy/50">
                     {loading
                       ? "Searching..."
                       : `${totalItems} update${totalItems === 1 ? "" : "s"} found${
@@ -241,7 +207,7 @@ export default function LegalUpdatesPage({
                 <button
                   type="button"
                   onClick={clearSearch}
-                  className="inline-flex shrink-0 items-center rounded-full bg-white px-4 py-2 text-sm text-brand-navy ring-1 ring-black/10 transition-colors hover:bg-brand-tint"
+                  className="inline-flex shrink-0 items-center rounded-sm bg-white px-4 py-2 text-sm text-brand-navy ring-1 ring-brand-navy/15 transition-colors hover:bg-brand-tint"
                 >
                   <X className="mr-1 h-4 w-4" />
                   Clear search
@@ -249,17 +215,17 @@ export default function LegalUpdatesPage({
               </div>
 
               {loading ? (
-                <div className="flex items-center justify-center py-20 text-[#606b80]">
+                <div className="flex items-center justify-center py-20 text-brand-navy/60">
                   <Loader2 className="h-6 w-6 animate-spin text-brand-green" />
                   <span className="ml-2">Searching...</span>
                 </div>
               ) : updates.length === 0 ? (
                 <div className="py-20 text-center">
-                  <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-white shadow-sm ring-1 ring-black/5">
-                    <Search className="h-8 w-8 text-[#9aa3b5]" />
+                  <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-sm bg-white ring-1 ring-brand-navy/10">
+                    <Search className="h-8 w-8 text-brand-navy/40" />
                   </div>
                   <h3 className="mb-2 text-xl font-semibold text-brand-navy">No legal updates found</h3>
-                  <p className="text-[#606b80]">Try a different phrase or another type.</p>
+                  <p className="text-brand-navy/60">Try a different phrase or another type.</p>
                 </div>
               ) : (
                 <ul className="mt-8 space-y-3">
@@ -283,7 +249,7 @@ export default function LegalUpdatesPage({
                       >
                         <Link
                           href={`/legal-updates/${item.slug}`}
-                          className="group flex items-center gap-4 rounded-3xl bg-white p-4 shadow-sm ring-1 ring-black/5 transition-shadow hover:shadow-lg sm:gap-5 sm:p-5"
+                          className="group flex items-center gap-4 rounded-sm bg-white p-4 ring-1 ring-brand-navy/10 transition hover:ring-brand-navy/25 sm:gap-5 sm:p-5"
                         >
                           <div className="min-w-0 flex-1">
                             <div className="flex flex-wrap items-center gap-2">
@@ -294,11 +260,11 @@ export default function LegalUpdatesPage({
                               <Highlight text={item.title} query={activeQuery} />
                             </h3>
                             {excerptSource && (
-                              <p className="mt-1.5 line-clamp-2 text-sm leading-relaxed text-[#606b80]">
+                              <p className="mt-1.5 line-clamp-2 text-sm leading-relaxed text-brand-navy/75">
                                 <Highlight text={excerptAround(excerptSource, activeQuery)} query={activeQuery} />
                               </p>
                             )}
-                            <p className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-[#7a8397]">
+                            <p className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-brand-navy/50">
                               <span className="flex items-center">
                                 <Calendar className="mr-1 h-3 w-3" />
                                 {formatDate(item.published_date)}
@@ -330,7 +296,7 @@ export default function LegalUpdatesPage({
                     <ChevronLeft className="mr-1 h-4 w-4" />
                     Previous
                   </button>
-                  <span className="text-sm text-[#606b80]">Page {currentPage} of {totalPages}</span>
+                  <span className="text-sm text-brand-navy/60">Page {currentPage} of {totalPages}</span>
                   <button
                     type="button"
                     className={pagerClass}
@@ -354,10 +320,9 @@ export default function LegalUpdatesPage({
                 <Reveal key={item.id} delay={index * 0.08}>
                   <Link
                     href={`/legal-updates/${item.slug}`}
-                    className="group relative isolate flex h-full flex-col overflow-hidden rounded-3xl bg-brand-navy p-6 text-white transition-shadow hover:shadow-xl sm:p-7"
+                    className="group flex h-full flex-col rounded-sm bg-brand-navy p-6 text-white transition duration-300 hover:-translate-y-1 sm:p-7"
                   >
-                    <div aria-hidden className="absolute -right-16 -top-20 -z-10 h-48 w-48 rounded-full bg-brand-green/40 blur-3xl transition-transform duration-700 group-hover:scale-125" />
-                    <span className="mb-5 inline-flex self-start rounded-full bg-white/10 px-2.5 py-0.5 text-xs font-medium text-brand-tint">
+                    <span className="mb-5 inline-flex self-start rounded-sm bg-white/10 px-2.5 py-0.5 text-xs font-medium text-brand-tint">
                       {CONTENT_TYPE_LABELS[item.content_type]}
                     </span>
                     <h3 className="mb-2 line-clamp-2 text-xl font-semibold tracking-tight">{item.title}</h3>
@@ -367,7 +332,7 @@ export default function LegalUpdatesPage({
                         <Calendar className="mr-1 h-3 w-3" />
                         {formatDate(item.published_date)}
                       </span>
-                      <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white transition-colors group-hover:bg-brand-green">
+                      <span className="flex h-9 w-9 items-center justify-center rounded-sm bg-white/10 text-white transition-colors group-hover:bg-brand-green">
                         <ArrowUpRight className="h-4 w-4" />
                       </span>
                     </div>
@@ -378,23 +343,22 @@ export default function LegalUpdatesPage({
           </Section>
         )}
 
-        <Section pattern>
+        <Section>
           <div className="grid gap-10 lg:grid-cols-12 lg:gap-8">
             <div className="lg:col-span-8">
-              <Reveal>
-                <h2 className="mb-6 text-center text-3xl font-semibold tracking-tight text-brand-navy sm:text-left sm:text-4xl">
-                  {contentType ? CONTENT_TYPE_LABELS[contentType] : "All updates"}
-                </h2>
-              </Reveal>
+              <SectionHeading
+                title={contentType ? CONTENT_TYPE_LABELS[contentType] : "All updates"}
+                className="mb-10"
+              />
 
               {loading ? (
                 <div className="grid gap-4 md:grid-cols-2">
                   {Array.from({ length: 6 }).map((_, i) => <CardSkeleton key={i} />)}
                 </div>
               ) : updates.length === 0 ? (
-                <Reveal className="py-16 text-center text-[#606b80]">
-                  <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-white shadow-sm ring-1 ring-black/5">
-                    <Scale className="h-9 w-9 text-[#9aa3b5]" />
+                <Reveal className="py-16 text-center text-brand-navy/60">
+                  <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-sm bg-white ring-1 ring-brand-navy/10">
+                    <Scale className="h-9 w-9 text-brand-navy/40" />
                   </div>
                   <p>No legal updates found.</p>
                 </Reveal>
@@ -404,7 +368,7 @@ export default function LegalUpdatesPage({
                     <Reveal key={item.id} delay={(index % 2) * 0.06}>
                       <Link
                         href={`/legal-updates/${item.slug}`}
-                        className="group flex h-full flex-col rounded-3xl bg-white p-6 shadow-sm ring-1 ring-black/5 transition-shadow hover:shadow-lg"
+                        className="group flex h-full flex-col rounded-sm bg-white p-6 ring-1 ring-brand-navy/10 transition duration-300 hover:-translate-y-1 hover:ring-brand-navy/25"
                       >
                         <span className={`${typeBadge(item.content_type)} mb-4 self-start`}>
                           {CONTENT_TYPE_LABELS[item.content_type]}
@@ -413,9 +377,9 @@ export default function LegalUpdatesPage({
                           {item.title}
                         </h3>
                         {item.summary && (
-                          <p className="mb-5 line-clamp-2 text-sm leading-relaxed text-[#606b80]">{item.summary}</p>
+                          <p className="mb-5 line-clamp-2 text-sm leading-relaxed text-brand-navy/75">{item.summary}</p>
                         )}
-                        <div className="mt-auto flex items-center justify-between gap-3 text-xs text-[#7a8397]">
+                        <div className="mt-auto flex items-center justify-between gap-3 text-xs text-brand-navy/50">
                           <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1">
                             <span className="flex items-center">
                               <Calendar className="mr-1 h-3 w-3" />
@@ -447,7 +411,7 @@ export default function LegalUpdatesPage({
                     <ChevronLeft className="mr-1 h-4 w-4" />
                     Previous
                   </button>
-                  <span className="text-sm text-[#606b80]">Page {currentPage} of {totalPages}</span>
+                  <span className="text-sm text-brand-navy/60">Page {currentPage} of {totalPages}</span>
                   <button
                     type="button"
                     className={pagerClass}
@@ -465,11 +429,11 @@ export default function LegalUpdatesPage({
               <Reveal delay={0.1} className="space-y-4 lg:sticky lg:top-8">
                 <LegalUpdatesSubscribeForm />
                 {categories.length > 0 && (
-                  <div className="rounded-3xl bg-white/70 p-6 shadow-sm ring-1 ring-black/5 backdrop-blur-xl">
+                  <div className="rounded-sm bg-white p-6 ring-1 ring-brand-navy/10">
                     <h3 className="mb-4 font-semibold tracking-tight text-brand-navy">Practice Areas</h3>
                     <div className="flex flex-wrap gap-2">
                       {categories.map((cat) => (
-                        <span key={cat.id} className="cursor-default rounded-full bg-[#f2f4f8] px-3 py-1 text-xs text-[#4b5468]">
+                        <span key={cat.id} className="cursor-default rounded-sm bg-brand-tint/50 px-3 py-1 text-xs text-brand-navy/75">
                           {cat.name}
                         </span>
                       ))}

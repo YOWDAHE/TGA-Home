@@ -66,14 +66,14 @@ export default function HashtagNewsModal({ tag, excludeId, onClose }: HashtagNew
 
 	return (
 		<Dialog open={Boolean(tag)} onOpenChange={(open) => !open && onClose()}>
-			<DialogContent className="flex max-h-[85svh] w-[calc(100%-2rem)] max-w-2xl flex-col gap-0 overflow-hidden rounded-3xl border-0 p-0 text-brand-navy sm:rounded-3xl">
-				<div className="border-b border-black/5 p-6 pr-14">
-					<span className="mb-3 inline-flex items-center gap-1 rounded-full bg-brand-tint px-3 py-1 text-sm font-medium text-brand-green">
+			<DialogContent className="flex max-h-[85svh] w-[calc(100%-2rem)] max-w-2xl flex-col gap-0 overflow-hidden rounded-sm border-0 p-0 text-brand-navy shadow-none ring-1 ring-brand-navy/10 sm:rounded-sm">
+				<div className="border-b border-brand-navy/10 p-6 pr-14">
+					<span className="mb-3 inline-flex items-center gap-1 rounded-sm bg-brand-tint px-3 py-1 text-sm font-medium text-brand-green">
 						<Hash className="h-3.5 w-3.5" />
 						{tag}
 					</span>
-					<DialogTitle className="text-2xl font-semibold tracking-tight">More news like this</DialogTitle>
-					<DialogDescription className="mt-1 text-sm text-[#7a8397]">
+					<DialogTitle className="text-2xl font-semibold tracking-tight text-brand-navy">More news like this</DialogTitle>
+					<DialogDescription className="mt-1 text-sm text-brand-navy/50">
 						{loading
 							? "Finding stories..."
 							: `${stories.length} other ${stories.length === 1 ? "story" : "stories"} tagged #${tag}`}
@@ -82,11 +82,11 @@ export default function HashtagNewsModal({ tag, excludeId, onClose }: HashtagNew
 
 				<div className="flex-1 overflow-y-auto p-3 sm:p-4">
 					{loading ? (
-						<div className="flex items-center justify-center py-16 text-[#606b80]">
+						<div className="flex items-center justify-center py-16 text-brand-navy/75">
 							<Loader2 className="h-6 w-6 animate-spin text-brand-green" />
 						</div>
 					) : stories.length === 0 ? (
-						<p className="py-16 text-center text-[#606b80]">No other stories carry this tag yet.</p>
+						<p className="py-16 text-center text-brand-navy/75">No other stories carry this tag yet.</p>
 					) : (
 						<ul className="space-y-2">
 							{stories.map((story) => (
@@ -94,9 +94,9 @@ export default function HashtagNewsModal({ tag, excludeId, onClose }: HashtagNew
 									<Link
 										href={`/news/${story.id}`}
 										onClick={onClose}
-										className="group flex gap-4 rounded-2xl p-2 transition-colors hover:bg-[#f5f7fa]"
+										className="group flex gap-4 rounded-sm p-2 transition-colors hover:bg-brand-tint/50"
 									>
-										<div className="h-20 w-24 shrink-0 overflow-hidden rounded-xl bg-[#eef1f5] sm:w-28">
+										<div className="h-20 w-24 shrink-0 overflow-hidden rounded-sm bg-brand-tint/50 sm:w-28">
 											<img
 												src={story.visual_content?.length ? convertToApiUrl(story.visual_content[0]) : "/placeholder.jpg"}
 												alt={story.title}
@@ -106,11 +106,11 @@ export default function HashtagNewsModal({ tag, excludeId, onClose }: HashtagNew
 											/>
 										</div>
 										<div className="min-w-0 flex-1 py-0.5">
-											<h3 className="line-clamp-2 font-semibold leading-snug tracking-tight transition-colors group-hover:text-brand-green">
+											<h3 className="line-clamp-2 font-semibold leading-snug tracking-tight text-brand-navy transition-colors group-hover:text-brand-green">
 												{story.title}
 											</h3>
-											<p className="mt-1 line-clamp-1 text-sm text-[#606b80]">{stripHtml(story.content)}</p>
-											<span className="mt-1.5 flex items-center text-xs text-[#7a8397]">
+											<p className="mt-1 line-clamp-1 text-sm text-brand-navy/75">{stripHtml(story.content)}</p>
+											<span className="mt-1.5 flex items-center text-xs text-brand-navy/50">
 												<Calendar className="mr-1 h-3 w-3" />
 												{formatDate(story.published_date ?? story.createdAt)}
 											</span>
