@@ -27,8 +27,9 @@ export default function Hero({ content }: { content: HomeContent["hero"] }) {
 		return () => clearInterval(slideTimer);
 	}, [slides.length]);
 
-	// Slides share one grid cell, so each block keeps the tallest slide's height and nothing moves
-	const rotating = (render: (slide: Slide) => React.ReactNode, className = "") => (
+	// Slides share one grid cell, so each block keeps the tallest slide's height and nothing moves;
+	// itemAlign picks where a shorter slide sits in that cell
+	const rotating = (render: (slide: Slide) => React.ReactNode, className = "", itemAlign = "self-end") => (
 		<div className={`grid ${className}`}>
 			{slides.map((slide, index) => {
 				const active = index === slideIndex;
@@ -36,7 +37,7 @@ export default function Hero({ content }: { content: HomeContent["hero"] }) {
 					<motion.div
 						key={index}
 						aria-hidden={!active}
-						className={`self-end [grid-area:1/1] ${active ? "" : "pointer-events-none"}`}
+						className={`${itemAlign} [grid-area:1/1] ${active ? "" : "pointer-events-none"}`}
 						initial={false}
 						animate={active ? { opacity: 1, y: 0 } : { opacity: 0, y: -12 }}
 						transition={{ duration: 0.7, ease: easeOut }}
@@ -79,23 +80,25 @@ export default function Hero({ content }: { content: HomeContent["hero"] }) {
 						initial={{ opacity: 0, y: 10 }}
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ duration: 0.6, ease: easeOut, delay: 0.25 }}
-						className="mt-12 grid gap-6 sm:mt-16 lg:grid-cols-12 lg:items-end lg:gap-8"
+						className="mt-8 grid gap-6 sm:mt-16 lg:grid-cols-12 lg:items-end lg:gap-8"
 					>
 						{rotating(
 							(slide) => <div className={slideTextClass} dangerouslySetInnerHTML={{ __html: slide.text }} />,
-							"lg:col-span-5"
+							"lg:col-span-5",
+							// On phones a short statement sits right under the headline instead of leaving a gap above it
+							"self-start lg:self-end"
 						)}
 						<ArrowRight aria-hidden className="hidden h-6 w-6 text-brand-navy lg:col-span-1 lg:mb-1 lg:block lg:justify-self-center" />
 						<Link
 							href="#contact"
-							className="group leading-relaxed text-brand-navy/75 transition-colors hover:text-brand-navy lg:col-span-3"
+							className="group hidden leading-relaxed text-brand-navy/75 transition-colors hover:text-brand-navy lg:col-span-3 lg:block"
 						>
 							<span className="underline decoration-brand-navy/25 underline-offset-4 group-hover:decoration-brand-navy">
 								Get legal consultation
 							</span>{" "}
 							from partners who know the region
 						</Link>
-						<div className="lg:col-span-3 lg:text-right">
+						<div className="hidden lg:col-span-3 lg:block lg:text-right">
 							<p className="text-lg font-medium text-brand-navy">
 								{content.highlight.value} <span className="text-brand-green">{content.highlight.word}</span>
 							</p>
@@ -117,6 +120,15 @@ export default function Hero({ content }: { content: HomeContent["hero"] }) {
 							/>
 						))}
 					</div>
+
+					{/* Phones: the consultation link becomes a button at the bottom of the screen */}
+					<Link
+						href="#contact"
+						className="group mt-2 inline-flex w-full items-center justify-center gap-2 rounded-sm bg-brand-navy px-5 py-3.5 text-sm font-medium text-white transition-colors hover:bg-brand-green lg:hidden"
+					>
+						Get legal consultation
+						<ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+					</Link>
 				</div>
 			</section>
 		</>

@@ -9,7 +9,7 @@ interface PartnersProps {
 	partners: Partner[];
 }
 
-/** Partner logos in a grid divided by hairlines, under a one-line caption. */
+/** Partner logos in rows divided by hairlines, the last row centred, under a one-line caption. */
 const Partners = React.memo(function Partners({ partners }: PartnersProps) {
 	return (
 		<Section className="bg-white">
@@ -19,13 +19,14 @@ const Partners = React.memo(function Partners({ partners }: PartnersProps) {
 				</p>
 			</Reveal>
 
-			{/* Each cell draws its left and top rule; the negative margin hides the outer edges */}
+			{/* Rows wrap and the last one is centred. Each cell draws its side and top rules, overlapping its
+			    neighbour's by a pixel; the wrapper's negative margins hide the outer edges of full rows. */}
 			<Reveal className="mt-12 overflow-hidden sm:mt-16">
-				<div className="-ml-px -mt-px grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
+				<div className="-mx-px -mt-px flex flex-wrap justify-center">
 					{partners.map((partner) => (
 						<div
 							key={partner.id}
-							className="group flex h-28 items-center justify-center border-l border-t border-brand-navy/10 p-6 sm:h-36 sm:p-8"
+							className="group -mr-px flex h-24 w-[calc(100%/3+1px)] items-center justify-center border-x border-t border-brand-navy/10 p-4 sm:h-36 sm:p-8 lg:w-[calc(20%+1px)]"
 						>
 							<img
 								src={convertToApiUrl(partner.logo_url) || "/office/placeholder.jpg"}
