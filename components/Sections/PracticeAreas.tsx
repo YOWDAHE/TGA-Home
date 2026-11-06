@@ -4,9 +4,13 @@ import { Practice } from "@/app/types/landing";
 import Section from "./Section";
 import SectionHeading from "./SectionHeading";
 import Reveal from "./Reveal";
+import type { ModuleContent } from "@/app/types/modules";
+import type { ToneProps } from "@/components/modules/shared";
 
-interface PracticeAreasProps {
+interface PracticeAreasProps extends ToneProps {
 	practices: Practice[];
+	/** Heading text; the cards are the shared Practice areas list */
+	content: ModuleContent["practices"];
 }
 
 const descriptionClass =
@@ -45,18 +49,23 @@ function CardArt({ index }: { index: number }) {
 
 /** Every practice area at once, as a grid of cards: three or four across on desktop, two on tablets,
  *  one on phones. */
-export default function PracticeAreas({ practices }: PracticeAreasProps) {
+export default function PracticeAreas({ practices, content, tone }: PracticeAreasProps) {
 	// Three columns when the areas split evenly into threes (6, 9) and not into fours, so no row is left short
 	const columns = practices.length % 3 === 0 && practices.length % 4 !== 0 ? 3 : 4;
 
 	return (
-		<Section id="practice-areas">
-			<SectionHeading label="Practice areas" title="Quality legal service with creative solutions" />
+		<Section tone={tone}>
+			<SectionHeading
+				inverted={tone === "navy"}
+				label={content.label}
+				title={content.title}
+				description={content.description || undefined}
+			/>
 
 			<div className={`mt-12 grid gap-4 sm:grid-cols-2 lg:mt-16 ${columns === 3 ? "lg:grid-cols-3" : "lg:grid-cols-4"}`}>
 				{practices.map((practice, index) => (
 					<Reveal key={practice.id} delay={(index % columns) * 0.06} className="h-full">
-						<article className="group flex h-full flex-col overflow-hidden rounded-sm bg-white ring-1 ring-brand-navy/10 transition-[transform] duration-300 hover:-translate-y-1 hover:ring-brand-navy/25">
+						<article className="tone-light group flex h-full flex-col overflow-hidden rounded-sm bg-white ring-1 ring-brand-navy/10 transition-[transform] duration-300 hover:-translate-y-1 hover:ring-brand-navy/25">
 							<CardArt index={index} />
 							<div className="flex flex-1 flex-col p-6">
 								<h3 className="text-lg font-semibold leading-snug tracking-tight text-brand-navy sm:text-xl">

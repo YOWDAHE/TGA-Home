@@ -56,26 +56,10 @@ export function InfiniteCarousel({
   return (
     <div
       ref={containerRef}
-      className={cn("relative overflow-hidden", className)}
+      className={cn("fade-x relative overflow-hidden", className)}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      {/* Left gradient overlay */}
-      <div 
-        className="absolute left-0 top-0 bottom-0 w-20 z-10 pointer-events-none"
-        style={{
-          background: 'linear-gradient(to right, #f5f6f7 0%, rgba(245, 246, 247, 0.8) 25%, rgba(245, 246, 247, 0.4) 50%, rgba(245, 246, 247, 0.1) 75%, transparent 100%)'
-        }}
-      />
-      
-      {/* Right gradient overlay */}
-      <div 
-        className="absolute right-0 top-0 bottom-0 w-16 z-10 pointer-events-none"
-        style={{
-          background: 'linear-gradient(to left, #f5f6f7 0%, rgba(245, 246, 247, 0.8) 25%, rgba(245, 246, 247, 0.4) 50%, rgba(245, 246, 247, 0.1) 75%, transparent 100%)'
-        }}
-      />
-
       <div
         ref={contentRef}
         className="flex items-center"

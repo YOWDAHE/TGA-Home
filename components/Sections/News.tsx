@@ -8,10 +8,14 @@ import { ArrowRight, Calendar, FileText, User } from "lucide-react";
 import SectionHeading from "./SectionHeading";
 import Reveal from "./Reveal";
 import ArrowLink from "./ArrowLink";
+import type { ModuleContent } from "@/app/types/modules";
+import type { ToneProps } from "@/components/modules/shared";
 
-interface NewsProps {
+interface NewsProps extends ToneProps {
 	news: News[];
 	resources: Resource[];
+	/** Heading text; the stories come from the news and resources feeds */
+	content: ModuleContent["news"];
 }
 
 // Helper function to format date
@@ -39,15 +43,17 @@ const getImageUrl = (newsItem: News) => {
 	return "/placeholder.jpg";
 };
 
-export default function News({ news, resources }: NewsProps) {
+export default function News({ news, resources, content, tone }: NewsProps) {
 	const [featured, ...rest] = news.slice(0, 4);
 
 	return (
-		<Section id="news">
+		<Section tone={tone}>
 			<SectionHeading
-				label="News"
-				title="Latest from the firm"
-				action={<ArrowLink href="/news">All news</ArrowLink>}
+				inverted={tone === "navy"}
+				label={content.label}
+				title={content.title}
+				description={content.description || undefined}
+				action={content.linkLabel && content.linkHref ? <ArrowLink href={content.linkHref}>{content.linkLabel}</ArrowLink> : undefined}
 			/>
 
 			{/* One featured story with its photo, then the next three as text rows */}
@@ -100,6 +106,7 @@ export default function News({ news, resources }: NewsProps) {
 			{/* Resources */}
 			<div className="mt-24 sm:mt-32">
 				<SectionHeading
+					inverted={tone === "navy"}
 					title="Resources"
 					description="Look through our articles and updates here."
 				/>
@@ -108,7 +115,7 @@ export default function News({ news, resources }: NewsProps) {
 						<Reveal key={resource.id} delay={(index % 2) * 0.08}>
 							<Link
 								href={`/resources/${resource.id}`}
-								className="group flex h-full items-start gap-4 rounded-sm bg-white p-5 shadow-sm ring-1 ring-black/5 transition-shadow duration-300 hover:shadow-[0_20px_40px_-24px_rgba(11,27,77,0.35)] sm:p-6"
+								className="tone-light group flex h-full items-start gap-4 rounded-sm bg-white p-5 shadow-sm ring-1 ring-black/5 transition-shadow duration-300 hover:shadow-[0_20px_40px_-24px_rgba(11,27,77,0.35)] sm:p-6"
 							>
 								<span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-sm bg-brand-tint text-brand-green">
 									<FileText className="h-5 w-5" strokeWidth={1.75} />

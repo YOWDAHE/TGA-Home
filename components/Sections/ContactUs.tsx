@@ -1,16 +1,20 @@
-import { ArrowRight, Home, Mail, MapPin, MessageCircle, Phone, Loader2, Check } from "lucide-react";
+import { ArrowRight, MapPin, Loader2, Check } from "lucide-react";
 import Section from "./Section";
 import React, { useState } from "react";
 import { ContactUs as ContactUsType } from "@/app/types/landing";
 import { createRemark, RemarkData } from "@/app/actions/contact.actions";
 import { useToast } from "@/hooks/use-toast";
 import Reveal from "./Reveal";
+import { contactRows } from "@/lib/contact";
+import type { ModuleContent } from "@/app/types/modules";
 
 interface ContactUsProps {
 	contactUs: ContactUsType[];
+	/** Heading text; the details are the shared contact list */
+	content: ModuleContent["contact"];
 }
 
-export default function ContactUs({ contactUs }: ContactUsProps) {
+export default function ContactUs({ contactUs, content }: ContactUsProps) {
 	const [formData, setFormData] = useState<RemarkData>({
 		name: "",
 		email: "",
@@ -96,43 +100,9 @@ export default function ContactUs({ contactUs }: ContactUsProps) {
 				: "border-[#e3e8ef] focus:border-brand-green focus:ring-brand-tint"
 		}`;
 
-	// Phone and WhatsApp rows show their number; the others show their email (and phone, if any)
-	const contactRows = contactUs.map((contact) => {
-		const medium = contact.medium.toLowerCase();
-		const isWhatsApp = medium.includes("whatsapp");
-		const isPhone = medium.includes("phone");
-		const digits = (contact.phone_number ?? "").replace(/[^\d]/g, "");
-		let Icon = Mail;
-		if (isPhone) Icon = Phone;
-		else if (isWhatsApp) Icon = MessageCircle;
-		else if (medium.includes("office")) Icon = Home;
-
-		const lines: { text: string; href?: string }[] =
-			isPhone || isWhatsApp
-				? [
-						{
-							text: contact.phone_number || contact.email || "-",
-							href: contact.phone_number
-								? isWhatsApp
-									? `https://wa.me/${digits}`
-									: `tel:${digits ? `+${digits}` : contact.phone_number}`
-								: undefined,
-						},
-					]
-				: [
-						{
-							text: contact.email ?? "info@tgagloballawfirm.com",
-							href: `mailto:${contact.email ?? "info@tgagloballawfirm.com"}`,
-						},
-						...(contact.phone_number
-							? [{ text: contact.phone_number, href: `tel:+${digits}` }]
-							: []),
-					];
-		return { id: contact.id, medium: contact.medium, Icon, lines, external: isWhatsApp, isOffice: medium.includes("office") };
-	});
-
-	const officeRow = contactRows.find((row) => row.isOffice);
-	const directRows = contactRows.filter((row) => !row.isOffice);
+	const rows = contactRows(contactUs);
+	const officeRow = rows.find((row) => row.isOffice);
+	const directRows = rows.filter((row) => !row.isOffice);
 
 	const renderLines = (lines: { text: string; href?: string }[], external: boolean) =>
 		lines.map((line) =>
@@ -156,22 +126,23 @@ export default function ContactUs({ contactUs }: ContactUsProps) {
 	const labelClass = "mb-2 block text-sm font-medium text-brand-navy";
 
 	return (
-		<Section id="contact" pattern>
+		<Section>
 			<Reveal className="mx-auto max-w-3xl text-center">
-				<p className="text-sm font-medium text-brand-green">Contact us</p>
+				{content.label && <p className="text-sm font-medium text-brand-green">{content.label}</p>}
 				<h2 className="mx-auto mt-3 max-w-[16rem] text-balance text-3xl min-[400px]:max-w-[18rem] sm:max-w-none font-semibold tracking-tight text-brand-navy sm:text-5xl">
-					Get in touch for premium legal services
+					{content.title}
 				</h2>
-				<p className="mx-auto mt-4 max-w-[19rem] text-pretty text-base leading-relaxed text-[#606b80] min-[400px]:max-w-[21rem] sm:max-w-2xl sm:text-lg">
-					Get in touch with us for premium business service, we will promptly
-					respond to all your enquiries.
-				</p>
+				{content.description && (
+					<p className="mx-auto mt-4 max-w-[19rem] text-pretty text-base leading-relaxed text-[#606b80] min-[400px]:max-w-[21rem] sm:max-w-2xl sm:text-lg">
+						{content.description}
+					</p>
+				)}
 			</Reveal>
 
 			<div className="mt-12 grid gap-10 lg:grid-cols-2 lg:gap-12">
 				{/* Message form */}
 				<Reveal className="rounded-sm bg-[#f5f7fa]/90 p-6 ring-1 ring-black/5 backdrop-blur-xl sm:p-8">
-					<h3 className="text-2xl font-semibold tracking-tight text-brand-navy">Send us a message</h3>
+					<h3 className="text-2xl font-semibold tracking-tight text-brand-navy">{content.formTitle}</h3>
 
 					<form onSubmit={handleSubmit} className="mt-6 space-y-5">
 						<div>

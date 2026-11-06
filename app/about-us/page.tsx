@@ -1,5 +1,6 @@
 import React from "react";
-import AboutPage from "@/components/Sections/AboutPage";
+import PageRenderer from "@/components/modules/PageRenderer";
+import { getPageData, getPageLayout } from "../actions/pages.actions";
 import { homeFont } from "../fonts";
 import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/seo";
@@ -12,10 +13,17 @@ export const metadata: Metadata = pageMetadata({
 	card: { eyebrow: "About us", title: "The people and story behind TGA Global" },
 });
 
-export default function page() {
+// Rendered per request so a publish in the admin shows right away
+export const dynamic = "force-dynamic";
+
+export default async function page() {
+	const layout = await getPageLayout("about");
+	// Only fetches /landing (which counts a visit) when a module shows stats, partners or practices
+	const data = await getPageData(layout.modules);
+
 	return (
 		<div className={homeFont.className}>
-			<AboutPage />
+			<PageRenderer page="about" modules={layout.modules} data={data} now={Date.now()} />
 		</div>
 	);
 }

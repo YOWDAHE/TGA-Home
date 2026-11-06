@@ -9,10 +9,12 @@ export default function robots(): MetadataRoute.Robots {
         '/login',
         '/signup',
         '/api/',
+        '/api-backend/',
         '/admin/',
         '/office/',
+        '/preview/',
       ],
     },
-    sitemap: 'https://tgagloballawfirm.com/sitemap.xml', //TODO: Replace with your actual domain
+    sitemap: 'https://tgagloballawfirm.com/sitemap.xml',
   }
-} 
+}

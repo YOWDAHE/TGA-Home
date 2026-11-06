@@ -106,6 +106,13 @@ body {
   animation: marquee linear infinite;
 }
 
+/* Carousels fade out at both ends: the strip itself turns transparent (a mask), so whatever is behind
+   it shows through, not a painted colour. --fade sets how far in the fade reaches. */
+.fade-x {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 var(--fade, 8%), #000 calc(100% - var(--fade, 8%)), transparent);
+  mask-image: linear-gradient(to right, transparent, #000 var(--fade, 8%), #000 calc(100% - var(--fade, 8%)), transparent);
+}
+
 /* TipTap / rich HTML content (legal updates, etc.) */
 .rich-text-content {
   color: #374151;
@@ -227,3 +234,60 @@ body {
   border-radius: 2px;
 }
 
+
+/* Modules set on the navy band (Section tone="navy"): navy text and hairlines turn light. Light
+   surfaces inside the band (cards, the milestones panel) are marked .tone-light and keep their colours.
+   :where() keeps these at utility strength, so hover colours still win. */
+:where(.tone-navy) .text-brand-navy:where(:not(.tone-light *)) { color: #fff; }
+:where(.tone-navy) :is(.text-brand-navy\/75, .text-brand-navy\/70):where(:not(.tone-light *)) { color: rgb(255 255 255 / 0.75); }
+:where(.tone-navy) .text-brand-navy\/60:where(:not(.tone-light *)) { color: rgb(255 255 255 / 0.6); }
+:where(.tone-navy) :is(.text-\[\#5a6377\], .text-\[\#606b80\], .text-\[\#8a93a6\], .text-\[\#4a5368\]):where(:not(.tone-light *)) { color: rgb(255 255 255 / 0.7); }
+:where(.tone-navy) .text-brand-green:where(:not(.tone-light *)) { color: #7fd1b9; }
+:where(.tone-navy) :is(.border-brand-navy\/15, .border-brand-navy\/10):where(:not(.tone-light *)) { border-color: rgb(255 255 255 / 0.15); }
+:where(.tone-navy) strong:where(:not(.tone-light *)) { color: #fff; }
+
+/* Admin live preview (components/modules/PreviewClient.tsx) */
+.preview-module { position: relative; }
+.preview-module::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  border: 2px solid transparent;
+  transition: border-color 0.15s;
+}
+.preview-selecting .preview-module { cursor: pointer; }
+.preview-module[data-preview-hover]::after { border-color: #007a5e; }
+.preview-module[data-preview-focus]::after { border-color: #0b1b4d; }
+.preview-module[data-preview-hidden]::after { border: 2px dashed rgb(11 27 77 / 0.45); }
+.preview-module[data-preview-hidden][data-preview-hover]::after { border-color: #007a5e; }
+.preview-module[data-preview-hidden] > :not(.preview-tag) { opacity: 0.45; }
+/* The module's name in the top-left corner while hovered */
+.preview-module[data-preview-hover]::before {
+  content: attr(data-module-name);
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 61;
+  pointer-events: none;
+  padding: 4px 8px;
+  border-radius: 0 0 2px 0;
+  background: #007a5e;
+  color: #fff;
+  font: 500 12px/1.2 system-ui, sans-serif;
+}
+.preview-tag {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  z-index: 61;
+  pointer-events: none;
+  padding: 3px 8px;
+  border-radius: 2px;
+  background: #0b1b4d;
+  color: #fff;
+  font: 500 11px/1.2 system-ui, sans-serif;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}

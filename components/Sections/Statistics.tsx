@@ -6,9 +6,12 @@ import { Stat } from "@/app/types/landing";
 import SectionHeading from "./SectionHeading";
 import Section from "./Section";
 import Reveal, { easeOut } from "./Reveal";
+import type { ModuleContent } from "@/app/types/modules";
 
 interface StatisticsProps {
 	stats: Stat[];
+	/** Heading text; the numbers are the shared Statistics list */
+	content: ModuleContent["stats"];
 }
 
 // Splits "1,200+" into the number to count to and the text around it
@@ -56,7 +59,7 @@ function CountUp({ value }: { value: string }) {
 }
 
 /** The firm's numbers as cards on the navy band, over a faint echo of the hero's glass rows. */
-export default function Statistics({ stats }: StatisticsProps) {
+export default function Statistics({ stats, content }: StatisticsProps) {
 	return (
 		<Section tone="navy" className="overflow-hidden">
 			<div aria-hidden className="pointer-events-none absolute inset-0">
@@ -73,9 +76,9 @@ export default function Statistics({ stats }: StatisticsProps) {
 			<div className="relative">
 				<SectionHeading
 					inverted
-					label="Track record"
-					title="Nearly two decades of counsel, in numbers"
-					description="Results built case by case, for clients across Ethiopia, Africa and beyond."
+					label={content.label}
+					title={content.title}
+					description={content.description || undefined}
 				/>
 
 				<dl className="mt-12 grid grid-cols-2 gap-3 sm:gap-4 lg:mt-16 lg:grid-cols-4">

@@ -1,21 +1,23 @@
+"use client";
+
 import Link from "next/link";
 import React from "react";
-import { ArrowUpRight, Mail, MapPin, Phone } from "lucide-react";
+import { ArrowUpRight, MapPin } from "lucide-react";
 import { ContactUs as ContactUsType } from "@/app/types/landing";
+import { useContactInfo } from "@/contexts/ContactInfoContext";
+import { contactRows, primaryEmail } from "@/lib/contact";
 
 interface FooterProps {
+	/** Defaults to the contact details the root layout loads for every page */
 	contactUs?: ContactUsType[];
 }
 
 export default function Footer({ contactUs }: FooterProps) {
-	// Extract contact information from contactUs data
-	const getContactInfo = (type: string) => {
-		contactUs = contactUs || [];
-		const contact = contactUs.find(c => 
-			c.medium.toLowerCase().includes(type.toLowerCase())
-		);
-		return contact?.email || contact?.phone_number || "";
-	};
+	const loaded = useContactInfo();
+	const contacts = contactUs ?? loaded;
+	// Offices first, then the direct lines, as entered in the admin
+	const rows = contactRows(contacts).sort((a, b) => Number(b.isOffice) - Number(a.isOffice));
+	const email = primaryEmail(contacts);
 
 	// Services data (matching the Services component)
 	const services = [
@@ -38,7 +40,6 @@ export default function Footer({ contactUs }: FooterProps) {
 	];
 
 	const linkClass = "text-white/60 transition-colors hover:text-white";
-	const phone = getContactInfo("phone");
 
 	return (
 		<footer className="px-3 pb-3 pt-8 sm:px-6 sm:pb-6">
@@ -76,10 +77,10 @@ export default function Footer({ contactUs }: FooterProps) {
 							<ArrowUpRight className="h-4 w-4" />
 						</Link>
 						<a
-							href="mailto:info@tgagloballawfirm.com"
-							className="inline-flex items-center justify-center rounded-sm px-6 py-3 text-sm font-medium text-white ring-1 ring-white/25 transition-colors hover:bg-white/10"
+							href={`mailto:${email}`}
+							className="inline-flex items-center justify-center break-all rounded-sm px-6 py-3 text-sm font-medium text-white ring-1 ring-white/25 transition-colors hover:bg-white/10"
 						>
-							info@tgagloballawfirm.com
+							{email}
 						</a>
 					</div>
 				</div>
@@ -87,9 +88,7 @@ export default function Footer({ contactUs }: FooterProps) {
 				{/* Link columns */}
 				<div className="grid gap-10 py-12 sm:grid-cols-2 lg:grid-cols-12">
 					<div className="lg:col-span-5">
-						<h3 className="mb-5 text-xs font-medium uppercase tracking-[0.2em] text-brand-tint/70">
-							Services
-						</h3>
+						<h3 className="mb-5 text-xs font-medium uppercase tracking-[0.2em] text-brand-tint/70">Services</h3>
 						<ul className="space-y-3 text-sm">
 							{services.map((service, index) => (
 								<li key={index}>
@@ -102,18 +101,16 @@ export default function Footer({ contactUs }: FooterProps) {
 					</div>
 
 					<div className="lg:col-span-3">
-						<h3 className="mb-5 text-xs font-medium uppercase tracking-[0.2em] text-brand-tint/70">
-							Company
-						</h3>
+						<h3 className="mb-5 text-xs font-medium uppercase tracking-[0.2em] text-brand-tint/70">Company</h3>
 						<ul className="space-y-3 text-sm">
 							<li>
-								<Link href="#about" className={linkClass}>
+								<Link href="/about-us" className={linkClass}>
 									About Us
 								</Link>
 							</li>
 							<li>
-								<Link href="#" className={linkClass}>
-									Our Team
+								<Link href="/careers" className={linkClass}>
+									Careers
 								</Link>
 							</li>
 							<li>
@@ -135,25 +132,39 @@ export default function Footer({ contactUs }: FooterProps) {
 					</div>
 
 					<div className="lg:col-span-4">
-						<h3 className="mb-5 text-xs font-medium uppercase tracking-[0.2em] text-brand-tint/70">
-							Contact
-						</h3>
-						<ul className="space-y-3 text-sm text-white/60">
-							<li className="flex items-center gap-3">
-								<MapPin className="h-4 w-4 shrink-0 text-brand-tint/70" />
-								Addis Ababa, Ethiopia
-							</li>
-							{/* <li>{getContactInfo("email")}</li> */}
-							<li className="flex items-center gap-3">
-								<Mail className="h-4 w-4 shrink-0 text-brand-tint/70" />
-								info@tgagloballawfirm.com
-							</li>
-							{phone && (
-								<li className="flex items-center gap-3">
-									<Phone className="h-4 w-4 shrink-0 text-brand-tint/70" />
-									{phone}
+						<h3 className="mb-5 text-xs font-medium uppercase tracking-[0.2em] text-brand-tint/70">Contact</h3>
+						<ul className="space-y-5 text-sm">
+							{rows.length === 0 && (
+								<li className="flex items-center gap-3 text-white/60">
+									<MapPin className="h-4 w-4 shrink-0 text-brand-tint/70" />
+									Addis Ababa, Ethiopia
 								</li>
 							)}
+							{rows.map(({ id, medium, Icon, lines, external }) => (
+								<li key={id} className="flex gap-3">
+									<Icon className="mt-0.5 h-4 w-4 shrink-0 text-brand-tint/70" />
+									<div className="min-w-0">
+										<p className="text-xs uppercase tracking-[0.14em] text-white/40">{medium}</p>
+										{lines.map((line) =>
+											line.href ? (
+												<a
+													key={line.text}
+													href={line.href}
+													target={external ? "_blank" : undefined}
+													rel={external ? "noopener noreferrer" : undefined}
+													className={`mt-1 block break-words ${linkClass}`}
+												>
+													{line.text}
+												</a>
+											) : (
+												<p key={line.text} className="mt-1 break-words text-white/60">
+													{line.text}
+												</p>
+											),
+										)}
+									</div>
+								</li>
+							))}
 						</ul>
 					</div>
 				</div>

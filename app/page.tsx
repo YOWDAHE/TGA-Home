@@ -1,8 +1,6 @@
-import LandingPage from "@/components/Sections/HomePage";
 import React from "react";
-import { getLandingPageData } from "./actions/landing.actions";
-import { getNewsByQuery } from "./actions/news.actions";
-import { getResources } from "./actions/resources.actions";
+import PageRenderer from "@/components/modules/PageRenderer";
+import { getPageData, getPageLayout } from "./actions/pages.actions";
 import { homeFont } from "./fonts";
 import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/seo";
@@ -20,26 +18,13 @@ export const dynamic = "force-dynamic";
 
 export default async function page() {
 	try {
-		// const [landingData, newsResponse, resourcesResponse] = await Promise.all([
-		// 	getLandingPageData(),
-		// 	getNewsByQuery({ limit: 4, sortBy: 'published_date', order: 'desc' }),
-		// 	getResources({ limit: 4 })
-		// ]);
-		const landingData = await getLandingPageData();
-		const newsResponse = await getNewsByQuery({ limit: 4, sortBy: 'published_date', order: 'desc' });
-		const resourcesResponse = await getResources({ limit: 4 });
-
-		if (!landingData.data?.homeContent) {
-			throw new Error("Landing page data is missing");
-		}
+		const layout = await getPageLayout("home");
+		// The home page has always loaded the landing data (it also counts the visit)
+		const data = await getPageData(layout.modules, { landing: true });
 
 		return (
 			<div className={homeFont.className}>
-				<LandingPage
-					data={landingData.data}
-					news={newsResponse.data.news}
-					resources={resourcesResponse.data.documents}
-				/>
+				<PageRenderer page="home" modules={layout.modules} data={data} now={Date.now()} />
 			</div>
 		);
 	} catch (error) {

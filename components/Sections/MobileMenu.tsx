@@ -14,6 +14,7 @@ export const menuLinks = [
 	{ href: "/resources", label: "Resources" },
 	{ href: "/news", label: "News" },
 	{ href: "/legal-updates", label: "Legal Updates" },
+	{ href: "/careers", label: "Careers" },
 ];
 
 const panel = {

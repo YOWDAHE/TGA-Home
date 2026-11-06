@@ -1,68 +1,40 @@
-import { MetadataRoute } from 'next'
+import type { MetadataRoute } from "next";
+import { getJobSitemap } from "./actions/jobs.actions";
+import { jobPath } from "@/lib/jobs";
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://tgagloballawfirm.com'
-  
-  return [
-    {
-      url: baseUrl,
-      lastModified: new Date(),
-      changeFrequency: 'daily',
-      priority: 1,
-    },
-    {
-      url: `${baseUrl}/about-us`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/news`,
-      lastModified: new Date(),
-      changeFrequency: 'daily',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/legal-updates`,
-      lastModified: new Date(),
-      changeFrequency: 'daily',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/resources`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.7,
-    },
-    {
-      url: `${baseUrl}/corporate-law-ethiopia`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/real-estate-law-ethiopia`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/diaspora-legal-services`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/login`,
-      lastModified: new Date(),
-      changeFrequency: 'yearly',
-      priority: 0.3,
-    },
-    {
-      url: `${baseUrl}/signup`,
-      lastModified: new Date(),
-      changeFrequency: 'yearly',
-      priority: 0.3,
-    },
-  ]
-} 
+const baseUrl = "https://tgagloballawfirm.com";
+
+// Rebuilt every 10 minutes so new job openings reach search engines quickly
+export const revalidate = 600;
+
+const pages: Array<{ path: string; changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"]; priority: number }> = [
+	{ path: "", changeFrequency: "daily", priority: 1 },
+	{ path: "/about-us", changeFrequency: "monthly", priority: 0.8 },
+	{ path: "/careers", changeFrequency: "daily", priority: 0.8 },
+	{ path: "/news", changeFrequency: "daily", priority: 0.8 },
+	{ path: "/legal-updates", changeFrequency: "daily", priority: 0.8 },
+	{ path: "/resources", changeFrequency: "weekly", priority: 0.7 },
+	{ path: "/corporate-law-ethiopia", changeFrequency: "monthly", priority: 0.9 },
+	{ path: "/real-estate-law-ethiopia", changeFrequency: "monthly", priority: 0.9 },
+	{ path: "/diaspora-legal-services", changeFrequency: "monthly", priority: 0.9 },
+];
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+	const now = new Date();
+	// Only open jobs are listed; closed ones carry noindex
+	const jobs = await getJobSitemap();
+	return [
+		...pages.map((page) => ({
+			url: `${baseUrl}${page.path}`,
+			lastModified: now,
+			changeFrequency: page.changeFrequency,
+			priority: page.priority,
+		})),
+		...jobs.map((job) => ({
+			url: `${baseUrl}${jobPath(job.slug)}`,
+			lastModified: new Date(job.updatedAt),
+			changeFrequency: "weekly" as const,
+			priority: 0.7,
+		})),
+	];
+}

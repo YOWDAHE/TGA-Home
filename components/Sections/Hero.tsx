@@ -1,25 +1,37 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { easeOut } from "./Reveal";
 import TopNav from "./TopNav";
 import GlassBackdrop from "./GlassBackdrop";
-import type { HomeContent } from "@/app/types/landing";
+import type { HeroContent } from "@/app/types/modules";
+import { ButtonLink } from "@/components/modules/shared";
 
 // Admin HTML: bold phrases stand out in full navy, colours picked in the editor are kept
 const slideTextClass =
 	"text-pretty leading-relaxed text-brand-navy/75 [&_p+p]:mt-3 [&_strong]:font-medium [&_strong]:text-brand-navy";
 
-type Slide = HomeContent["hero"]["slides"][number];
+type Slide = HeroContent["slides"][number];
 
-export default function Hero({ content }: { content: HomeContent["hero"] }) {
-	const slides = content.slides;
+interface HeroProps {
+	content: HeroContent;
+	/** Path of the page, so the nav underlines the right link */
+	currentHref?: string;
+}
+
+export default function Hero({ content, currentHref = "/" }: HeroProps) {
+	// Hidden slides stay out of the rotation, in previews too
+	const slides = (content.slides ?? []).filter((slide) => slide && !slide.hidden);
+	// Content saved before the link was editable has no cta
+	const cta = content.cta ?? { label: "Get legal consultation", text: "from partners who know the region", href: "/#contact" };
 	const [slideIndex, setSlideIndex] = useState(0);
+	// The preview can drop slides while one further along is showing
+	const current = slides.length ? slideIndex % slides.length : 0;
 
 	useEffect(() => {
+		if (slides.length < 2) return;
 		const slideTimer = setInterval(
 			() => setSlideIndex((i) => (i + 1) % slides.length),
 			6000
@@ -32,7 +44,7 @@ export default function Hero({ content }: { content: HomeContent["hero"] }) {
 	const rotating = (render: (slide: Slide) => React.ReactNode, className = "", itemAlign = "self-end") => (
 		<div className={`grid ${className}`}>
 			{slides.map((slide, index) => {
-				const active = index === slideIndex;
+				const active = index === current;
 				return (
 					<motion.div
 						key={index}
@@ -53,7 +65,7 @@ export default function Hero({ content }: { content: HomeContent["hero"] }) {
 		<>
 			{/* Outside the section: the section's own stacking layer (isolate) would keep the fixed
 			    bar under the sections that follow */}
-			<TopNav currentHref="/" overlay />
+			<TopNav currentHref={currentHref} overlay />
 			<section id="hero-section" className="relative isolate overflow-hidden bg-white text-brand-navy">
 				<GlassBackdrop />
 
@@ -89,15 +101,19 @@ export default function Hero({ content }: { content: HomeContent["hero"] }) {
 							"self-start lg:self-end"
 						)}
 						<ArrowRight aria-hidden className="hidden h-6 w-6 text-brand-navy lg:col-span-1 lg:mb-1 lg:block lg:justify-self-center" />
-						<Link
-							href="#contact"
-							className="group hidden leading-relaxed text-brand-navy/75 transition-colors hover:text-brand-navy lg:col-span-3 lg:block"
-						>
-							<span className="underline decoration-brand-navy/25 underline-offset-4 group-hover:decoration-brand-navy">
-								Get legal consultation
-							</span>{" "}
-							from partners who know the region
-						</Link>
+						{cta.label ? (
+							<ButtonLink
+								href={cta.href || "/#contact"}
+								className="group hidden leading-relaxed text-brand-navy/75 transition-colors hover:text-brand-navy lg:col-span-3 lg:block"
+							>
+								<span className="underline decoration-brand-navy/25 underline-offset-4 group-hover:decoration-brand-navy">
+									{cta.label}
+								</span>
+								{cta.text ? ` ${cta.text}` : ""}
+							</ButtonLink>
+						) : (
+							<div className="hidden lg:col-span-3 lg:block" />
+						)}
 						<div className="hidden lg:col-span-3 lg:block lg:text-right">
 							<p className="text-lg font-medium text-brand-navy">
 								{content.highlight.value} <span className="text-brand-green">{content.highlight.word}</span>
@@ -115,20 +131,22 @@ export default function Hero({ content }: { content: HomeContent["hero"] }) {
 								aria-label={`Show statement ${index + 1}: ${slide.title}`}
 								onClick={() => setSlideIndex(index)}
 								className={`h-6 border-t transition-colors ${
-									index === slideIndex ? "border-brand-navy" : "border-brand-navy/15 hover:border-brand-navy/40"
+									index === current ? "border-brand-navy" : "border-brand-navy/15 hover:border-brand-navy/40"
 								}`}
 							/>
 						))}
 					</div>
 
 					{/* Phones: the consultation link becomes a button at the bottom of the screen */}
-					<Link
-						href="#contact"
-						className="group mt-2 inline-flex w-full items-center justify-center gap-2 rounded-sm bg-brand-navy px-5 py-3.5 text-sm font-medium text-white transition-colors hover:bg-brand-green lg:hidden"
-					>
-						Get legal consultation
-						<ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-					</Link>
+					{cta.label && (
+						<ButtonLink
+							href={cta.href || "/#contact"}
+							className="group mt-2 inline-flex w-full items-center justify-center gap-2 rounded-sm bg-brand-navy px-5 py-3.5 text-sm font-medium text-white transition-colors hover:bg-brand-green lg:hidden"
+						>
+							{cta.label}
+							<ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+						</ButtonLink>
+					)}
 				</div>
 			</section>
 		</>

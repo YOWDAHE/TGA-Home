@@ -97,7 +97,21 @@ const nextConfig: NextConfig = {
   },
   // Add headers for better caching
   async headers() {
+    // The admin's page builder frames the previews; nothing else may
+    const adminOrigins = (process.env.NEXT_PUBLIC_ADMIN_ORIGINS || '')
+      .split(/[\s,]+/)
+      .map((origin) => origin.trim().replace(/\/$/, ''))
+      .filter(Boolean);
     return [
+      {
+        source: '/preview/:path*',
+        headers: [
+          {
+            key: 'Content-Security-Policy',
+            value: `frame-ancestors ${["'self'", ...adminOrigins].join(' ')}`,
+          },
+        ],
+      },
       {
         source: '/uploads/:path*',
         headers: [

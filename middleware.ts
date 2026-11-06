@@ -1,9 +1,25 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { isKnownModuleType, isPageKey } from "@/lib/modules";
+
+/** Unknown preview pages get a real 404: the pages themselves stream (app/loading.tsx), and a
+ *  notFound() thrown while streaming can only answer 200. */
+function isUnknownPreview(path: string) {
+	const page = path.match(/^\/preview\/page\/([^/]+)\/?$/);
+	if (page) return !isPageKey(decodeURIComponent(page[1]));
+	const module = path.match(/^\/preview\/module\/([^/]+)\/?$/);
+	if (module) return !isKnownModuleType(decodeURIComponent(module[1]));
+	return false;
+}
 
 export function middleware(request: NextRequest) {
 	// Get the pathname of the request
 	const path = request.nextUrl.pathname;
+
+	// Rewriting to a route that doesn't exist renders the site's not-found page with a 404
+	if (isUnknownPreview(path)) {
+		return NextResponse.rewrite(new URL("/preview/_unknown/_unknown", request.url));
+	}
 
 	// Define public paths that don't require authentication
 	const isPublicPath = path === "/login" || path === "/signup";

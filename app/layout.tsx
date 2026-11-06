@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import './globals.css'
 import { Toaster } from '@/components/ui/toaster'
 import { AuthProvider } from '@/contexts/AuthContext'
+import { ContactInfoProvider } from '@/contexts/ContactInfoContext'
+import { getContactInfo } from './actions/contact-info'
 import { SITE_NAME, SITE_URL, previewImageUrl } from '@/lib/seo'
 
 const defaultPreview = previewImageUrl({
@@ -125,11 +127,12 @@ export const metadata: Metadata = {
 	},
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const contactInfo = await getContactInfo()
   return (
 			<html lang="en">
 				<head>
@@ -185,11 +188,6 @@ export default function RootLayout({
 									postalCode: "10000",
 									addressCountry: "ET",
 								},
-								geo: {
-									"@type": "GeoCoordinates",
-									latitude: "YOUR_LATITUDE", // TODO: Replace with actual coordinates
-									longitude: "YOUR_LONGITUDE", // TODO: Replace with actual coordinates
-								},
 								openingHours: "Mo-Fr 02:00-13:00",
 								priceRange: "$$",
 								sameAs: [
@@ -230,7 +228,9 @@ export default function RootLayout({
 				</head>
 				<body>
 					<AuthProvider>
-						{children}
+						<ContactInfoProvider value={contactInfo}>
+							{children}
+						</ContactInfoProvider>
 						<Toaster />
 					</AuthProvider>
 				</body>

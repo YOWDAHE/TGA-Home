@@ -13,7 +13,8 @@ interface SectionProps {
 const toneClass = {
 	plain: "",
 	muted: "bg-[#f4f5f7]",
-	navy: "bg-brand-navy text-white",
+	// tone-navy turns navy text and hairlines inside light (see globals.css)
+	navy: "tone-navy bg-brand-navy text-white",
 };
 
 /** Full-width page band with the content held to the site's column. */
