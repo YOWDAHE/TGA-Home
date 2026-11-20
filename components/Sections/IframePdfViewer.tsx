@@ -4,19 +4,20 @@ import { useEffect, useState } from "react";
 import { ExternalLink, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { convertToApiUrl } from "@/lib/utils";
-import { Resource } from "@/app/actions/resources.actions";
 
 // Asks the browser's built-in viewer for the page only: no toolbar, no thumbnail sidebar,
 // fitted to the width. Chrome, Edge and Safari honour these; Firefox keeps its own toolbar.
 const VIEWER_PARAMS = "#toolbar=0&navpanes=0&scrollbar=0&view=FitH";
 
 interface IframePdfViewerProps {
-	resource: Resource;
+	// A resource, or any other stored PDF (legal updates pass their own file)
+	resource: { file_url: string; title: string };
 	className?: string;
+	openLabel?: string;
 }
 
 /** Just the document: a framed box around the browser's PDF view. */
-export default function IframePdfViewer({ resource, className = "" }: IframePdfViewerProps) {
+export default function IframePdfViewer({ resource, className = "", openLabel = "Open resource" }: IframePdfViewerProps) {
 	const [isLoading, setIsLoading] = useState(true);
 	const { toast } = useToast();
 
@@ -67,7 +68,7 @@ export default function IframePdfViewer({ resource, className = "" }: IframePdfV
 				rel="noopener noreferrer"
 				className="absolute bottom-5 left-1/2 z-20 inline-flex -translate-x-1/2 items-center gap-2 rounded-sm bg-brand-navy px-5 py-3 text-sm font-medium text-white ring-1 ring-white/10 transition-colors hover:bg-brand-green"
 			>
-				Open resource
+				{openLabel}
 				<ExternalLink className="h-4 w-4" />
 			</a>
 		</div>

@@ -22,6 +22,9 @@ export interface LegalUpdate {
   published: boolean;
   published_date?: string | null;
   view_count: number;
+  pdf_url?: string | null;
+  pdf_filename?: string | null;
+  pdf_size?: number | null;
   created_by?: string | null;
   createdAt: string;
   updatedAt: string;
