@@ -17,6 +17,15 @@ interface PageHeroProps {
 	children?: React.ReactNode;
 }
 
+// Page names like "Resources" get the full display size; article titles (legal updates,
+// news, documents) run to several lines at that size, so longer titles step down
+function titleSize(title: React.ReactNode) {
+	const length = typeof title === "string" ? title.length : 0;
+	if (length > 70) return "text-[2rem] leading-[1.1] sm:text-[2.75rem] lg:text-5xl";
+	if (length > 40) return "text-[2.25rem] leading-[1.08] sm:text-5xl lg:text-[3.5rem]";
+	return "text-[2.5rem] leading-[1.05] sm:text-6xl lg:text-7xl";
+}
+
 /** Top of an inner page: the see-through nav over the home hero's glass backdrop, with a centered
  *  title. Renders the nav itself, so pages using it should not add their own TopNav. */
 export default function PageHero({ currentHref, label, title, description, children }: PageHeroProps) {
@@ -41,7 +50,7 @@ export default function PageHero({ currentHref, label, title, description, child
 						initial={{ opacity: 0, y: 16 }}
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ duration: 0.7, ease: easeOut, delay: 0.15 }}
-						className="text-balance text-[2.5rem] font-medium leading-[1.05] tracking-[-0.035em] sm:text-6xl lg:text-7xl"
+						className={`text-balance font-medium tracking-[-0.035em] ${titleSize(title)}`}
 					>
 						{title}
 					</motion.h1>
